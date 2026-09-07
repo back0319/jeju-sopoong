@@ -11,3 +11,10 @@ supabase/.branches/
 coverage/
 test-results/
 playwright-report/
+
+*.tsbuildinfo
+
+.playwright-cli/
+output/playwright/
+.vercel
+.env*

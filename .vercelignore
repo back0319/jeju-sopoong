@@ -1,0 +1,11 @@
+.env*
+assets/
+docs/
+scripts/
+tests/
+supabase/
+output/
+.playwright-cli/
+AGENTS.md
+CLAUDE.md
+*.tsbuildinfo
