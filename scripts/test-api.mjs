@@ -1,0 +1,25 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {randomUUID} from 'node:crypto';
+const base='http://localhost:3000';
+const local=readFileSync('.env.development.local','utf8');if(!/NEXT_PUBLIC_SUPABASE_URL=http:\/\/(127\.0\.0\.1|localhost):/.test(local))throw new Error('로컬 환경에서만 실행합니다.');
+const creds=JSON.parse(readFileSync('/tmp/jeju-local-admin.json','utf8'));
+let cookie='';
+async function request(path,method='GET',body,auth=false){return fetch(base+path,{method,headers:{...(body?{'Content-Type':'application/json'}:{}),...(auth?{cookie}:{})},body:body?JSON.stringify(body):undefined});}
+const c=await (await request('/api/catalog')).json();
+assert.equal((await request('/api/admin/orders')).status,401);
+const login=await request('/api/admin/auth','POST',creds);assert.equal(login.status,200);cookie=login.headers.getSetCookie().map(c=>c.split(';')[0]).join('; ');
+assert.equal((await request('/api/admin/orders','GET',undefined,true)).status,200);
+const answers=Object.fromEntries(c.survey.questions.map(q=>[q.id,[q.options[0].id]]));
+const body={idempotencyKey:randomUUID(),language:'ko',items:[{kind:'gimbap',excluded:['egg'],toppings:[]}],expectedTotal:5000,consent:true,consentAt:new Date().toISOString(),consentVersion:'internal-test-v1',surveyVersion:c.survey.id,answers};
+const invalid=await request('/api/orders','POST',{...body,consent:false});assert.equal((await invalid.json()).error,'CONSENT_REQUIRED');
+const badSurvey=await request('/api/orders','POST',{...body,answers:{}});assert.equal((await badSurvey.json()).error,'INVALID_SURVEY');
+const [first,second]=await Promise.all([request('/api/orders','POST',body),request('/api/orders','POST',body)]);
+assert.equal(first.status,201);assert.equal(second.status,201);const a=await first.json(),b=await second.json();assert.equal(a.id,b.id);
+const lookup=await (await request(`/api/orders/lookup?date=${a.business_date}&number=${a.number}`)).json();assert.equal(lookup.total,5000);assert.equal('order_surveys' in lookup,false);assert.equal('idempotency_key' in lookup,false);
+const all=await (await request('/api/admin/orders','GET',undefined,true)).json();const target=all.find(o=>o.id===a.id);assert.deepEqual(target.order_surveys.answers,answers);
+const csv=await request('/api/admin/export','GET',undefined,true);assert.equal(csv.status,200);const content=await csv.text();assert.ok(content.includes('S1'),content);assert.ok(content.includes('draft-v1'));
+const qr=await request('/api/admin/qr','GET',undefined,true);assert.equal(qr.headers.get('content-type'),'image/png');
+const completed=await request('/api/admin/status','POST',{id:a.id,version:a.version,status:'COMPLETED'},true);assert.equal(completed.status,200);const done=await completed.json();
+const undo=await request('/api/admin/status','POST',{id:a.id,version:done.version,status:'PENDING'},true);assert.equal(undo.status,200);
+console.log('PASS API: 관리자 인증, 동의·설문 검증, 중복 제출, 공개 조회 비식별 응답, 설문 조인, CSV, QR, 상태 실행 취소');

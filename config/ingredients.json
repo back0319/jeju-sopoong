@@ -1,0 +1,92 @@
+[
+  {
+    "id": "seaweed",
+    "name": "김",
+    "label": "김",
+    "kind": "fixed",
+    "position": 0,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "rice",
+    "name": "밥",
+    "label": "밥",
+    "kind": "fixed",
+    "position": 1,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "egg",
+    "name": "계란",
+    "label": "EGG",
+    "kind": "base",
+    "position": 2,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "ham",
+    "name": "햄",
+    "label": "HAM",
+    "kind": "base",
+    "position": 3,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "radish",
+    "name": "단무지",
+    "label": "단무지",
+    "kind": "base",
+    "position": 4,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "crab",
+    "name": "맛살",
+    "label": "CRAB STICK",
+    "kind": "base",
+    "position": 5,
+    "image": null,
+    "price": 0
+  },
+  {
+    "id": "pork",
+    "name": "제주 돼지고기",
+    "label": "PORK",
+    "kind": "topping",
+    "position": 6,
+    "image": "/brand/ingredients/pork.svg",
+    "price": 3000
+  },
+  {
+    "id": "turban-shell",
+    "name": "뿔소라",
+    "label": "TURBAN SHELL",
+    "kind": "topping",
+    "position": 7,
+    "image": "/brand/ingredients/turban-shell.svg",
+    "price": 3000
+  },
+  {
+    "id": "fernbrake",
+    "name": "고사리",
+    "label": "FERNBRAKE",
+    "kind": "topping",
+    "position": 8,
+    "image": "/brand/ingredients/fernbrake.svg",
+    "price": 3000
+  },
+  {
+    "id": "carrot",
+    "name": "당근",
+    "label": "CARROT",
+    "kind": "topping",
+    "position": 9,
+    "image": "/brand/ingredients/carrot.svg",
+    "price": 3000
+  }
+]
