@@ -94,6 +94,8 @@ export default function CustomerFlow({
       previous.answers &&
       typeof previous.key === "string";
     const state = valid ? previous : fallback;
+    // 시작 화면에 남아 있던 이전 버전 초안은 최신 설문으로 시작합니다.
+    if (state.step === "language" || state.surveySkipped) state.surveyVersion = initialCatalog.survey.id;
     if (
       state.surveyVersion !== initialCatalog.survey.id &&
       !state.surveySkipped &&
