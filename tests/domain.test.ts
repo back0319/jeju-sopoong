@@ -95,8 +95,13 @@ test("KST 자정과 4시간 만료를 구분한다", () => {
   );
   assert.equal(
     expiredOrder({ date: "2026-09-09", savedAt: now.getTime() - 1000 }, now),
-    true,
+    false,
   );
+});
+test("저장 기기의 KST 자정 변경으로 만료하고 DB 영업일 차이는 완료 화면을 지우지 않는다", () => {
+  const savedAt = Date.parse("2026-09-09T14:59:59Z");
+  assert.equal(expiredOrder({date:"2026-09-12",savedAt},new Date(savedAt+500)),false);
+  assert.equal(expiredOrder({date:"2026-09-12",savedAt},new Date(savedAt+1000)),true);
 });
 test("CSV는 쉼표·줄바꿈·따옴표를 보존하며 수식 실행을 방지한다", () => {
   assert.equal(csvCell('a,"b"\nc'), '"a,""b""\nc"');

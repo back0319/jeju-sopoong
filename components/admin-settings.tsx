@@ -247,7 +247,7 @@ export function ContentSettings({
     producer: t.producer,
     consent: t.consentContent,
     experience: t.experience,
-    ...Object.fromEntries(catalog.ingredients.map((i) => [i.id, i.label])),
+    ...Object.fromEntries(catalog.ingredients.map((i) => [i.id, i.name])),
   };
   return (
     <section className="panel stack" style={{ maxWidth: 800, margin: "auto" }}>

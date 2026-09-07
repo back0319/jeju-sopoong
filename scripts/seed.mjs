@@ -63,12 +63,12 @@ writeFileSync(
   `-- scripts/seed.mjs로 생성합니다. 기존 운영 데이터는 덮어쓰지 않습니다.\ninsert into public.ingredients values\n${values(ingredients)} on conflict do nothing;\ninsert into public.inventory(ingredient_id) select id from public.ingredients where kind='topping' on conflict do nothing;\ninsert into public.products values\n${values(
     [
       ["gimbap", "기본 김밥", "base", 5000, true],
-      ["package", "패키지 업그레이드", "upgrade", 10000, false],
+      ["package", "라면 · 음료 · 굿즈 패키지", "upgrade", 10000, true],
       ["ramen", "라면", "extra", null, false],
       ["drink", "음료", "extra", null, false],
       ["goods", "굿즈", "extra", null, false],
     ],
-  )} on conflict do nothing;\ninsert into public.survey_versions values (${esc(survey.id)},${esc(JSON.stringify(survey.questions))}::jsonb,true) on conflict do nothing;\ninsert into public.contents(id,language,title) values\n${values(["ko", "en", "ja", "zh"].flatMap((lang) => ["usage", "brand", "producer", "consent", "experience", "pork", "turban-shell", "fernbrake", "carrot"].map((id) => [id, lang, ""])))} on conflict do nothing;\n`,
+  )} on conflict do nothing;\ninsert into public.survey_versions values (${esc(survey.id)},${esc(JSON.stringify(survey.questions))}::jsonb,not exists(select 1 from public.survey_versions where active)) on conflict do nothing;\ninsert into public.contents(id,language,title) values\n${values(["ko", "en", "ja", "zh"].flatMap((lang) => ["usage", "brand", "producer", "consent", "experience", "pork", "turban-shell", "fernbrake", "carrot"].map((id) => [id, lang, ""])))} on conflict do nothing;\n`,
 );
 writeFileSync(
   "config/ingredients.json",

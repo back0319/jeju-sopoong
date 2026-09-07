@@ -43,6 +43,7 @@ export type Content = {
   version: number;
 };
 export type Catalog = {
+  businessDate?: string;
   ingredients: Ingredient[];
   inventory: Stock[];
   products: Product[];
@@ -80,7 +81,8 @@ export type Order = {
   order_items: { id: string; position: number; snapshot: ItemSnapshot }[];
   order_surveys?: {
     answers: Answers;
-    survey_version: string;
+    survey_version: string | null;
+    internal_test: boolean;
     consent: boolean;
     consent_at: string | null;
     survey_completed: boolean;

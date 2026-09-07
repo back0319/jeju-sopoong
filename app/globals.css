@@ -694,3 +694,26 @@ th {
     padding: 8px 10px;
   }
 }
+
+.producer-video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border: 0;
+  border-radius: 16px;
+}
+.data-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.data-metrics .panel strong {
+  display: block;
+  font-size: 28px;
+}
+.data-toolbar {
+  align-items: end;
+}
+.research-details {
+  max-height: 70vh;
+  overflow: auto;
+}

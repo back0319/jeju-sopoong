@@ -110,10 +110,10 @@ export function ItemBuilder({
                     disabled={out && !selected}
                     onClick={() => toggle("toppings", i.id)}
                   >
-                    <img src={i.image!} alt={i.label} />
+                    <img src={i.image!} alt={i.name} />
                     {out && <span className="soldout">{t.soldOut}</span>}
                     <div className="caption">
-                      <strong>{i.label}</strong>
+                      <strong>{i.name}</strong>
                       <div className="row between">
                         <span>{money(i.price)}</span>
                         {selected ? <Check /> : <span>+</span>}

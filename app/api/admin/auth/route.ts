@@ -1,4 +1,5 @@
 import { requireAdmin, sessionClient } from "@/lib/supabase/server";
+import { loginAddress, authPassword } from "@/lib/admin-credentials";
 import { json, failure, readBody, sameOrigin } from "@/lib/http";
 export async function GET() {
   try {
@@ -12,12 +13,13 @@ export async function POST(req: Request) {
   try {
     sameOrigin(req);
     const b = await readBody(req);
-    if (typeof b.email !== "string" || typeof b.password !== "string")
+    const username = b.username ?? b.email;
+    if (typeof username !== "string" || typeof b.password !== "string")
       throw new Error("INVALID_INPUT");
     const db = await sessionClient();
     const { error } = await db.auth.signInWithPassword({
-      email: b.email,
-      password: b.password,
+      email: username.includes("@") ? username : loginAddress(username),
+      password: username.includes("@") ? b.password : authPassword(b.password),
     });
     if (error) throw new Error("UNAUTHORIZED");
     try {

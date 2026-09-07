@@ -31,13 +31,15 @@ export async function queryOrders(db: SupabaseClient, url: URL) {
     page++;
   }
   const ingredient = url.searchParams.get("ingredient");
+  const participation = url.searchParams.get("participation");
+  const filtered = all.filter(o => participation === "completed" ? o.order_surveys?.survey_completed : participation === "skipped" ? !o.order_surveys?.survey_completed : true);
   return ingredient
-    ? all.filter((o) =>
+    ? filtered.filter((o) =>
         o.order_items.some((i) =>
           [...i.snapshot.included, ...i.snapshot.toppings].some(
             (v) => v.id === ingredient,
           ),
         ),
       )
-    : all;
+    : filtered;
 }

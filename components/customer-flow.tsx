@@ -26,6 +26,8 @@ type Step =
   | "complete";
 type Draft = {
   surveyReturn?: boolean;
+  surveySkipped?: boolean;
+  originIndex?: number;
   step: Step;
   question: number;
   answers: Answers;
@@ -62,9 +64,9 @@ const fresh = (c: Catalog): Draft => ({
 const sequence: Step[] = [
   "language",
   "intro",
+  "ingredients",
   "consent",
   "survey",
-  "ingredients",
   "build",
   "cart",
   "review",
@@ -81,8 +83,7 @@ export default function CustomerFlow({
     [order, setOrder] = useState<Order | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [originIndex, setOriginIndex] = useState(0),
-    [introIndex, setIntroIndex] = useState(0);
+    [originIndex, setOriginIndex] = useState(0);
   useEffect(() => {
     const fallback = fresh(initialCatalog);
     const previous = stored<Draft>("sessionStorage", "juseyo-draft");
@@ -95,6 +96,7 @@ export default function CustomerFlow({
     const state = valid ? previous : fallback;
     if (
       state.surveyVersion !== initialCatalog.survey.id &&
+      !state.surveySkipped &&
       !["language", "complete"].includes(state.step)
     ) {
       state.answers = {};
@@ -114,11 +116,15 @@ export default function CustomerFlow({
       persist("localStorage", "juseyo-order", null);
       if (state.step === "complete") state.step = "language";
     }
+    setOriginIndex(state.originIndex ?? 0);
+    if (last && !expiredOrder(last) && state.step === "language")
+      state.step = "complete";
     setDraft(state);
   }, [initialCatalog]);
   useEffect(() => {
-    if (draft) persist("sessionStorage", "juseyo-draft", draft);
-  }, [draft]);
+    if (draft)
+      persist("sessionStorage", "juseyo-draft", { ...draft, originIndex });
+  }, [draft, originIndex]);
   useEffect(() => {
     if (draft?.step !== "complete" || !saved) return;
     let alive = true;
@@ -175,7 +181,9 @@ export default function CustomerFlow({
   const back = () => {
     if (d.step === "survey" && d.question > 0)
       change({ question: d.question - 1 });
-    else if (d.step === "build") go(d.items.length ? "cart" : "ingredients");
+    else if (d.step === "ingredients" && originIndex > 0)
+      setOriginIndex(originIndex - 1);
+    else if (d.step === "build") go(d.items.length ? "cart" : "consent");
     else go(sequence[Math.max(0, sequence.indexOf(d.step) - 1)]);
   };
   const total = d.items.reduce(
@@ -201,6 +209,7 @@ export default function CustomerFlow({
         items: d.items,
         expectedTotal: total,
         answers: d.answers,
+        surveySkipped: d.surveySkipped === true,
         surveyVersion: d.surveyVersion,
         consent: d.consent,
         consentAt: d.consentAt,
@@ -303,7 +312,7 @@ export default function CustomerFlow({
         {d.step === "language" && (
           <>
             <div className="welcome-art">
-              <img src="/brand/logo-stacked.svg" alt={t.brand} />
+              <img src="/brand/juseyo-badge.svg" alt="주세요" />
             </div>
             <div className="stack">
               <h1>{t.languageTitle}</h1>
@@ -314,11 +323,14 @@ export default function CustomerFlow({
                 {t.start}
               </button>
               <div className="grid2 language-grid">
-                {["English", "日本語", "中文"].map((l) => (
-                  <button disabled key={l}>
+                {["한국어", "English", "日本語", "中文"].map((l, i) => (
+                  <button
+                    key={l}
+                    className={i === 0 ? "selected" : ""}
+                    aria-pressed={i === 0}
+                    disabled={i !== 0}
+                  >
                     {l}
-                    <br />
-                    <small>{t.ready}</small>
                   </button>
                 ))}
               </div>
@@ -332,21 +344,21 @@ export default function CustomerFlow({
         )}
         {d.step === "intro" && (
           <>
-            <h1>{t.introTitle}</h1>
-            <div className="row wrap">
-              {["usage", "brandStory", "producer"].map((id, i) => (
-                <button
-                  className={introIndex === i ? "selected" : ""}
-                  key={id}
-                  onClick={() => setIntroIndex(i)}
-                >
-                  {t[id as "usage"]}
-                </button>
-              ))}
-            </div>
-            <ContentBody
-              value={content(["usage", "brand", "producer"][introIndex])}
+            <h1>제주의 생산자</h1>
+            <ProducerVideo
+              url={
+                content("producer")?.video_url || "https://youtu.be/dQw4w9WgXcQ"
+              }
             />
+            <button
+              className="quiet"
+              onClick={() => {
+                setOriginIndex(0);
+                go("ingredients");
+              }}
+            >
+              {t.skip}
+            </button>
           </>
         )}
         {d.step === "consent" && (
@@ -366,6 +378,7 @@ export default function CustomerFlow({
                 checked={d.consent}
                 onChange={(e) =>
                   change({
+                    surveySkipped: false,
                     consent: e.target.checked,
                     consentAt: e.target.checked
                       ? new Date().toISOString()
@@ -379,6 +392,22 @@ export default function CustomerFlow({
               />
               <span>{t.consent}</span>
             </label>
+            <button
+              onClick={() =>
+                change({
+                  surveySkipped: true,
+                  consent: false,
+                  consentAt: null,
+                  answers: {},
+                  item: newItem(catalog, {}),
+                  editing: null,
+                  step: "build",
+                  key: invalidate(),
+                })
+              }
+            >
+              설문 하지 않기
+            </button>
           </>
         )}
         {d.step === "survey" && q && (
@@ -447,15 +476,15 @@ export default function CustomerFlow({
             <h1>{t.ingredientTitle}</h1>
             <p className="muted">{t.ingredientDescription}</p>
             <article className="ingredient-feature">
-              <img src={origin.image!} alt={origin.label} />
+              <img src={origin.image!} alt={origin.name} />
               <div className="stack">
-                <h2>{origin.label}</h2>
+                <h2>{origin.name}</h2>
                 <ContentBody value={content(origin.id)} />
               </div>
             </article>
             <div className="row between">
               <span className="muted">{originIndex + 1} / 4</span>
-              <button className="quiet" onClick={startItem}>
+              <button className="quiet" onClick={() => go("consent")}>
                 {t.skip}
               </button>
             </div>
@@ -467,7 +496,7 @@ export default function CustomerFlow({
             catalog={catalog}
             item={d.item}
             onChange={(item) => change({ item })}
-            onBack={() => go(d.items.length ? "cart" : "ingredients")}
+            onBack={() => go(d.items.length ? "cart" : "consent")}
             editing={d.editing !== null}
             onSave={() => {
               const items = [...d.items];
@@ -524,8 +553,7 @@ export default function CustomerFlow({
                     <div className="row wrap">
                       {item.toppings.map((id) => (
                         <span className="chip" key={id}>
-                          +{" "}
-                          {catalog.ingredients.find((v) => v.id === id)?.label}
+                          + {catalog.ingredients.find((v) => v.id === id)?.name}
                         </span>
                       ))}
                     </div>
@@ -596,16 +624,6 @@ export default function CustomerFlow({
               <strong>{t.total}</strong>
               <h2>{money(total)}</h2>
             </div>
-            {d.step === "review" && (
-              <button
-                className="quiet"
-                onClick={() =>
-                  change({ step: "survey", question: 0, surveyReturn: true })
-                }
-              >
-                {t.surveyEdit}
-              </button>
-            )}
           </>
         )}
         {d.step === "complete" && (
@@ -650,11 +668,15 @@ export default function CustomerFlow({
           </div>
         )}
       </div>
-      {d.step === "intro" && footer(t.next, () => go("consent"))}
+      {d.step === "intro" &&
+        footer(t.next, () => {
+          setOriginIndex(0);
+          go("ingredients");
+        })}
       {d.step === "consent" &&
         footer(
           t.next,
-          () => go("survey"),
+          () => change({ step: "survey", surveySkipped: false }),
           !d.consent ||
             (!catalog.internalTest && !content("consent")?.body.trim()),
         )}
@@ -667,12 +689,12 @@ export default function CustomerFlow({
               ? change({ question: d.question + 1 })
               : d.surveyReturn
                 ? change({ step: "cart", surveyReturn: false })
-                : go("ingredients"),
+                : startItem(),
           !validQuestion(q, d.answers[q.id]),
         )}
       {d.step === "ingredients" &&
         footer(originIndex < 3 ? t.next : t.next, () =>
-          originIndex < 3 ? setOriginIndex(originIndex + 1) : startItem(),
+          originIndex < 3 ? setOriginIndex(originIndex + 1) : go("consent"),
         )}
       {d.step === "cart" &&
         footer(t.review, () => go("review"), !d.items.length)}
@@ -701,7 +723,7 @@ export function ContentBody({
         />
       )}
       <p className="muted" style={{ whiteSpace: "pre-wrap" }}>
-        {value?.body || t.ready}
+        {value?.body || ""}
       </p>
       {value?.video_url && (
         <a
@@ -715,5 +737,30 @@ export function ContentBody({
         </a>
       )}
     </div>
+  );
+}
+
+function ProducerVideo({ url }: { url: string }) {
+  let id = "";
+  try {
+    const u = new URL(url);
+    if (u.hostname === "youtu.be") id = u.pathname.slice(1);
+    else if (
+      ["youtube.com", "www.youtube.com", "www.youtube-nocookie.com"].includes(
+        u.hostname,
+      )
+    )
+      id = u.searchParams.get("v") || u.pathname.split("/").pop() || "";
+  } catch {}
+  if (!/^[A-Za-z0-9_-]{11}$/.test(id)) return null;
+  return (
+    <iframe
+      className="producer-video"
+      src={`https://www.youtube-nocookie.com/embed/${id}`}
+      title="제주의 생산자 소개 영상"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowFullScreen
+      referrerPolicy="strict-origin-when-cross-origin"
+    />
   );
 }

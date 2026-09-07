@@ -2,13 +2,14 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Catalog, Order } from "@/lib/types";
 import { api, errorText, t } from "@/lib/client";
-import { kstDate, money, orderNumber } from "@/lib/domain";
+import { money, orderNumber } from "@/lib/domain";
 import { browserClient } from "@/lib/supabase/browser";
 import { OrderReceipt } from "./order-receipt";
-import { AdminSettings, ContentSettings } from "./admin-settings";
+import { AdminSettings } from "./admin-settings";
+import { AdminAccount } from "./admin-account";
 import { AdminData } from "./admin-data";
 import { ManualOrder } from "./admin-manual";
-type Tab = "operations" | "settings" | "contents" | "data";
+type Tab = "operations" | "settings" | "data" | "qr" | "account";
 export default function AdminApp() {
   const [auth, setAuth] = useState(false),
     [checking, setChecking] = useState(true),
@@ -24,8 +25,7 @@ export default function AdminApp() {
     [cancel, setCancel] = useState(false),
     [reason, setReason] = useState(""),
     [undo, setUndo] = useState<Order | null>(null),
-    [live, setLive] = useState(false),
-    [qr, setQr] = useState(false);
+    [undoDeadline, setUndoDeadline] = useState(0);
   const busyRef = useRef(false);
   const refreshCatalog = useCallback(async () => {
     setCatalog(await api<Catalog>("/api/catalog"));
@@ -33,7 +33,7 @@ export default function AdminApp() {
   const refresh = useCallback(async () => {
     try {
       const [o, c] = await Promise.all([
-        api<Order[]>("/api/admin/orders?from=" + kstDate()),
+        api<Order[]>("/api/admin/orders"),
         api<Catalog>("/api/catalog"),
       ]);
       setOrders(o);
@@ -71,7 +71,7 @@ export default function AdminApp() {
         { event: "*", schema: "public", table: "inventory" },
         () => void refresh(),
       )
-      .subscribe((status) => setLive(status === "SUBSCRIBED"));
+      .subscribe();
     // 자정 전환과 일시적인 이벤트 누락도 주기 조회로 보정합니다.
     const timer = setInterval(() => void refresh(), 10000);
     const focus = () => void refresh();
@@ -84,10 +84,10 @@ export default function AdminApp() {
   }, [auth, refresh]);
   useEffect(() => {
     if (!undo) return;
-    const delay = Math.max(0, Date.parse(undo.updated_at) + 5000 - Date.now());
+    const delay = Math.max(0, undoDeadline - Date.now());
     const timer = setTimeout(() => setUndo(null), delay);
     return () => clearTimeout(timer);
-  }, [undo]);
+  }, [undo, undoDeadline]);
   const sorted = [...orders].sort(
     (a, b) =>
       Number(b.status === "PENDING") - Number(a.status === "PENDING") ||
@@ -110,8 +110,10 @@ export default function AdminApp() {
         setOrders((prev) =>
           prev.map((v) => (v.id === o.id ? { ...v, ...updated } : v)),
         );
-        if (status === "COMPLETED") setUndo(updated);
-        else setUndo(null);
+        if (status === "COMPLETED") {
+          setUndo(updated);
+          setUndoDeadline(Date.now() + 5000);
+        } else setUndo(null);
         setCancel(false);
         setReason("");
         await refresh();
@@ -137,7 +139,6 @@ export default function AdminApp() {
       if (e.key === "Escape") {
         e.preventDefault();
         setHelp(false);
-        setQr(false);
         if (!busy) {
           setManual(false);
           setCancel(false);
@@ -146,7 +147,7 @@ export default function AdminApp() {
         setSelected(null);
         return;
       }
-      if (help || manual || cancel || qr || busy) return;
+      if (help || manual || cancel || busy) return;
       if (e.ctrlKey || e.metaKey) {
         if (e.key.toLowerCase() === "z") {
           e.preventDefault();
@@ -203,7 +204,6 @@ export default function AdminApp() {
     help,
     manual,
     cancel,
-    qr,
     busy,
     digits,
     orders,
@@ -237,7 +237,7 @@ export default function AdminApp() {
             const f = new FormData(e.currentTarget);
             try {
               await api("/api/admin/auth", "POST", {
-                email: f.get("email"),
+                username: f.get("username"),
                 password: f.get("password"),
               });
               setAuth(true);
@@ -250,7 +250,12 @@ export default function AdminApp() {
         >
           <label>
             {t.email}
-            <input type="email" name="email" autoComplete="username" required />
+            <input
+              type="text"
+              name="username"
+              autoComplete="username"
+              required
+            />
           </label>
           <label>
             {t.password}
@@ -281,7 +286,7 @@ export default function AdminApp() {
           alt={t.brand}
         />
         <nav>
-          {(["operations", "settings", "contents", "data"] as Tab[]).map(
+          {(["operations", "settings", "data", "qr", "account"] as Tab[]).map(
             (key) => (
               <button
                 key={key}
@@ -296,9 +301,6 @@ export default function AdminApp() {
             ),
           )}
         </nav>
-        <span className="muted">
-          {kstDate()} · {live ? t.live : t.polling}
-        </span>
         <button
           className="quiet"
           onClick={async () => {
@@ -394,9 +396,6 @@ export default function AdminApp() {
                 ))}
                 {!sorted.length && <p className="empty">{t.noOrders}</p>}
               </div>
-              <button className="quiet" onClick={() => setQr(true)}>
-                {t.qr}
-              </button>
             </section>
             <section className="order-detail stack">
               {current ? (
@@ -444,8 +443,25 @@ export default function AdminApp() {
         {catalog && tab === "settings" && (
           <AdminSettings catalog={catalog} onRefresh={refreshCatalog} />
         )}
-        {catalog && tab === "contents" && (
-          <ContentSettings catalog={catalog} onRefresh={refreshCatalog} />
+        {tab === "account" && <AdminAccount />}
+        {tab === "qr" && (
+          <section className="stack" style={{ maxWidth: 520 }}>
+            <h1>공통 QR</h1>
+            <p>스캔하면 주세요 고객 주문 화면이 열립니다.</p>
+            <img
+              src="/api/admin/qr"
+              alt="주세요 주문 QR"
+              width={320}
+              height={320}
+              style={{ maxWidth: "100%" }}
+            />
+            <a href="/api/admin/qr" download="juseyo-qr.png">
+              QR 이미지 내려받기
+            </a>
+            <a href="/" target="_blank" rel="noreferrer">
+              고객 주문 화면 열기
+            </a>
+          </section>
         )}
         {catalog && tab === "data" && <AdminData catalog={catalog} />}
       </div>
@@ -458,7 +474,7 @@ export default function AdminApp() {
               const s = catalog.inventory.find((v) => v.ingredient_id === i.id);
               return (
                 <span key={i.id}>
-                  {i.label}{" "}
+                  {i.name}{" "}
                   <strong
                     style={{
                       color: s?.remaining === 0 ? "#9b372b" : undefined,
@@ -504,32 +520,6 @@ export default function AdminApp() {
             <h2>{t.shortcuts}</h2>
             <p>{t.shortcutDescription}</p>
             <button autoFocus onClick={() => setHelp(false)}>
-              {t.dismiss}
-            </button>
-          </section>
-        </div>
-      )}
-      {qr && (
-        <div className="overlay">
-          <section
-            role="dialog"
-            aria-modal="true"
-            aria-label={t.qr}
-            className="modal stack"
-          >
-            <h2>{t.qr}</h2>
-            <p>{t.qrHint}</p>
-            <img
-              src="/api/admin/qr"
-              alt={t.qr}
-              width={320}
-              height={320}
-              style={{ maxWidth: "100%", alignSelf: "center" }}
-            />
-            <a href="/" target="_blank">
-              {typeof window !== "undefined" ? window.location.origin : ""}
-            </a>
-            <button autoFocus onClick={() => setQr(false)}>
               {t.dismiss}
             </button>
           </section>

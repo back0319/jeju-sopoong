@@ -82,7 +82,7 @@ export function expiredOrder(
     !Number.isFinite(saved.savedAt) ||
     now.getTime() - saved.savedAt >= 4 * 60 * 60 * 1000 ||
     saved.savedAt > now.getTime() ||
-    saved.date !== kstDate(now)
+    kstDate(new Date(saved.savedAt)) !== kstDate(now)
   );
 }
 export function csvCell(value: unknown) {

@@ -1,4 +1,5 @@
 import "server-only";
+import { kstDate } from "./domain";
 import { configured, serviceClient } from "./supabase/server";
 import ingredientSeed from "@/config/ingredients.json";
 import surveySeed from "@/config/survey.json";
@@ -7,6 +8,7 @@ export async function getCatalog(): Promise<Catalog> {
   const internalTest = process.env.INTERNAL_TEST_MODE === "true";
   if (!configured())
     return {
+      businessDate: kstDate(),
       ingredients: ingredientSeed as Catalog["ingredients"],
       inventory: ingredientSeed
         .filter((i) => i.kind === "topping")
@@ -25,10 +27,10 @@ export async function getCatalog(): Promise<Catalog> {
         },
         {
           id: "package",
-          name: "패키지 업그레이드",
+          name: "라면 · 음료 · 굿즈 패키지",
           kind: "upgrade",
           price: 10000,
-          active: false,
+          active: true,
         },
       ],
       contents: [],
@@ -50,6 +52,7 @@ export async function getCatalog(): Promise<Catalog> {
   ]);
   for (const r of results) if (r.error) throw new Error("DATABASE_UNAVAILABLE");
   return {
+    businessDate: kstDate(),
     ingredients: results[0].data!,
     inventory: results[1].data!,
     products: results[2].data!,

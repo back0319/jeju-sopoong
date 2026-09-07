@@ -1,5 +1,5 @@
 {
-  "id": "draft-v1",
+  "id": "draft-v2",
   "questions": [
     {
       "id": "S1",
@@ -7,15 +7,42 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "kr", "label": "한국" },
-        { "id": "jp", "label": "일본" },
-        { "id": "cn", "label": "중국" },
-        { "id": "tw", "label": "대만" },
-        { "id": "hk", "label": "홍콩·마카오" },
-        { "id": "sea", "label": "동남아시아" },
-        { "id": "na", "label": "미국·캐나다" },
-        { "id": "eu", "label": "유럽" },
-        { "id": "other", "label": "기타" }
+        {
+          "id": "kr",
+          "label": "한국"
+        },
+        {
+          "id": "jp",
+          "label": "일본"
+        },
+        {
+          "id": "cn",
+          "label": "중국"
+        },
+        {
+          "id": "tw",
+          "label": "대만"
+        },
+        {
+          "id": "hk",
+          "label": "홍콩·마카오"
+        },
+        {
+          "id": "sea",
+          "label": "동남아시아"
+        },
+        {
+          "id": "na",
+          "label": "미국·캐나다"
+        },
+        {
+          "id": "eu",
+          "label": "유럽"
+        },
+        {
+          "id": "other",
+          "label": "기타"
+        }
       ]
     },
     {
@@ -24,12 +51,30 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "10", "label": "10대 이하" },
-        { "id": "20", "label": "20대" },
-        { "id": "30", "label": "30대" },
-        { "id": "40", "label": "40대" },
-        { "id": "50", "label": "50대" },
-        { "id": "60", "label": "60대 이상" }
+        {
+          "id": "10",
+          "label": "10대 이하"
+        },
+        {
+          "id": "20",
+          "label": "20대"
+        },
+        {
+          "id": "30",
+          "label": "30대"
+        },
+        {
+          "id": "40",
+          "label": "40대"
+        },
+        {
+          "id": "50",
+          "label": "50대"
+        },
+        {
+          "id": "60",
+          "label": "60대 이상"
+        }
       ]
     },
     {
@@ -38,9 +83,18 @@
       "type": "single",
       "required": false,
       "options": [
-        { "id": "female", "label": "여성" },
-        { "id": "male", "label": "남성" },
-        { "id": "none", "label": "응답하지 않음" }
+        {
+          "id": "female",
+          "label": "여성"
+        },
+        {
+          "id": "male",
+          "label": "남성"
+        },
+        {
+          "id": "none",
+          "label": "응답하지 않음"
+        }
       ]
     },
     {
@@ -49,9 +103,18 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "familiar", "label": "익숙한 맛이 좋아요" },
-        { "id": "open", "label": "적당히 열려 있어요" },
-        { "id": "adventurous", "label": "새로운 맛에 적극적이에요" }
+        {
+          "id": "familiar",
+          "label": "익숙한 맛이 좋아요"
+        },
+        {
+          "id": "open",
+          "label": "적당히 열려 있어요"
+        },
+        {
+          "id": "adventurous",
+          "label": "새로운 맛에 적극적이에요"
+        }
       ]
     },
     {
@@ -60,10 +123,22 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "vegetable", "label": "채소" },
-        { "id": "seafood", "label": "해산물" },
-        { "id": "meat", "label": "육류" },
-        { "id": "all", "label": "골고루" }
+        {
+          "id": "vegetable",
+          "label": "채소"
+        },
+        {
+          "id": "seafood",
+          "label": "해산물"
+        },
+        {
+          "id": "meat",
+          "label": "육류"
+        },
+        {
+          "id": "all",
+          "label": "골고루"
+        }
       ]
     },
     {
@@ -72,10 +147,22 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "crunchy", "label": "아삭한 것" },
-        { "id": "soft", "label": "부드러운 것" },
-        { "id": "chewy", "label": "쫄깃한 것" },
-        { "id": "all", "label": "골고루" }
+        {
+          "id": "crunchy",
+          "label": "아삭한 것"
+        },
+        {
+          "id": "soft",
+          "label": "부드러운 것"
+        },
+        {
+          "id": "chewy",
+          "label": "쫄깃한 것"
+        },
+        {
+          "id": "all",
+          "label": "골고루"
+        }
       ]
     },
     {
@@ -84,10 +171,22 @@
       "type": "single",
       "required": true,
       "options": [
-        { "id": "taste", "label": "맛" },
-        { "id": "health", "label": "건강" },
-        { "id": "jeju", "label": "제주다움" },
-        { "id": "story", "label": "이야기" }
+        {
+          "id": "taste",
+          "label": "맛"
+        },
+        {
+          "id": "health",
+          "label": "건강"
+        },
+        {
+          "id": "jeju",
+          "label": "제주다움"
+        },
+        {
+          "id": "story",
+          "label": "이야기"
+        }
       ]
     },
     {
@@ -96,26 +195,46 @@
       "type": "multiple",
       "required": true,
       "options": [
-        { "id": "egg", "label": "계란 (EGG)", "linkedIngredientId": "egg" },
-        { "id": "ham", "label": "햄 (HAM)", "linkedIngredientId": "ham" },
+        {
+          "id": "egg",
+          "label": "계란",
+          "linkedIngredientId": "egg"
+        },
+        {
+          "id": "ham",
+          "label": "햄",
+          "linkedIngredientId": "ham"
+        },
         {
           "id": "crab",
-          "label": "맛살 (CRAB STICK)",
+          "label": "맛살",
           "linkedIngredientId": "crab"
         },
-        { "id": "pork", "label": "PORK", "linkedIngredientId": "pork" },
+        {
+          "id": "pork",
+          "label": "제주 돼지고기",
+          "linkedIngredientId": "pork"
+        },
         {
           "id": "turban-shell",
-          "label": "TURBAN SHELL",
+          "label": "뿔소라",
           "linkedIngredientId": "turban-shell"
         },
         {
           "id": "fernbrake",
-          "label": "FERNBRAKE",
+          "label": "고사리",
           "linkedIngredientId": "fernbrake"
         },
-        { "id": "carrot", "label": "CARROT", "linkedIngredientId": "carrot" },
-        { "id": "none", "label": "해당 없음", "exclusive": true }
+        {
+          "id": "carrot",
+          "label": "당근",
+          "linkedIngredientId": "carrot"
+        },
+        {
+          "id": "none",
+          "label": "해당 없음",
+          "exclusive": true
+        }
       ]
     }
   ]

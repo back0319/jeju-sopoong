@@ -18,7 +18,7 @@ const [first,second]=await Promise.all([request('/api/orders','POST',body),reque
 assert.equal(first.status,201);assert.equal(second.status,201);const a=await first.json(),b=await second.json();assert.equal(a.id,b.id);
 const lookup=await (await request(`/api/orders/lookup?date=${a.business_date}&number=${a.number}`)).json();assert.equal(lookup.total,5000);assert.equal('order_surveys' in lookup,false);assert.equal('idempotency_key' in lookup,false);
 const all=await (await request('/api/admin/orders','GET',undefined,true)).json();const target=all.find(o=>o.id===a.id);assert.deepEqual(target.order_surveys.answers,answers);
-const csv=await request('/api/admin/export','GET',undefined,true);assert.equal(csv.status,200);const content=await csv.text();assert.ok(content.includes('S1'),content);assert.ok(content.includes('draft-v1'));
+const csv=await request('/api/admin/export','GET',undefined,true);assert.equal(csv.status,200);const content=await csv.text();assert.ok(content.includes('S1'),content);assert.ok(content.includes(c.survey.id));
 const qr=await request('/api/admin/qr','GET',undefined,true);assert.equal(qr.headers.get('content-type'),'image/png');
 const completed=await request('/api/admin/status','POST',{id:a.id,version:a.version,status:'COMPLETED'},true);assert.equal(completed.status,200);const done=await completed.json();
 const undo=await request('/api/admin/status','POST',{id:a.id,version:done.version,status:'PENDING'},true);assert.equal(undo.status,200);

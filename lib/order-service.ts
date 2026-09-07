@@ -61,7 +61,8 @@ export async function submitOrder(
       throw new Error("INVALID_ORDER");
   }
   let consentAt: string | null = null;
-  if (!manual) {
+  const participating = !manual && body.surveySkipped !== true;
+  if (participating) {
     if (body.consent !== true || typeof body.consentAt !== "string")
       throw new Error("CONSENT_REQUIRED");
     const time = Date.parse(body.consentAt);
@@ -97,12 +98,12 @@ export async function submitOrder(
   const payload = {
     ...body,
     source: manual ? "manual" : "customer",
-    surveyVersion: manual ? null : catalog.survey.id,
-    answers: manual ? {} : body.answers,
-    surveyCompleted: !manual,
-    consent: !manual,
+    surveyVersion: participating ? catalog.survey.id : null,
+    answers: participating ? body.answers : {},
+    surveyCompleted: participating,
+    consent: participating,
     consentAt,
-    consentVersion: manual ? null : body.consentVersion,
+    consentVersion: participating ? body.consentVersion : null,
     internalTest: catalog.internalTest,
   };
   const { data, error } = await db.rpc("create_order", { payload });

@@ -9,7 +9,7 @@ def sql(query, database=db, fail=True):
 
 def value(q): return sql(q).stdout.strip().splitlines()[-1]
 def payload(toppings=['pork'], count=1, key=None, kind='gimbap', total=None):
-    return dict(idempotencyKey=key or str(uuid.uuid4()),language='ko',source='customer',items=[dict(kind=kind,excluded=['egg'],toppings=toppings) for _ in range(count)],expectedTotal=total if total is not None else (5000+len(toppings)*3000+(10000 if kind=='package' else 0))*count,surveyVersion='draft-v1',answers={},surveyCompleted=False,consent=True,consentVersion='internal-test-v1',internalTest=True)
+    return dict(idempotencyKey=key or str(uuid.uuid4()),language='ko',source='customer',items=[dict(kind=kind,excluded=['egg'],toppings=toppings) for _ in range(count)],expectedTotal=total if total is not None else (5000+len(toppings)*3000+(10000 if kind=='package' else 0))*count,surveyVersion='draft-v2',answers={},surveyCompleted=False,consent=True,consentVersion='internal-test-v1',internalTest=True)
 def create(p): return sql("select public.create_order('"+json.dumps(p).replace("'","''")+"'::jsonb);",fail=False)
 def expect(condition,label):
     if not condition: raise AssertionError(label)
@@ -37,6 +37,7 @@ try:
     before=value('select count(*) from public.orders');r=create(payload(['pork','carrot']))
     expect(r.returncode!=0 and value("select remaining from public.inventory where ingredient_id='pork'")=='10' and value('select count(*) from public.orders')==before,'일부 재고 부족 시 주문과 모든 차감 롤백')
     r=create(payload([],total=1));expect(r.returncode!=0 and 'PRICE_CHANGED' in r.stderr,'조작한 금액 거절')
+    sql("update public.products set active=false where id='package';")
     r=create(payload([],kind='package'));expect(r.returncode!=0 and 'PRODUCT_UNAVAILABLE' in r.stderr,'비활성 패키지 거절')
     sql("update public.products set active=true where id='package';")
     r=create(payload(['pork'],kind='package'));expect(r.returncode==0,'패키지와 토핑 18,000원 주문 성공')
