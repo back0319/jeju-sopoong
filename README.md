@@ -4,6 +4,8 @@
 
 현재는 실제 고객을 받기 전 **내부 테스트 단계**입니다. 동의문은 미확정 상태로 비워두고 설문 가안 8문항을 테스트합니다. 온라인 결제·고객 회원가입·원물 추천은 포함하지 않습니다.
 
+테스트 접속: [고객 주문](https://jeju-sopoong.vercel.app) · [관리자](https://jeju-sopoong.vercel.app/admin) · [검증 결과](docs/검증결과.md)
+
 ## 이용 흐름
 
 ```mermaid
