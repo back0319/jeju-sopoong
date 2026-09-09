@@ -880,21 +880,36 @@ button.undo-action {
 }
 .order-filters label { min-width: 0; font-size: 13px; color: var(--muted); }
 .order-filters select { min-height: 44px; padding: 8px; margin-top: 4px; font-size: 14px; }
-.kitchen-item { border: 2px solid var(--line); border-radius: 16px; overflow: hidden; }
-.kitchen-item > header { padding: 16px; background: #f4f6f1; }
-.kitchen-group { padding: 14px 16px; border-top: 1px solid var(--line); }
-.kitchen-group h3 { margin-bottom: 8px; }
-.kitchen-group .row { gap: 8px; }
-.kitchen-ingredient { padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: white; font-size: 22px; line-height: 1.4; }
-.kitchen-group.omit.has-items { background: #fff1ed; color: #8b3528; border-left: 6px solid #ab4936; }
-.kitchen-group.omit .kitchen-ingredient { border: 2px solid #ab4936; }
-.kitchen-group.topping.has-items { background: var(--mint); color: #305b2e; border-left: 6px solid var(--green); }
-.kitchen-group.topping .kitchen-ingredient { border: 2px solid var(--green); }
-.kitchen-group.base .kitchen-ingredient { font-size: 18px; }
-.kitchen-package { padding: 14px 16px; background: #fff6d9; font-size: 20px; font-weight: 700; }
+/* 최대 제외 4개와 토핑 4개를 각각 2열로 배치합니다. */
+.kitchen-receipt {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 10px;
+  align-items: start;
+}
+.kitchen-item { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.kitchen-item > header { padding: 9px 12px; background: #f4f6f1; }
+.kitchen-item > header h2 { font-size: 19px; line-height: 1.3; }
+.kitchen-group { padding: 8px 10px; border-top: 1px solid var(--line); }
+.kitchen-group h3 { font-size: 14px; margin-bottom: 5px; }
+.kitchen-slots { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+.kitchen-ingredient { padding: 3px 5px; border: 1px solid var(--line); border-radius: 5px; background: white; font-size: 18px; line-height: 1.4; overflow-wrap: anywhere; }
+.kitchen-group.omit.has-items { background: #fff1ed; color: #8b3528; border-left: 3px solid #ab4936; }
+.kitchen-group.omit .kitchen-ingredient { border-color: #ab4936; }
+.kitchen-group.topping.has-items { background: var(--mint); color: #305b2e; border-left: 3px solid var(--green); }
+.kitchen-group.topping .kitchen-ingredient { border-color: var(--green); }
+.kitchen-group.base p { font-size: 16px; line-height: 1.4; }
+.kitchen-package { padding: 7px 10px; background: #fff6d9; font-size: 16px; font-weight: 700; }
+.order-detail.stack { gap: 10px; }
+.order-detail .admin-number { font-size: 44px; letter-spacing: -2px; }
+.order-detail-heading { padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.order-actions { display: flex; gap: 8px; }
+.order-actions > .primary, .order-actions > .undo-action { flex: 1; }
+.order-actions:empty { display: none; }
+@media (min-width: 761px) {
+  .operations { grid-template-columns: minmax(260px, 340px) minmax(0, 1fr); gap: 24px; }
+  .order-detail { padding-left: 24px; }
+}
 @media (max-width: 760px) {
   .operations { grid-template-rows: minmax(260px, 1.2fr) minmax(0, 1fr); }
-  .kitchen-ingredient { font-size: 20px; }
 }
-.order-detail.stack { gap: 12px; }
-.order-detail .admin-number { font-size: 56px; }

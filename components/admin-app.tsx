@@ -497,11 +497,12 @@ export default function AdminApp() {
             <section className="order-detail stack" ref={detailRef}>
               {current ? (
                 <>
-                  <p className="muted">{t.orderNumber}</p>
-                  <div className="row between">
+                  <div className="row between order-detail-heading">
                     <strong className="admin-number">
                       {orderNumber(current.number)}
                     </strong>
+                    <div className="row wrap">
+                    <strong>{money(current.total)}</strong>
                     <span className="chip">
                       {current.status === "PENDING"
                         ? t.pending
@@ -509,11 +510,11 @@ export default function AdminApp() {
                           ? t.completed
                           : t.cancel}
                     </span>
+                    </div>
                   </div>
-                  <div className="divider" />
                   {current.status === "CANCELLED" && <p className="error">취소 사유: {current.cancel_reason || "사유 없음"}</p>}
                   <KitchenReceipt order={current} />
-                  <div className="row between"><strong>총 금액</strong><strong>{money(current.total)}</strong></div>
+                  <div className="order-actions">
                   {current.status === "PENDING" && (
                     <button
                       className="primary"
@@ -541,6 +542,7 @@ export default function AdminApp() {
                       {t.cancelAction}
                     </button>
                   )}
+                  </div>
                 </>
               ) : (
                 <p className="empty">{t.selectOrder}</p>
