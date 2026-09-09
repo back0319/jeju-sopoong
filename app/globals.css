@@ -721,3 +721,116 @@ th {
   max-height: 70vh;
   overflow: auto;
 }
+
+/* 화면의 크기는 고정하고 본문 영역 안에서만 스크롤합니다. */
+html,
+body {
+  height: 100%;
+  overflow: hidden;
+}
+.customer,
+.admin-shell {
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+.customer-header,
+.customer-footer,
+.admin-header,
+.stockbar,
+.customer > .error,
+.customer > .notice {
+  flex: none;
+}
+.customer-main,
+.admin-main {
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.customer-main > *,
+.admin-main > * {
+  flex-shrink: 0;
+}
+.customer-main.welcome {
+  justify-content: safe center;
+}
+.customer-main:has(> .builder) {
+  padding: 0;
+  gap: 0;
+  overflow: hidden;
+}
+.customer-main > .builder {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: 16px 22px;
+}
+.builder > * {
+  flex-shrink: 0;
+}
+.builder + .customer-footer {
+  margin: 0 !important;
+}
+.admin-main:has(> .operations) {
+  overflow: hidden;
+}
+.operations {
+  flex: 1;
+  min-height: 0;
+  grid-template-rows: minmax(0, 1fr);
+  margin: 0 auto;
+}
+.operations > .stack {
+  min-height: 0;
+  min-width: 0;
+}
+.operations > .stack > * {
+  flex-shrink: 0;
+}
+.operations .order-list {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overscroll-behavior: contain;
+}
+.order-detail {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.login {
+  max-height: 84dvh;
+  overflow: auto;
+}
+@media (max-width: 760px) {
+  .operations {
+    grid-template-rows: minmax(180px, 1fr) minmax(0, 1fr);
+    gap: 16px;
+  }
+  .stockbar {
+    flex-wrap: nowrap;
+    overflow: auto;
+    white-space: nowrap;
+    padding-block: 8px;
+  }
+}
+@media (max-width: 760px) {
+  .operations > section:first-child {
+    gap: 8px;
+  }
+  .operations > section:first-child > .row button,
+  .operations > section:first-child input {
+    min-height: 44px;
+    padding: 8px 12px;
+  }
+  .operations .order-row {
+    padding: 10px;
+  }
+  .operations .order-row.selected {
+    padding: 9px;
+  }
+  .order-row strong {
+    font-size: 24px;
+  }
+}

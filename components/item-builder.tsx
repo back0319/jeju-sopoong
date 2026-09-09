@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Catalog, CartItem } from "@/lib/types";
 import { itemPrice, money } from "@/lib/domain";
 import { t } from "@/lib/client";
@@ -20,6 +20,10 @@ export function ItemBuilder({
   editing?: boolean;
 }) {
   const [step, setStep] = useState(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    scrollRef.current?.scrollTo(0, 0);
+  }, [step]);
   const upgrade = catalog.products.find((p) => p.id === "package" && p.active);
   const maxStep = upgrade ? 2 : 1;
   function toggle(field: "excluded" | "toppings", id: string) {
@@ -32,7 +36,7 @@ export function ItemBuilder({
   }
   return (
     <>
-      <div className="stack builder">
+      <div className="stack builder" ref={scrollRef}>
         <div className="row between">
           <button
             className="quiet"

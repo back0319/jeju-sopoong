@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Answers, CartItem, Catalog, Order } from "@/lib/types";
 import {
   expiredOrder,
@@ -77,6 +77,7 @@ export default function CustomerFlow({
 }: {
   initialCatalog: Catalog;
 }) {
+  const mainRef = useRef<HTMLDivElement>(null);
   const [catalog, setCatalog] = useState(initialCatalog),
     [draft, setDraft] = useState<Draft | null>(null),
     [saved, setSaved] = useState<Saved | null>(null),
@@ -161,7 +162,7 @@ export default function CustomerFlow({
     };
   }, [draft?.step, saved, catalog]);
   useEffect(() => {
-    window.scrollTo(0, 0);
+    mainRef.current?.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex]);
   useEffect(() => {
     if (!draft?.step || draft.step === "complete") return;
@@ -353,6 +354,7 @@ export default function CustomerFlow({
         </div>
       )}
       <div
+        ref={mainRef}
         className={`customer-main ${d.step === "language" ? "welcome" : ""}`}
       >
         {d.step === "language" && (
