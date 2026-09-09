@@ -4,11 +4,12 @@ import type { Catalog, Order } from "@/lib/types";
 import { api, errorText, t } from "@/lib/client";
 import { money, orderNumber } from "@/lib/domain";
 import { browserClient } from "@/lib/supabase/browser";
-import { OrderReceipt } from "./order-receipt";
+import { KitchenReceipt } from "./kitchen-receipt";
 import { AdminSettings } from "./admin-settings";
 import { AdminAccount } from "./admin-account";
 import { AdminData } from "./admin-data";
 import { ManualOrder } from "./admin-manual";
+type StatusFilter = "ALL" | "PENDING" | "COMPLETED" | "CANCELLED" | "CLOSED";
 type Tab = "operations" | "settings" | "data" | "qr" | "account";
 export default function AdminApp() {
   const [auth, setAuth] = useState(false),
@@ -16,6 +17,8 @@ export default function AdminApp() {
     [tab, setTab] = useState<Tab>("operations"),
     [catalog, setCatalog] = useState<Catalog | null>(null),
     [orders, setOrders] = useState<Order[]>([]),
+    [statusFilter, setStatusFilter] = useState<StatusFilter>("PENDING"),
+    [sortOrder, setSortOrder] = useState("oldest"),
     [selected, setSelected] = useState<string | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
@@ -26,6 +29,12 @@ export default function AdminApp() {
     [reason, setReason] = useState(""),
     [undo, setUndo] = useState<Order | null>(null),
     [undoDeadline, setUndoDeadline] = useState(0);
+  const detailRef = useRef<HTMLElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    detailRef.current?.scrollTo(0, 0);
+    listRef.current?.querySelector(".selected")?.scrollIntoView({ block: "nearest" });
+  }, [selected]);
   const busyRef = useRef(false);
   const refreshId = useRef(0);
   const refreshCatalog = useCallback(async () => {
@@ -157,11 +166,12 @@ export default function AdminApp() {
     const timer = setTimeout(() => setUndo(null), delay);
     return () => clearTimeout(timer);
   }, [undo, undoDeadline]);
-  const sorted = [...orders].sort(
-    (a, b) =>
-      Number(b.status === "PENDING") - Number(a.status === "PENDING") ||
-      b.created_at.localeCompare(a.created_at),
-  );
+  const sorted = orders.filter((order) =>
+    statusFilter === "ALL" || (statusFilter === "CLOSED"
+      ? order.status !== "PENDING" : order.status === statusFilter),
+  ).sort((a, b) => sortOrder === "oldest"
+    ? a.created_at.localeCompare(b.created_at) || a.number - b.number
+    : b.created_at.localeCompare(a.created_at) || b.number - a.number);
   const current = orders.find((o) => o.id === selected);
   const changeStatus = useCallback(
     async (o: Order, status: Order["status"], why?: string) => {
@@ -239,6 +249,7 @@ export default function AdminApp() {
         if (digits) {
           const match = orders.find((o) => o.number === Number(digits));
           if (match) {
+            setStatusFilter("ALL");
             setSelected(match.id);
             setError("");
           } else setError(t.numberNotFound);
@@ -403,7 +414,7 @@ export default function AdminApp() {
             <section className="stack">
               <div className="row between">
                 <h2>
-                  {t.orders} ({orders.length})
+                  {t.orders} ({sorted.length}/{orders.length})
                 </h2>
                 <button className="quiet" onClick={() => setHelp(true)}>
                   ?
@@ -422,6 +433,7 @@ export default function AdminApp() {
                     if (e.key === "Enter") {
                       const o = orders.find((o) => o.number === Number(digits));
                       if (o) {
+                        setStatusFilter("ALL");
                         setSelected(o.id);
                         setError("");
                       } else setError(t.numberNotFound);
@@ -431,11 +443,27 @@ export default function AdminApp() {
                 />
                 <button onClick={() => setManual(true)}>{t.manual}</button>
               </div>
-              <div className="order-list">
+              <div className="order-filters">
+                <label>주문 상태
+                  <select aria-label="주문 상태" value={statusFilter} onChange={(e) => { setStatusFilter(e.target.value as StatusFilter); setSelected(null); }}>
+                    <option value="PENDING">접수만 · 완료/취소 숨김</option>
+                    <option value="ALL">전체 주문</option>
+                    <option value="COMPLETED">완료된 주문만</option>
+                    <option value="CANCELLED">취소된 주문만</option>
+                    <option value="CLOSED">완료·취소된 주문</option>
+                  </select>
+                </label>
+                <label>정렬
+                  <select aria-label="정렬" value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+                    <option value="oldest">오래된 주문순</option>
+                    <option value="newest">최신 주문순</option>
+                  </select>
+                </label>
+              </div>
+              <div className="order-list" ref={listRef}>
                 {sorted.map((o) => (
                   <button
                     className={`order-row ${o.id === selected ? "selected" : ""}`}
-                    style={{ opacity: o.status === "PENDING" ? 1 : 0.6 }}
                     key={o.id}
                     onClick={() => setSelected(o.id)}
                   >
@@ -463,10 +491,10 @@ export default function AdminApp() {
                     </div>
                   </button>
                 ))}
-                {!sorted.length && <p className="empty">{t.noOrders}</p>}
+                {!sorted.length && <p className="empty">선택한 상태의 주문이 없습니다.</p>}
               </div>
             </section>
-            <section className="order-detail stack">
+            <section className="order-detail stack" ref={detailRef}>
               {current ? (
                 <>
                   <p className="muted">{t.orderNumber}</p>
@@ -483,7 +511,9 @@ export default function AdminApp() {
                     </span>
                   </div>
                   <div className="divider" />
-                  <OrderReceipt order={current} />
+                  {current.status === "CANCELLED" && <p className="error">취소 사유: {current.cancel_reason || "사유 없음"}</p>}
+                  <KitchenReceipt order={current} />
+                  <div className="row between"><strong>총 금액</strong><strong>{money(current.total)}</strong></div>
                   {current.status === "PENDING" && (
                     <button
                       className="primary"

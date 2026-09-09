@@ -872,3 +872,29 @@ button.undo-action {
   white-space: pre-wrap;
   overflow-wrap: anywhere;
 }
+
+.order-filters {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 10px;
+}
+.order-filters label { min-width: 0; font-size: 13px; color: var(--muted); }
+.order-filters select { min-height: 44px; padding: 8px; margin-top: 4px; font-size: 14px; }
+.kitchen-item { border: 2px solid var(--line); border-radius: 16px; overflow: hidden; }
+.kitchen-item > header { padding: 16px; background: #f4f6f1; }
+.kitchen-group { padding: 14px 16px; border-top: 1px solid var(--line); }
+.kitchen-group h3 { margin-bottom: 8px; }
+.kitchen-group .row { gap: 8px; }
+.kitchen-ingredient { padding: 6px 12px; border: 1px solid var(--line); border-radius: 10px; background: white; font-size: 22px; line-height: 1.4; }
+.kitchen-group.omit.has-items { background: #fff1ed; color: #8b3528; border-left: 6px solid #ab4936; }
+.kitchen-group.omit .kitchen-ingredient { border: 2px solid #ab4936; }
+.kitchen-group.topping.has-items { background: var(--mint); color: #305b2e; border-left: 6px solid var(--green); }
+.kitchen-group.topping .kitchen-ingredient { border: 2px solid var(--green); }
+.kitchen-group.base .kitchen-ingredient { font-size: 18px; }
+.kitchen-package { padding: 14px 16px; background: #fff6d9; font-size: 20px; font-weight: 700; }
+@media (max-width: 760px) {
+  .operations { grid-template-rows: minmax(260px, 1.2fr) minmax(0, 1fr); }
+  .kitchen-ingredient { font-size: 20px; }
+}
+.order-detail.stack { gap: 12px; }
+.order-detail .admin-number { font-size: 56px; }
