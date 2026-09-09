@@ -82,6 +82,9 @@ export default function AdminApp() {
         { event: "*", schema: "public", table: "inventory" },
         sync,
       );
+    for (const table of ["products", "ingredients", "contents"]) {
+      channel.on("postgres_changes", { event: "*", schema: "public", table }, sync);
+    }
     async function subscribe() {
       try {
         // 서버 로그인으로 설정한 쿠키의 관리자 세션을 구독 시작 전에 적용합니다.
@@ -125,7 +128,7 @@ export default function AdminApp() {
           sync();
           if (!disposed) poll();
         },
-        connected ? 10000 : 2000,
+        connected ? 60000 : 2000,
       );
     };
     const visible = () => {

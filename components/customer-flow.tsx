@@ -14,6 +14,7 @@ import { api, errorText, persist, stored, t } from "@/lib/client";
 import { Arrow, Check } from "./icons";
 import { ItemBuilder } from "./item-builder";
 import { OrderReceipt } from "./order-receipt";
+import { liveRefresh } from "@/lib/live-refresh";
 type Step =
   | "language"
   | "intro"
@@ -154,53 +155,31 @@ export default function CustomerFlow({
         if (alive) setError(errorText(e));
       }
     }
-    void load();
-    const onVisible = () => {
-      if (document.visibilityState === "visible") void load();
-    };
-    const timer = setInterval(load, 5000);
-    window.addEventListener("focus", onVisible);
-    window.addEventListener("online", onVisible);
-    document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      alive = false;
-      clearInterval(timer);
-      window.removeEventListener("focus", onVisible);
-      window.removeEventListener("online", onVisible);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
-  }, [draft?.step, saved, catalog]);
+    const stop = liveRefresh({
+      topic: order?.id ? `order:${order.id}` : "order-lookup",
+      broadcast: Boolean(order?.id),
+      refresh: load,
+    });
+    return () => { alive = false; stop(); };
+  }, [draft?.step, saved, catalog, order?.id]);
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex]);
   useEffect(() => {
     if (!draft?.step || draft.step === "complete") return;
     let alive = true;
-    let loading = false;
-    async function refreshStock() {
-      if (loading || document.visibilityState === "hidden") return;
-      loading = true;
-      try {
+    const stop = liveRefresh({
+      topic: "customer-catalog",
+      tables: ["inventory", "products", "ingredients", "contents"],
+      refresh: async () => {
         const latest = await api<Catalog>("/api/catalog");
-        if (alive) setCatalog((current) => ({ ...current, inventory: latest.inventory }));
-      } catch {
-        // 연결 복구 시 재조회하며 최종 재고 검증은 주문 트랜잭션에서 수행합니다.
-      } finally {
-        loading = false;
-      }
-    }
-    void refreshStock();
-    const timer = setInterval(refreshStock, 5000);
-    window.addEventListener("focus", refreshStock);
-    window.addEventListener("online", refreshStock);
-    document.addEventListener("visibilitychange", refreshStock);
-    return () => {
-      alive = false;
-      clearInterval(timer);
-      window.removeEventListener("focus", refreshStock);
-      window.removeEventListener("online", refreshStock);
-      document.removeEventListener("visibilitychange", refreshStock);
-    };
+        if (alive) setCatalog((current) => ({
+          ...current, inventory: latest.inventory, products: latest.products,
+          ingredients: latest.ingredients, contents: latest.contents,
+        }));
+      },
+    });
+    return () => { alive = false; stop(); };
   }, [draft?.step]);
   if (!draft)
     return (

@@ -5,6 +5,7 @@ import type { ResearchData } from "@/lib/research";
 import { api, errorText } from "@/lib/client";
 import { kstDate, money, koreanIngredientName } from "@/lib/domain";
 import { OrderReceipt } from "./order-receipt";
+import { liveRefresh } from "@/lib/live-refresh";
 export function AdminData({ catalog }: { catalog: Catalog }) {
   const [from, setFrom] = useState(catalog.businessDate ?? kstDate()),
     [to, setTo] = useState(catalog.businessDate ?? kstDate()),
@@ -28,21 +29,34 @@ export function AdminData({ catalog }: { catalog: Catalog }) {
     setBusy(true);
     setError("");
     setData(null);
-    setPage(0);
-    api<ResearchData>("/api/admin/research?" + query)
-      .then((v) => {
-        if (alive) setData(v);
-      })
-      .catch((e) => {
-        if (alive) setError(errorText(e));
-      })
-      .finally(() => {
-        if (alive) setBusy(false);
-      });
+    const stop = liveRefresh({
+      topic: "admin-research",
+      tables: ["orders"],
+      refresh: async () => {
+        try {
+          const result = await api<ResearchData>("/api/admin/research?" + query);
+          if (!alive) return;
+          setData(result);
+          setError("");
+          setSelected((current) => current
+            ? result.orders.find((order) => order.id === current.id) ?? null
+            : null);
+        } catch (e) {
+          if (alive) setError(errorText(e));
+        } finally {
+          if (alive) setBusy(false);
+        }
+      },
+    });
     return () => {
+      stop();
       alive = false;
     };
   }, [query, revision]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setPage(0);
+  }, [query]);
   const orders = data?.orders ?? [],
     completed = orders.filter((o) => o.order_surveys?.survey_completed).length;
   const preset = (days: number) => {
