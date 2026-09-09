@@ -467,10 +467,14 @@ textarea {
   padding: 3px;
 }
 .order-row {
+  flex: none;
   text-align: left;
   border-radius: 12px;
   padding: 16px;
   display: block;
+}
+.order-row.selected {
+  padding: 15px;
 }
 .order-row strong {
   font-size: 28px;

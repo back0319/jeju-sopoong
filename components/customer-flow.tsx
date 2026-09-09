@@ -163,6 +163,35 @@ export default function CustomerFlow({
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex]);
+  useEffect(() => {
+    if (!draft?.step || draft.step === "complete") return;
+    let alive = true;
+    let loading = false;
+    async function refreshStock() {
+      if (loading || document.visibilityState === "hidden") return;
+      loading = true;
+      try {
+        const latest = await api<Catalog>("/api/catalog");
+        if (alive) setCatalog((current) => ({ ...current, inventory: latest.inventory }));
+      } catch {
+        // 연결 복구 시 재조회하며 최종 재고 검증은 주문 트랜잭션에서 수행합니다.
+      } finally {
+        loading = false;
+      }
+    }
+    void refreshStock();
+    const timer = setInterval(refreshStock, 5000);
+    window.addEventListener("focus", refreshStock);
+    window.addEventListener("online", refreshStock);
+    document.addEventListener("visibilitychange", refreshStock);
+    return () => {
+      alive = false;
+      clearInterval(timer);
+      window.removeEventListener("focus", refreshStock);
+      window.removeEventListener("online", refreshStock);
+      document.removeEventListener("visibilitychange", refreshStock);
+    };
+  }, [draft?.step]);
   if (!draft)
     return (
       <main className="customer">
@@ -172,6 +201,14 @@ export default function CustomerFlow({
       </main>
     );
   const d = draft;
+  const checkedItems = d.step === "build" && d.item
+    ? [...d.items.filter((_, index) => index !== d.editing), d.item]
+    : d.items;
+  const shortages = catalog.ingredients.filter((ingredient) => {
+    const needed = checkedItems.filter((item) => item.toppings.includes(ingredient.id)).length;
+    const stock = catalog.inventory.find((entry) => entry.ingredient_id === ingredient.id);
+    return needed > 0 && (!stock || stock.forced_sold_out || stock.remaining < needed);
+  });
   const change = (values: Partial<Draft>) =>
     setDraft((prev) => (prev ? { ...prev, ...values } : prev));
   const go = (step: Step) => {
@@ -306,6 +343,13 @@ export default function CustomerFlow({
       {error && (
         <div className="error" role="alert" style={{ margin: "0 22px 12px" }}>
           {error}
+        </div>
+      )}
+      {["build", "cart", "review"].includes(d.step) && shortages.length > 0 && (
+        <div className="notice" role="alert" style={{ margin: "0 22px 12px" }}>
+          {shortages.map((ingredient) => ingredient.name).join(", ")} 재고가 부족합니다.
+          담은 주문을 수정해 해당 재료를 빼거나 다른 재료를 선택해 주세요.
+          {d.step === "review" && <button onClick={() => go("cart")}>주문 수정</button>}
         </div>
       )}
       <div
@@ -704,7 +748,7 @@ export default function CustomerFlow({
         footer(
           t.confirm,
           () => void submit(),
-          !d.items.length || !catalog.configured,
+          !d.items.length || !catalog.configured || shortages.length > 0,
         )}
     </main>
   );
