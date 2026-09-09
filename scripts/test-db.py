@@ -42,6 +42,7 @@ try:
     sql("update public.products set active=true where id='package';")
     r=create(payload(['pork'],kind='package'));expect(r.returncode==0,'패키지와 토핑 18,000원 주문 성공')
     oid=r.stdout.strip();expect(value(f"select total from public.orders where id='{oid}'")=='18000','DB 계산 18,000원 확인')
+    expect(value(f"select snapshot->'toppings'->0->>'name' from public.order_items where order_id='{oid}' limit 1")=='제주 돼지고기','추가 재료 한국어 이름 저장')
     sql("update public.products set price=6000 where id='gimbap';")
     expect(value(f"select total from public.orders where id='{oid}'")=='18000','메뉴 변경 후 과거 가격 스냅샷 유지')
     sql(f"select public.change_order_status('{oid}','COMPLETED',1,'{admin}');select public.change_order_status('{oid}','PENDING',2,'{admin}');")

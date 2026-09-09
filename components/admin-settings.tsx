@@ -46,7 +46,7 @@ export function AdminSettings({
               key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}`}
               stock={s}
               name={
-                catalog.ingredients.find((i) => i.id === s.ingredient_id)!.label
+                catalog.ingredients.find((i) => i.id === s.ingredient_id)!.name
               }
               busy={busy}
               save={save}

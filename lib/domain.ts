@@ -91,3 +91,17 @@ export function csvCell(value: unknown) {
   if (/^[\s]*[=+@-]/.test(s)) s = "'" + s;
   return '"' + s.replaceAll('"', '""') + '"';
 }
+
+// 이전 주문의 영문 표시명만 한국어로 변환하며 당시 저장된 데이터는 보존합니다.
+export function koreanIngredientName(name: string) {
+  const names: Record<string, string> = {
+    PORK: "제주 돼지고기",
+    "TURBAN SHELL": "뿔소라",
+    FERNBRAKE: "고사리",
+    CARROT: "당근",
+    EGG: "계란",
+    HAM: "햄",
+    "CRAB STICK": "맛살",
+  };
+  return names[name] ?? name;
+}

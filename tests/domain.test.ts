@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import {
   kstDate,
+  koreanIngredientName,
   expiredOrder,
   itemPrice,
   newItem,
@@ -107,4 +108,12 @@ test("CSV는 쉼표·줄바꿈·따옴표를 보존하며 수식 실행을 방�
   assert.equal(csvCell('a,"b"\nc'), '"a,""b""\nc"');
   assert.equal(csvCell("=1+1"), '"\'=1+1"');
   assert.equal(csvCell(" @SUM(A1)"), '"\' @SUM(A1)"');
+});
+
+test("기존 주문의 영문 재료만 한국어로 표시한다", () => {
+  assert.equal(koreanIngredientName("PORK"), "제주 돼지고기");
+  assert.equal(koreanIngredientName("TURBAN SHELL"), "뿔소라");
+  assert.equal(koreanIngredientName("FERNBRAKE"), "고사리");
+  assert.equal(koreanIngredientName("CARROT"), "당근");
+  assert.equal(koreanIngredientName("별도 재료 이름"), "별도 재료 이름");
 });

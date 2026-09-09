@@ -27,18 +27,22 @@ export default function AdminApp() {
     [undo, setUndo] = useState<Order | null>(null),
     [undoDeadline, setUndoDeadline] = useState(0);
   const busyRef = useRef(false);
+  const refreshId = useRef(0);
   const refreshCatalog = useCallback(async () => {
     setCatalog(await api<Catalog>("/api/catalog"));
   }, []);
   const refresh = useCallback(async () => {
+    const requestId = ++refreshId.current;
     try {
       const [o, c] = await Promise.all([
         api<Order[]>("/api/admin/orders"),
         api<Catalog>("/api/catalog"),
       ]);
+      if (requestId !== refreshId.current) return;
       setOrders(o);
       setCatalog(c);
     } catch (e) {
+      if (requestId !== refreshId.current) return;
       setError(errorText(e));
       if (
         e instanceof Error &&
@@ -53,32 +57,94 @@ export default function AdminApp() {
       .catch(() => {})
       .finally(() => setChecking(false));
   }, []);
-  // 로그인 완료 후 외부 API의 최신 상태를 동기화합니다.
+  // 주문 이벤트를 즉시 반영하고 연결이 끊기면 짧은 주기 조회로 보완합니다.
   useEffect(() => {
     if (!auth) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void refresh();
+    let disposed = false;
+    let connected = false;
+    let timer: ReturnType<typeof setTimeout>;
+    const invalidate = () => {
+      ++refreshId.current;
+    };
+    const sync = () => {
+      if (!disposed) void refresh();
+    };
     const client = browserClient();
     const channel = client
       .channel("counter-orders")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "orders" },
-        () => void refresh(),
+        sync,
       )
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "inventory" },
-        () => void refresh(),
-      )
-      .subscribe();
-    // 자정 전환과 일시적인 이벤트 누락도 주기 조회로 보정합니다.
-    const timer = setInterval(() => void refresh(), 10000);
-    const focus = () => void refresh();
-    window.addEventListener("focus", focus);
+        sync,
+      );
+    async function subscribe() {
+      try {
+        // 서버 로그인으로 설정한 쿠키의 관리자 세션을 구독 시작 전에 적용합니다.
+        const {
+          data: { session },
+        } = await client.auth.getSession();
+        if (disposed) return;
+        await client.realtime.setAuth(session?.access_token ?? null);
+        if (disposed) return;
+        channel.subscribe((status) => {
+          if (disposed) return;
+          connected = status === "SUBSCRIBED";
+          clearTimeout(timer);
+          poll();
+          // 최초 연결과 재연결 사이에 놓친 주문도 즉시 조회합니다.
+          sync();
+        });
+      } catch {
+        // 구독 실패 중에도 아래 자동 조회는 계속 실행됩니다.
+        connected = false;
+      }
+    }
+    const {
+      data: { subscription },
+    } = client.auth.onAuthStateChange((event, session) => {
+      if (event === "TOKEN_REFRESHED" || event === "SIGNED_IN") {
+        // Auth 콜백 내부에서 다른 Auth 작업을 기다리지 않습니다.
+        void Promise.resolve()
+          .then(async () => {
+            if (!disposed)
+              await client.realtime.setAuth(session?.access_token ?? null);
+          })
+          .catch(() => {
+            connected = false;
+          });
+      }
+    });
+    const poll = () => {
+      timer = setTimeout(
+        () => {
+          sync();
+          if (!disposed) poll();
+        },
+        connected ? 10000 : 2000,
+      );
+    };
+    const visible = () => {
+      if (document.visibilityState === "visible") sync();
+    };
+    sync();
+    void subscribe();
+    poll();
+    window.addEventListener("focus", sync);
+    window.addEventListener("online", sync);
+    document.addEventListener("visibilitychange", visible);
     return () => {
-      clearInterval(timer);
-      window.removeEventListener("focus", focus);
+      disposed = true;
+      invalidate();
+      clearTimeout(timer);
+      subscription.unsubscribe();
+      window.removeEventListener("focus", sync);
+      window.removeEventListener("online", sync);
+      document.removeEventListener("visibilitychange", visible);
       void client.removeChannel(channel);
     };
   }, [auth, refresh]);

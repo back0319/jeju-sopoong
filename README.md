@@ -32,7 +32,7 @@ flowchart LR
 | UI | React 상태 + 브라우저 저장소, Tailwind CSS와 직접 작성한 CSS: 의존성 최소화 |
 | DB | Supabase PostgreSQL 서울: 트랜잭션으로 재고·채번·주문을 함께 처리 |
 | 인증 | Supabase Auth + 관리자 ID 허용 목록: 일반 로그인 사용자와 매장 관리자 구분 |
-| 실시간 | Supabase Realtime + 10초 자동 조회: 새 주문 반영과 이벤트 누락 보완 |
+| 실시간 | Supabase Realtime + 연결 실패 시 2초 자동 조회: 새 주문 반영과 이벤트 누락 보완 |
 | 배포 | Vercel 서울 `icn1`, Node.js 22: GitHub `main`에서 배포하고 계정 이관 지원 |
 
 ```mermaid

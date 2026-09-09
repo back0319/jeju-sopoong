@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Catalog, Order } from "@/lib/types";
 import type { ResearchData } from "@/lib/research";
 import { api, errorText } from "@/lib/client";
-import { kstDate, money } from "@/lib/domain";
+import { kstDate, money, koreanIngredientName } from "@/lib/domain";
 import { OrderReceipt } from "./order-receipt";
 export function AdminData({ catalog }: { catalog: Catalog }) {
   const [from, setFrom] = useState(catalog.businessDate ?? kstDate()),
@@ -213,9 +213,9 @@ export function AdminData({ catalog }: { catalog: Catalog }) {
                     <p key={i.id}>
                       {i.snapshot.name}
                       {i.snapshot.toppings.length > 0 &&
-                        ` · ${i.snapshot.toppings.map((v) => v.name).join(", ")}`}
+                        ` · ${i.snapshot.toppings.map((v) => koreanIngredientName(v.name)).join(", ")}`}
                       {i.snapshot.excluded.length > 0 &&
-                        ` · 제외: ${i.snapshot.excluded.map((v) => v.name).join(", ")}`}
+                        ` · 제외: ${i.snapshot.excluded.map((v) => koreanIngredientName(v.name)).join(", ")}`}
                     </p>
                   ))}
                 </td>

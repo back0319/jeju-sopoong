@@ -1,5 +1,5 @@
 import type { Order } from "@/lib/types";
-import { money } from "@/lib/domain";
+import { money, koreanIngredientName } from "@/lib/domain";
 import { t } from "@/lib/client";
 export function OrderReceipt({ order }: { order: Order }) {
   return (
@@ -20,7 +20,7 @@ export function OrderReceipt({ order }: { order: Order }) {
                 <div className="row wrap">
                   {s.included.map((v) => (
                     <span className="chip" key={v.id}>
-                      {v.name}
+                      {koreanIngredientName(v.name)}
                     </span>
                   ))}
                 </div>
@@ -32,7 +32,7 @@ export function OrderReceipt({ order }: { order: Order }) {
                 <div className="row wrap">
                   {s.excluded.map((v) => (
                     <span className="chip excluded" key={v.id}>
-                      {v.name}
+                      {koreanIngredientName(v.name)}
                     </span>
                   ))}
                 </div>
@@ -42,7 +42,7 @@ export function OrderReceipt({ order }: { order: Order }) {
               <div className="row wrap">
                 {s.toppings.map((v) => (
                   <span className="chip" key={v.id}>
-                    + {v.name}
+                    + {koreanIngredientName(v.name)}
                   </span>
                 ))}
               </div>
