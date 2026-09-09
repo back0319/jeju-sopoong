@@ -15,7 +15,7 @@ export async function GET(req: Request) {
     const { data, error } = await serviceClient()
       .from("orders")
       .select(
-        "id,business_date,number,status,total,created_at,order_items(id,position,snapshot)",
+        "id,business_date,number,status,total,created_at,cancel_reason,order_items(id,position,snapshot)",
       )
       .eq("business_date", date)
       .eq("number", Number(number))

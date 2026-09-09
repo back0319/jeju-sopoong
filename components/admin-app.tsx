@@ -490,6 +490,15 @@ export default function AdminApp() {
                       {t.completeAction}
                     </button>
                   )}
+                  {current.status === "COMPLETED" && undo?.id === current.id && (
+                    <button
+                      className="undo-action"
+                      disabled={busy}
+                      onClick={() => void changeStatus(undo, "PENDING")}
+                    >
+                      완료 처리 되돌리기 · 5초 이내
+                    </button>
+                  )}
                   {current.status !== "CANCELLED" && (
                     <button
                       className="quiet danger"
@@ -566,12 +575,12 @@ export default function AdminApp() {
       )}
       {undo && (
         <div role="status" className="toast row">
-          <span>{t.undoNotice}</span>
+          <span><strong>{orderNumber(undo.number)}번</strong> · {t.undoNotice}</span>
           <button
             disabled={busy}
             onClick={() => void changeStatus(undo, "PENDING")}
           >
-            {t.undo}
+            완료 처리 되돌리기 (Ctrl+Z)
           </button>
         </div>
       )}

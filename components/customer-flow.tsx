@@ -155,10 +155,19 @@ export default function CustomerFlow({
       }
     }
     void load();
-    const timer = setInterval(load, 10000);
+    const onVisible = () => {
+      if (document.visibilityState === "visible") void load();
+    };
+    const timer = setInterval(load, 5000);
+    window.addEventListener("focus", onVisible);
+    window.addEventListener("online", onVisible);
+    document.addEventListener("visibilitychange", onVisible);
     return () => {
       alive = false;
       clearInterval(timer);
+      window.removeEventListener("focus", onVisible);
+      window.removeEventListener("online", onVisible);
+      document.removeEventListener("visibilitychange", onVisible);
     };
   }, [draft?.step, saved, catalog]);
   useEffect(() => {
@@ -678,16 +687,26 @@ export default function CustomerFlow({
           <div className="stack complete">
             {order ? (
               <>
-                <div className="complete-icon">
-                  <Check />
+                <div className={`order-state ${order.status.toLowerCase()}`} role="status" aria-live="polite">
+                  <div className="complete-icon" aria-hidden="true">
+                    {order.status === "CANCELLED" ? "×" : <Check />}
+                  </div>
+                  <h2>
+                    {order.status === "CANCELLED"
+                      ? "취소된 주문이에요"
+                      : order.status === "COMPLETED"
+                        ? "완료된 주문이에요"
+                        : t.completeTitle}
+                  </h2>
+                  {order.status === "COMPLETED" && <p>결제와 수령이 완료됐어요.</p>}
+                  {order.status === "CANCELLED" && (
+                    <p className="cancel-reason">취소 사유: {order.cancel_reason || "자세한 내용은 카운터에 문의해 주세요."}</p>
+                  )}
                 </div>
-                <h2>
-                  {order.status === "CANCELLED" ? t.cancelled : t.completeTitle}
-                </h2>
                 <div className="order-number">{orderNumber(order.number)}</div>
-                <h3>{t.counter}</h3>
+                {order.status === "PENDING" && <h3>{t.counter}</h3>}
                 <p className="price">{money(order.total)}</p>
-                <p className="muted">{t.offlinePayment}</p>
+                {order.status === "PENDING" && <p className="muted">{t.offlinePayment}</p>}
                 <div className="receipt">
                   <details>
                     <summary>{t.orderDetails}</summary>
