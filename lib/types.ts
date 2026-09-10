@@ -9,6 +9,7 @@ export type Ingredient = {
   price: number;
 };
 export type Stock = {
+  business_date?: string;
   ingredient_id: string;
   remaining: number;
   forced_sold_out: boolean;
@@ -60,6 +61,7 @@ export type CartItem = {
 };
 export type ItemSnapshot = {
   kind: CartItem["kind"];
+  productId?: string;
   name: string;
   included: { id: string; name: string }[];
   excluded: { id: string; name: string }[];

@@ -1,4 +1,5 @@
 "use client";
+import { CountryQuestion } from "./country-question";
 import { useEffect, useRef, useState } from "react";
 import type { Answers, CartItem, Catalog, Order } from "@/lib/types";
 import {
@@ -455,7 +456,7 @@ export default function CustomerFlow({
               </span>
               <h1>{q.title}</h1>
             </div>
-            {q.type === "text" ? (
+            {q.id === "S1" && q.options.length > 30 ? <CountryQuestion options={q.options} selected={d.answers[q.id]?.[0]} onChange={id => change({ answers: { ...d.answers, [q.id]: [id] }, key: invalidate() })} /> : q.type === "text" ? (
               <label>
                 {t.textAnswer}
                 <input
@@ -567,7 +568,7 @@ export default function CustomerFlow({
                       ? catalog.products.find((p) => p.id === item.productId)
                           ?.name
                       : item.kind === "package"
-                        ? t.package
+                        ? catalog.products.find((p) => p.id === "package")?.name ?? t.package
                         : t.gimbap}
                   </h3>
                   <strong>{money(itemPrice(item, catalog))}</strong>

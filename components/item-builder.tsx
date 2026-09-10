@@ -140,7 +140,7 @@ export function ItemBuilder({
               className={item.kind === "package" ? "selected" : ""}
               onClick={() => onChange({ ...item, kind: "package" })}
             >
-              <span>{t.package}</span> + {money(upgrade?.price ?? 0)}
+              <span>{upgrade?.name ?? t.package}</span> + {money(upgrade?.price ?? 0)}
             </button>
           </div>
         )}

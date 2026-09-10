@@ -58,5 +58,39 @@ try:
     expect(int(value(f"set role authenticated;set request.jwt.claim.sub='{admin}';select count(*) from public.orders;"))>0,'관리자 RLS 조회 허용')
     expect(value("select ('2026-09-09 15:00:00+00'::timestamptz at time zone 'Asia/Seoul')::date;")=='2026-09-10','KST 자정 날짜 전환')
     expect(value('select count(*)=count(distinct (business_date,number)) from public.orders;')=='t','주문번호 유일성')
+    # 재고 영업일 전환: 반복 초기화와 전날 취소가 오늘 수량을 오염시키지 않습니다.
+    sql("update public.products set price=5000 where id='gimbap';update public.inventory set remaining=10,forced_sold_out=false;")
+    prev=create(payload()).stdout.strip()
+    sql(f"update public.orders set business_date=((now() at time zone 'Asia/Seoul')::date-1) where id='{prev}';update public.inventory set business_date=((now() at time zone 'Asia/Seoul')::date-1),remaining=9;")
+    sql('select public.ensure_inventory_day();')
+    expect(value('select sum(remaining) from public.inventory;')=='0','영업일 변경 시 모든 잔여 재고 0')
+    sql('update public.inventory set remaining=5;select public.ensure_inventory_day();')
+    expect(value("select remaining from public.inventory where ingredient_id='pork'")=='5','같은 날짜 초기화 재시도는 신규 재고 유지')
+    sql(f"select public.change_order_status('{prev}','CANCELLED',1,'{admin}','전날 취소');")
+    expect(value("select remaining from public.inventory where ingredient_id='pork'")=='5','전날 주문 취소는 오늘 재고 복구 안 함')
+    target=create(payload()).stdout.strip()
+    revised=payload(['carrot'],count=2)
+    def edit(oid,version,p):
+        return sql(f"select (public.edit_order('{oid}',{version},'{admin}','"+json.dumps(p).replace("'","''")+"'::jsonb)).total;",fail=False)
+    r=edit(target,1,revised)
+    expect(r.returncode==0 and r.stdout.strip()=='16000','접수 주문 구성 수정 및 금액 재계산: '+r.stderr)
+    expect(value("select string_agg(ingredient_id||':'||remaining,',' order by ingredient_id) from public.inventory where ingredient_id in ('pork','carrot')")=='carrot:3,pork:5','구성 수정은 토핑 수량 차이만 차감과 복구')
+    expect(value(f"select count(*) from public.order_surveys where order_id='{target}'")=='1','수정 후 원래 주문과 설문 연결 유지')
+    expect(edit(target,1,revised).returncode!=0,'중복 구성 수정 거절')
+    expect(edit(target,2,payload(['carrot'],count=10)).returncode!=0 and value(f"select version from public.orders where id='{target}'")=='2','수정 재고 부족 시 전체 롤백')
+    second=create(payload([])).stdout.strip()
+    targets=[dict(id=target,version=2),dict(id=second,version=99)]
+    def batch(rows,status):
+        return sql("select public.batch_order_status('"+json.dumps(rows)+f"','{status}','{admin}');",fail=False)
+    expect(batch(targets,'COMPLETED').returncode!=0 and value(f"select status from public.orders where id='{target}'")=='PENDING','묶음 일부 충돌 시 모두 롤백')
+    targets[1]['version']=1
+    expect(batch(targets,'COMPLETED').returncode==0,'묶음 결제 수령 완료')
+    expect(edit(target,3,revised).returncode!=0,'완료 주문 직접 수정 거절')
+    for v in targets: v['version']+=1
+    expect(batch(targets,'PENDING').returncode==0,'묶음 완료 5초 이내 실행 취소')
+    expect(value(f"select count(*) from public.order_edit_events where order_id='{target}'")=='1','성공한 구성 수정만 감사 이력 기록')
+    sql("update public.products set name='테스트 패키지' where id='package';")
+    renamed=create(payload([],kind='package')).stdout.strip()
+    expect(value(f"select snapshot->>'name' from public.order_items where order_id='{renamed}'")=='테스트 패키지','관리자 패키지 이름을 주문 스냅샷에 반영')
 finally:
     sql('drop database if exists '+db+';',database='postgres',fail=False)

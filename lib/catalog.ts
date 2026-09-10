@@ -39,6 +39,8 @@ export async function getCatalog(): Promise<Catalog> {
       configured: false,
     };
   const db = serviceClient();
+  const { error: resetError } = await db.rpc("ensure_inventory_day");
+  if (resetError) throw new Error("DATABASE_UNAVAILABLE");
   const results = await Promise.all([
     db.from("ingredients").select("*").order("position"),
     db.from("inventory").select("*"),

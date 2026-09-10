@@ -41,6 +41,7 @@ export function AdminSettings({
       <div className="settings-grid">
         <section className="panel stack">
           <h2>{t.stock}</h2>
+          <p className="muted">잔여 수량은 매일 자정(한국 시간)에 0으로 초기화됩니다. 영업 시작 전에 오늘 수량을 입력하세요.</p>
           {catalog.inventory.map((s) => (
             <StockForm
               key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}`}
@@ -119,6 +120,7 @@ function StockForm({
           remaining: Number(f.get("remaining")),
           previousRemaining: stock.remaining,
           previousForced: stock.forced_sold_out,
+          previousDate: stock.business_date,
           forced_sold_out: f.get("forced") === "on",
         });
       }}

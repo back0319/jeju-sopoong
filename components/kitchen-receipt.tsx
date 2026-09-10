@@ -1,5 +1,5 @@
 import type { Order } from "@/lib/types";
-import { koreanIngredientName } from "@/lib/domain";
+import { koreanIngredientName, orderNumber } from "@/lib/domain";
 import ingredients from "@/config/ingredients.json";
 
 function IngredientSlots({ items, kind }: { items: { id: string; name: string }[]; kind: "base" | "topping" }) {
@@ -18,13 +18,14 @@ function IngredientSlots({ items, kind }: { items: { id: string; name: string }[
   );
 }
 
-export function KitchenReceipt({ order }: { order: Order }) {
+export function KitchenReceipt({ order, sourceOrders }: { order: Order; sourceOrders?: Order[] }) {
   return (
     <div className="kitchen-receipt">
-      {[...order.order_items].sort((a, b) => a.position - b.position).map(({ id, snapshot }, index) => (
+      {(sourceOrders ?? [order]).flatMap(source => [...source.order_items].sort((a, b) => a.position - b.position).map((item, index) => ({ ...item, index, source }))).map(({ id, snapshot, index, source }) => (
         <section className="kitchen-item" key={id}>
           <header className="row between wrap">
-            <h2>{index + 1}. {snapshot.kind === "package" ? "김밥 + 패키지" : snapshot.name}</h2>
+            <h2>{index + 1}. {snapshot.name}</h2>
+            {sourceOrders && <span className="chip">{orderNumber(source.number)}번</span>}
           </header>
           {snapshot.kind !== "extra" && (
             <>
@@ -41,7 +42,7 @@ export function KitchenReceipt({ order }: { order: Order }) {
                 <p>{snapshot.included.map((ingredient) => koreanIngredientName(ingredient.name)).join(" · ")}</p>
               </div>
               <p className={`kitchen-package ${snapshot.kind === "package" ? "" : "no-package"}`} aria-hidden={snapshot.kind !== "package"}>
-                {snapshot.kind === "package" ? "라면 + 음료 + 굿즈" : null}
+                {snapshot.kind === "package" ? snapshot.name : null}
               </p>
             </>
           )}

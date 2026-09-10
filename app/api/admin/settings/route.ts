@@ -1,4 +1,4 @@
-import { requireAdmin } from "@/lib/supabase/server";
+import { requireAdmin, serviceClient } from "@/lib/supabase/server";
 import { json, failure, readBody, sameOrigin } from "@/lib/http";
 const integer = (x: unknown) =>
   typeof x === "number" && Number.isSafeInteger(x) && x >= 0 && x <= 100000000;
@@ -26,7 +26,7 @@ function validUrl(value: unknown, video = false) {
 export async function POST(req: Request) {
   try {
     sameOrigin(req);
-    const { client } = await requireAdmin();
+    const { client, user } = await requireAdmin();
     const b = await readBody(req);
     let error;
     if (b.type === "inventory") {
@@ -34,19 +34,17 @@ export async function POST(req: Request) {
         !text(b.id, 80) ||
         !integer(b.remaining) ||
         !integer(b.previousRemaining) ||
+        typeof b.previousDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(b.previousDate) ||
         typeof b.previousForced !== "boolean" ||
         typeof b.forced_sold_out !== "boolean"
       )
         throw new Error("INVALID_INPUT");
-      const result = await client
-        .from("inventory")
-        .update({ remaining: b.remaining, forced_sold_out: b.forced_sold_out })
-        .eq("ingredient_id", b.id)
-        .eq("remaining", b.previousRemaining)
-        .eq("forced_sold_out", b.previousForced)
-        .select("ingredient_id");
+      const result = await serviceClient().rpc("set_inventory", {
+        p_id: b.id, p_remaining: b.remaining, p_forced: b.forced_sold_out,
+        p_previous: b.previousRemaining, p_previous_forced: b.previousForced,
+        p_date: b.previousDate, p_actor: user.id,
+      });
       error = result.error;
-      if (!error && !result.data?.length) throw new Error("STALE_ORDER");
     } else if (b.type === "product") {
       if (
         !text(b.id, 80) ||

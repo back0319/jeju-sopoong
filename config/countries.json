@@ -1,0 +1,1273 @@
+{
+  "preferred": [
+    "kr",
+    "kr-jeju",
+    "cn",
+    "tw",
+    "jp",
+    "us",
+    "hk",
+    "sg",
+    "id",
+    "my",
+    "th",
+    "vn"
+  ],
+  "countries": [
+    {
+      "id": "gh",
+      "label": "가나",
+      "english": "Ghana"
+    },
+    {
+      "id": "ga",
+      "label": "가봉",
+      "english": "Gabon"
+    },
+    {
+      "id": "gy",
+      "label": "가이아나",
+      "english": "Guyana"
+    },
+    {
+      "id": "gm",
+      "label": "감비아",
+      "english": "Gambia"
+    },
+    {
+      "id": "gg",
+      "label": "건지",
+      "english": "Guernsey"
+    },
+    {
+      "id": "gp",
+      "label": "과들루프",
+      "english": "Guadeloupe"
+    },
+    {
+      "id": "gt",
+      "label": "과테말라",
+      "english": "Guatemala"
+    },
+    {
+      "id": "gu",
+      "label": "괌",
+      "english": "Guam"
+    },
+    {
+      "id": "gd",
+      "label": "그레나다",
+      "english": "Grenada"
+    },
+    {
+      "id": "gr",
+      "label": "그리스",
+      "english": "Greece"
+    },
+    {
+      "id": "gl",
+      "label": "그린란드",
+      "english": "Greenland"
+    },
+    {
+      "id": "gn",
+      "label": "기니",
+      "english": "Guinea"
+    },
+    {
+      "id": "gw",
+      "label": "기니비사우",
+      "english": "Guinea-Bissau"
+    },
+    {
+      "id": "na",
+      "label": "나미비아",
+      "english": "Namibia"
+    },
+    {
+      "id": "nr",
+      "label": "나우루",
+      "english": "Nauru"
+    },
+    {
+      "id": "ng",
+      "label": "나이지리아",
+      "english": "Nigeria"
+    },
+    {
+      "id": "aq",
+      "label": "남극 대륙",
+      "english": "Antarctica"
+    },
+    {
+      "id": "ss",
+      "label": "남수단",
+      "english": "South Sudan"
+    },
+    {
+      "id": "za",
+      "label": "남아프리카",
+      "english": "South Africa"
+    },
+    {
+      "id": "nl",
+      "label": "네덜란드",
+      "english": "Netherlands"
+    },
+    {
+      "id": "bq",
+      "label": "네덜란드령 카리브",
+      "english": "Caribbean Netherlands"
+    },
+    {
+      "id": "np",
+      "label": "네팔",
+      "english": "Nepal"
+    },
+    {
+      "id": "no",
+      "label": "노르웨이",
+      "english": "Norway"
+    },
+    {
+      "id": "nf",
+      "label": "노퍽섬",
+      "english": "Norfolk Island"
+    },
+    {
+      "id": "nz",
+      "label": "뉴질랜드",
+      "english": "New Zealand"
+    },
+    {
+      "id": "nc",
+      "label": "뉴칼레도니아",
+      "english": "New Caledonia"
+    },
+    {
+      "id": "nu",
+      "label": "니우에",
+      "english": "Niue"
+    },
+    {
+      "id": "ne",
+      "label": "니제르",
+      "english": "Niger"
+    },
+    {
+      "id": "ni",
+      "label": "니카라과",
+      "english": "Nicaragua"
+    },
+    {
+      "id": "tw",
+      "label": "대만",
+      "english": "Taiwan"
+    },
+    {
+      "id": "kr",
+      "label": "대한민국",
+      "english": "South Korea"
+    },
+    {
+      "id": "dk",
+      "label": "덴마크",
+      "english": "Denmark"
+    },
+    {
+      "id": "dm",
+      "label": "도미니카",
+      "english": "Dominica"
+    },
+    {
+      "id": "do",
+      "label": "도미니카 공화국",
+      "english": "Dominican Republic"
+    },
+    {
+      "id": "de",
+      "label": "독일",
+      "english": "Germany"
+    },
+    {
+      "id": "tl",
+      "label": "동티모르",
+      "english": "Timor-Leste"
+    },
+    {
+      "id": "la",
+      "label": "라오스",
+      "english": "Laos"
+    },
+    {
+      "id": "lr",
+      "label": "라이베리아",
+      "english": "Liberia"
+    },
+    {
+      "id": "lv",
+      "label": "라트비아",
+      "english": "Latvia"
+    },
+    {
+      "id": "ru",
+      "label": "러시아",
+      "english": "Russia"
+    },
+    {
+      "id": "lb",
+      "label": "레바논",
+      "english": "Lebanon"
+    },
+    {
+      "id": "ls",
+      "label": "레소토",
+      "english": "Lesotho"
+    },
+    {
+      "id": "re",
+      "label": "레위니옹",
+      "english": "Réunion"
+    },
+    {
+      "id": "ro",
+      "label": "루마니아",
+      "english": "Romania"
+    },
+    {
+      "id": "lu",
+      "label": "룩셈부르크",
+      "english": "Luxembourg"
+    },
+    {
+      "id": "rw",
+      "label": "르완다",
+      "english": "Rwanda"
+    },
+    {
+      "id": "ly",
+      "label": "리비아",
+      "english": "Libya"
+    },
+    {
+      "id": "lt",
+      "label": "리투아니아",
+      "english": "Lithuania"
+    },
+    {
+      "id": "li",
+      "label": "리히텐슈타인",
+      "english": "Liechtenstein"
+    },
+    {
+      "id": "mg",
+      "label": "마다가스카르",
+      "english": "Madagascar"
+    },
+    {
+      "id": "mq",
+      "label": "마르티니크",
+      "english": "Martinique"
+    },
+    {
+      "id": "mh",
+      "label": "마셜 제도",
+      "english": "Marshall Islands"
+    },
+    {
+      "id": "yt",
+      "label": "마요트",
+      "english": "Mayotte"
+    },
+    {
+      "id": "mo",
+      "label": "마카오(중국 특별행정구)",
+      "english": "Macao SAR China"
+    },
+    {
+      "id": "mw",
+      "label": "말라위",
+      "english": "Malawi"
+    },
+    {
+      "id": "my",
+      "label": "말레이시아",
+      "english": "Malaysia"
+    },
+    {
+      "id": "ml",
+      "label": "말리",
+      "english": "Mali"
+    },
+    {
+      "id": "im",
+      "label": "맨섬",
+      "english": "Isle of Man"
+    },
+    {
+      "id": "mx",
+      "label": "멕시코",
+      "english": "Mexico"
+    },
+    {
+      "id": "mc",
+      "label": "모나코",
+      "english": "Monaco"
+    },
+    {
+      "id": "ma",
+      "label": "모로코",
+      "english": "Morocco"
+    },
+    {
+      "id": "mu",
+      "label": "모리셔스",
+      "english": "Mauritius"
+    },
+    {
+      "id": "mr",
+      "label": "모리타니",
+      "english": "Mauritania"
+    },
+    {
+      "id": "mz",
+      "label": "모잠비크",
+      "english": "Mozambique"
+    },
+    {
+      "id": "me",
+      "label": "몬테네그로",
+      "english": "Montenegro"
+    },
+    {
+      "id": "ms",
+      "label": "몬트세라트",
+      "english": "Montserrat"
+    },
+    {
+      "id": "md",
+      "label": "몰도바",
+      "english": "Moldova"
+    },
+    {
+      "id": "mv",
+      "label": "몰디브",
+      "english": "Maldives"
+    },
+    {
+      "id": "mt",
+      "label": "몰타",
+      "english": "Malta"
+    },
+    {
+      "id": "mn",
+      "label": "몽골",
+      "english": "Mongolia"
+    },
+    {
+      "id": "us",
+      "label": "미국",
+      "english": "United States"
+    },
+    {
+      "id": "vi",
+      "label": "미국령 버진아일랜드",
+      "english": "U.S. Virgin Islands"
+    },
+    {
+      "id": "um",
+      "label": "미국령 해외 제도",
+      "english": "U.S. Outlying Islands"
+    },
+    {
+      "id": "mm",
+      "label": "미얀마",
+      "english": "Myanmar (Burma)"
+    },
+    {
+      "id": "fm",
+      "label": "미크로네시아",
+      "english": "Micronesia"
+    },
+    {
+      "id": "vu",
+      "label": "바누아투",
+      "english": "Vanuatu"
+    },
+    {
+      "id": "bh",
+      "label": "바레인",
+      "english": "Bahrain"
+    },
+    {
+      "id": "bb",
+      "label": "바베이도스",
+      "english": "Barbados"
+    },
+    {
+      "id": "va",
+      "label": "바티칸 시국",
+      "english": "Vatican City"
+    },
+    {
+      "id": "bs",
+      "label": "바하마",
+      "english": "Bahamas"
+    },
+    {
+      "id": "bd",
+      "label": "방글라데시",
+      "english": "Bangladesh"
+    },
+    {
+      "id": "bm",
+      "label": "버뮤다",
+      "english": "Bermuda"
+    },
+    {
+      "id": "bj",
+      "label": "베냉",
+      "english": "Benin"
+    },
+    {
+      "id": "ve",
+      "label": "베네수엘라",
+      "english": "Venezuela"
+    },
+    {
+      "id": "vn",
+      "label": "베트남",
+      "english": "Vietnam"
+    },
+    {
+      "id": "be",
+      "label": "벨기에",
+      "english": "Belgium"
+    },
+    {
+      "id": "by",
+      "label": "벨라루스",
+      "english": "Belarus"
+    },
+    {
+      "id": "bz",
+      "label": "벨리즈",
+      "english": "Belize"
+    },
+    {
+      "id": "ba",
+      "label": "보스니아 헤르체고비나",
+      "english": "Bosnia & Herzegovina"
+    },
+    {
+      "id": "bw",
+      "label": "보츠와나",
+      "english": "Botswana"
+    },
+    {
+      "id": "bo",
+      "label": "볼리비아",
+      "english": "Bolivia"
+    },
+    {
+      "id": "bi",
+      "label": "부룬디",
+      "english": "Burundi"
+    },
+    {
+      "id": "bf",
+      "label": "부르키나파소",
+      "english": "Burkina Faso"
+    },
+    {
+      "id": "bv",
+      "label": "부베섬",
+      "english": "Bouvet Island"
+    },
+    {
+      "id": "bt",
+      "label": "부탄",
+      "english": "Bhutan"
+    },
+    {
+      "id": "mp",
+      "label": "북마리아나제도",
+      "english": "Northern Mariana Islands"
+    },
+    {
+      "id": "mk",
+      "label": "북마케도니아",
+      "english": "North Macedonia"
+    },
+    {
+      "id": "kp",
+      "label": "북한",
+      "english": "North Korea"
+    },
+    {
+      "id": "bg",
+      "label": "불가리아",
+      "english": "Bulgaria"
+    },
+    {
+      "id": "br",
+      "label": "브라질",
+      "english": "Brazil"
+    },
+    {
+      "id": "bn",
+      "label": "브루나이",
+      "english": "Brunei"
+    },
+    {
+      "id": "ws",
+      "label": "사모아",
+      "english": "Samoa"
+    },
+    {
+      "id": "sa",
+      "label": "사우디아라비아",
+      "english": "Saudi Arabia"
+    },
+    {
+      "id": "gs",
+      "label": "사우스조지아 사우스샌드위치 제도",
+      "english": "South Georgia & South Sandwich Islands"
+    },
+    {
+      "id": "sm",
+      "label": "산마리노",
+      "english": "San Marino"
+    },
+    {
+      "id": "st",
+      "label": "상투메 프린시페",
+      "english": "São Tomé & Príncipe"
+    },
+    {
+      "id": "mf",
+      "label": "생마르탱",
+      "english": "St. Martin"
+    },
+    {
+      "id": "bl",
+      "label": "생바르텔레미",
+      "english": "St. Barthélemy"
+    },
+    {
+      "id": "pm",
+      "label": "생피에르 미클롱",
+      "english": "St. Pierre & Miquelon"
+    },
+    {
+      "id": "eh",
+      "label": "서사하라",
+      "english": "Western Sahara"
+    },
+    {
+      "id": "sn",
+      "label": "세네갈",
+      "english": "Senegal"
+    },
+    {
+      "id": "rs",
+      "label": "세르비아",
+      "english": "Serbia"
+    },
+    {
+      "id": "sc",
+      "label": "세이셸",
+      "english": "Seychelles"
+    },
+    {
+      "id": "lc",
+      "label": "세인트루시아",
+      "english": "St. Lucia"
+    },
+    {
+      "id": "vc",
+      "label": "세인트빈센트그레나딘",
+      "english": "St. Vincent & Grenadines"
+    },
+    {
+      "id": "kn",
+      "label": "세인트키츠 네비스",
+      "english": "St. Kitts & Nevis"
+    },
+    {
+      "id": "sh",
+      "label": "세인트헬레나",
+      "english": "St. Helena"
+    },
+    {
+      "id": "so",
+      "label": "소말리아",
+      "english": "Somalia"
+    },
+    {
+      "id": "sb",
+      "label": "솔로몬 제도",
+      "english": "Solomon Islands"
+    },
+    {
+      "id": "sd",
+      "label": "수단",
+      "english": "Sudan"
+    },
+    {
+      "id": "sr",
+      "label": "수리남",
+      "english": "Suriname"
+    },
+    {
+      "id": "lk",
+      "label": "스리랑카",
+      "english": "Sri Lanka"
+    },
+    {
+      "id": "sj",
+      "label": "스발바르제도-얀마웬섬",
+      "english": "Svalbard & Jan Mayen"
+    },
+    {
+      "id": "se",
+      "label": "스웨덴",
+      "english": "Sweden"
+    },
+    {
+      "id": "ch",
+      "label": "스위스",
+      "english": "Switzerland"
+    },
+    {
+      "id": "es",
+      "label": "스페인",
+      "english": "Spain"
+    },
+    {
+      "id": "sk",
+      "label": "슬로바키아",
+      "english": "Slovakia"
+    },
+    {
+      "id": "si",
+      "label": "슬로베니아",
+      "english": "Slovenia"
+    },
+    {
+      "id": "sy",
+      "label": "시리아",
+      "english": "Syria"
+    },
+    {
+      "id": "sl",
+      "label": "시에라리온",
+      "english": "Sierra Leone"
+    },
+    {
+      "id": "sx",
+      "label": "신트마르턴",
+      "english": "Sint Maarten"
+    },
+    {
+      "id": "sg",
+      "label": "싱가포르",
+      "english": "Singapore"
+    },
+    {
+      "id": "ae",
+      "label": "아랍에미리트",
+      "english": "United Arab Emirates"
+    },
+    {
+      "id": "aw",
+      "label": "아루바",
+      "english": "Aruba"
+    },
+    {
+      "id": "am",
+      "label": "아르메니아",
+      "english": "Armenia"
+    },
+    {
+      "id": "ar",
+      "label": "아르헨티나",
+      "english": "Argentina"
+    },
+    {
+      "id": "as",
+      "label": "아메리칸 사모아",
+      "english": "American Samoa"
+    },
+    {
+      "id": "is",
+      "label": "아이슬란드",
+      "english": "Iceland"
+    },
+    {
+      "id": "ht",
+      "label": "아이티",
+      "english": "Haiti"
+    },
+    {
+      "id": "ie",
+      "label": "아일랜드",
+      "english": "Ireland"
+    },
+    {
+      "id": "az",
+      "label": "아제르바이잔",
+      "english": "Azerbaijan"
+    },
+    {
+      "id": "af",
+      "label": "아프가니스탄",
+      "english": "Afghanistan"
+    },
+    {
+      "id": "ad",
+      "label": "안도라",
+      "english": "Andorra"
+    },
+    {
+      "id": "al",
+      "label": "알바니아",
+      "english": "Albania"
+    },
+    {
+      "id": "dz",
+      "label": "알제리",
+      "english": "Algeria"
+    },
+    {
+      "id": "ao",
+      "label": "앙골라",
+      "english": "Angola"
+    },
+    {
+      "id": "ag",
+      "label": "앤티가 바부다",
+      "english": "Antigua & Barbuda"
+    },
+    {
+      "id": "ai",
+      "label": "앵귈라",
+      "english": "Anguilla"
+    },
+    {
+      "id": "er",
+      "label": "에리트리아",
+      "english": "Eritrea"
+    },
+    {
+      "id": "sz",
+      "label": "에스와티니",
+      "english": "Eswatini"
+    },
+    {
+      "id": "ee",
+      "label": "에스토니아",
+      "english": "Estonia"
+    },
+    {
+      "id": "ec",
+      "label": "에콰도르",
+      "english": "Ecuador"
+    },
+    {
+      "id": "et",
+      "label": "에티오피아",
+      "english": "Ethiopia"
+    },
+    {
+      "id": "sv",
+      "label": "엘살바도르",
+      "english": "El Salvador"
+    },
+    {
+      "id": "gb",
+      "label": "영국",
+      "english": "United Kingdom"
+    },
+    {
+      "id": "vg",
+      "label": "영국령 버진아일랜드",
+      "english": "British Virgin Islands"
+    },
+    {
+      "id": "io",
+      "label": "영국령 인도양 지역",
+      "english": "British Indian Ocean Territory"
+    },
+    {
+      "id": "ye",
+      "label": "예멘",
+      "english": "Yemen"
+    },
+    {
+      "id": "om",
+      "label": "오만",
+      "english": "Oman"
+    },
+    {
+      "id": "au",
+      "label": "오스트레일리아",
+      "english": "Australia"
+    },
+    {
+      "id": "at",
+      "label": "오스트리아",
+      "english": "Austria"
+    },
+    {
+      "id": "hn",
+      "label": "온두라스",
+      "english": "Honduras"
+    },
+    {
+      "id": "ax",
+      "label": "올란드 제도",
+      "english": "Åland Islands"
+    },
+    {
+      "id": "wf",
+      "label": "왈리스-푸투나 제도",
+      "english": "Wallis & Futuna"
+    },
+    {
+      "id": "jo",
+      "label": "요르단",
+      "english": "Jordan"
+    },
+    {
+      "id": "ug",
+      "label": "우간다",
+      "english": "Uganda"
+    },
+    {
+      "id": "uy",
+      "label": "우루과이",
+      "english": "Uruguay"
+    },
+    {
+      "id": "uz",
+      "label": "우즈베키스탄",
+      "english": "Uzbekistan"
+    },
+    {
+      "id": "ua",
+      "label": "우크라이나",
+      "english": "Ukraine"
+    },
+    {
+      "id": "iq",
+      "label": "이라크",
+      "english": "Iraq"
+    },
+    {
+      "id": "ir",
+      "label": "이란",
+      "english": "Iran"
+    },
+    {
+      "id": "il",
+      "label": "이스라엘",
+      "english": "Israel"
+    },
+    {
+      "id": "eg",
+      "label": "이집트",
+      "english": "Egypt"
+    },
+    {
+      "id": "it",
+      "label": "이탈리아",
+      "english": "Italy"
+    },
+    {
+      "id": "in",
+      "label": "인도",
+      "english": "India"
+    },
+    {
+      "id": "id",
+      "label": "인도네시아",
+      "english": "Indonesia"
+    },
+    {
+      "id": "jp",
+      "label": "일본",
+      "english": "Japan"
+    },
+    {
+      "id": "jm",
+      "label": "자메이카",
+      "english": "Jamaica"
+    },
+    {
+      "id": "zm",
+      "label": "잠비아",
+      "english": "Zambia"
+    },
+    {
+      "id": "je",
+      "label": "저지",
+      "english": "Jersey"
+    },
+    {
+      "id": "gq",
+      "label": "적도 기니",
+      "english": "Equatorial Guinea"
+    },
+    {
+      "id": "ge",
+      "label": "조지아",
+      "english": "Georgia"
+    },
+    {
+      "id": "cn",
+      "label": "중국",
+      "english": "China"
+    },
+    {
+      "id": "cf",
+      "label": "중앙 아프리카 공화국",
+      "english": "Central African Republic"
+    },
+    {
+      "id": "dj",
+      "label": "지부티",
+      "english": "Djibouti"
+    },
+    {
+      "id": "gi",
+      "label": "지브롤터",
+      "english": "Gibraltar"
+    },
+    {
+      "id": "zw",
+      "label": "짐바브웨",
+      "english": "Zimbabwe"
+    },
+    {
+      "id": "td",
+      "label": "차드",
+      "english": "Chad"
+    },
+    {
+      "id": "cz",
+      "label": "체코",
+      "english": "Czechia"
+    },
+    {
+      "id": "cl",
+      "label": "칠레",
+      "english": "Chile"
+    },
+    {
+      "id": "cm",
+      "label": "카메룬",
+      "english": "Cameroon"
+    },
+    {
+      "id": "cv",
+      "label": "카보베르데",
+      "english": "Cape Verde"
+    },
+    {
+      "id": "kz",
+      "label": "카자흐스탄",
+      "english": "Kazakhstan"
+    },
+    {
+      "id": "qa",
+      "label": "카타르",
+      "english": "Qatar"
+    },
+    {
+      "id": "kh",
+      "label": "캄보디아",
+      "english": "Cambodia"
+    },
+    {
+      "id": "ca",
+      "label": "캐나다",
+      "english": "Canada"
+    },
+    {
+      "id": "ke",
+      "label": "케냐",
+      "english": "Kenya"
+    },
+    {
+      "id": "ky",
+      "label": "케이맨 제도",
+      "english": "Cayman Islands"
+    },
+    {
+      "id": "km",
+      "label": "코모로",
+      "english": "Comoros"
+    },
+    {
+      "id": "xk",
+      "label": "코소보",
+      "english": "Kosovo"
+    },
+    {
+      "id": "cr",
+      "label": "코스타리카",
+      "english": "Costa Rica"
+    },
+    {
+      "id": "cc",
+      "label": "코코스 제도",
+      "english": "Cocos (Keeling) Islands"
+    },
+    {
+      "id": "ci",
+      "label": "코트디부아르",
+      "english": "Côte d’Ivoire"
+    },
+    {
+      "id": "co",
+      "label": "콜롬비아",
+      "english": "Colombia"
+    },
+    {
+      "id": "cg",
+      "label": "콩고-브라자빌",
+      "english": "Congo - Brazzaville"
+    },
+    {
+      "id": "cd",
+      "label": "콩고-킨샤사",
+      "english": "Congo - Kinshasa"
+    },
+    {
+      "id": "cu",
+      "label": "쿠바",
+      "english": "Cuba"
+    },
+    {
+      "id": "kw",
+      "label": "쿠웨이트",
+      "english": "Kuwait"
+    },
+    {
+      "id": "ck",
+      "label": "쿡 제도",
+      "english": "Cook Islands"
+    },
+    {
+      "id": "cw",
+      "label": "퀴라소",
+      "english": "Curaçao"
+    },
+    {
+      "id": "hr",
+      "label": "크로아티아",
+      "english": "Croatia"
+    },
+    {
+      "id": "cx",
+      "label": "크리스마스섬",
+      "english": "Christmas Island"
+    },
+    {
+      "id": "kg",
+      "label": "키르기스스탄",
+      "english": "Kyrgyzstan"
+    },
+    {
+      "id": "ki",
+      "label": "키리바시",
+      "english": "Kiribati"
+    },
+    {
+      "id": "cy",
+      "label": "키프로스",
+      "english": "Cyprus"
+    },
+    {
+      "id": "tj",
+      "label": "타지키스탄",
+      "english": "Tajikistan"
+    },
+    {
+      "id": "tz",
+      "label": "탄자니아",
+      "english": "Tanzania"
+    },
+    {
+      "id": "th",
+      "label": "태국",
+      "english": "Thailand"
+    },
+    {
+      "id": "tc",
+      "label": "터크스 케이커스 제도",
+      "english": "Turks & Caicos Islands"
+    },
+    {
+      "id": "tg",
+      "label": "토고",
+      "english": "Togo"
+    },
+    {
+      "id": "tk",
+      "label": "토켈라우",
+      "english": "Tokelau"
+    },
+    {
+      "id": "to",
+      "label": "통가",
+      "english": "Tonga"
+    },
+    {
+      "id": "tm",
+      "label": "투르크메니스탄",
+      "english": "Turkmenistan"
+    },
+    {
+      "id": "tv",
+      "label": "투발루",
+      "english": "Tuvalu"
+    },
+    {
+      "id": "tn",
+      "label": "튀니지",
+      "english": "Tunisia"
+    },
+    {
+      "id": "tr",
+      "label": "튀르키예",
+      "english": "Türkiye"
+    },
+    {
+      "id": "tt",
+      "label": "트리니다드 토바고",
+      "english": "Trinidad & Tobago"
+    },
+    {
+      "id": "pa",
+      "label": "파나마",
+      "english": "Panama"
+    },
+    {
+      "id": "py",
+      "label": "파라과이",
+      "english": "Paraguay"
+    },
+    {
+      "id": "pk",
+      "label": "파키스탄",
+      "english": "Pakistan"
+    },
+    {
+      "id": "pg",
+      "label": "파푸아뉴기니",
+      "english": "Papua New Guinea"
+    },
+    {
+      "id": "pw",
+      "label": "팔라우",
+      "english": "Palau"
+    },
+    {
+      "id": "ps",
+      "label": "팔레스타인 지구",
+      "english": "Palestinian Territories"
+    },
+    {
+      "id": "fo",
+      "label": "페로 제도",
+      "english": "Faroe Islands"
+    },
+    {
+      "id": "pe",
+      "label": "페루",
+      "english": "Peru"
+    },
+    {
+      "id": "pt",
+      "label": "포르투갈",
+      "english": "Portugal"
+    },
+    {
+      "id": "fk",
+      "label": "포클랜드 제도",
+      "english": "Falkland Islands"
+    },
+    {
+      "id": "pl",
+      "label": "폴란드",
+      "english": "Poland"
+    },
+    {
+      "id": "pr",
+      "label": "푸에르토리코",
+      "english": "Puerto Rico"
+    },
+    {
+      "id": "fr",
+      "label": "프랑스",
+      "english": "France"
+    },
+    {
+      "id": "gf",
+      "label": "프랑스령 기아나",
+      "english": "French Guiana"
+    },
+    {
+      "id": "tf",
+      "label": "프랑스령 남방 지역",
+      "english": "French Southern Territories"
+    },
+    {
+      "id": "pf",
+      "label": "프랑스령 폴리네시아",
+      "english": "French Polynesia"
+    },
+    {
+      "id": "fj",
+      "label": "피지",
+      "english": "Fiji"
+    },
+    {
+      "id": "fi",
+      "label": "핀란드",
+      "english": "Finland"
+    },
+    {
+      "id": "ph",
+      "label": "필리핀",
+      "english": "Philippines"
+    },
+    {
+      "id": "pn",
+      "label": "핏케언 제도",
+      "english": "Pitcairn Islands"
+    },
+    {
+      "id": "hm",
+      "label": "허드 맥도널드 제도",
+      "english": "Heard & McDonald Islands"
+    },
+    {
+      "id": "hu",
+      "label": "헝가리",
+      "english": "Hungary"
+    },
+    {
+      "id": "hk",
+      "label": "홍콩(중국 특별행정구)",
+      "english": "Hong Kong SAR China"
+    },
+    {
+      "id": "kr-jeju",
+      "label": "제주도민",
+      "english": "Jeju resident"
+    }
+  ]
+}

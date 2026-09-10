@@ -32,34 +32,7 @@ export async function submitOrder(
     .maybeSingle();
   if (existing) return readOrder(existing.id);
   const catalog = await getCatalog();
-  if (
-    body.language !== "ko" ||
-    !Array.isArray(body.items) ||
-    body.items.length < 1 ||
-    body.items.length > 30 ||
-    !Number.isSafeInteger(body.expectedTotal)
-  )
-    throw new Error("INVALID_ORDER");
-  for (const i of body.items) {
-    if (
-      !i ||
-      !["gimbap", "package", "extra"].includes(i.kind) ||
-      !Array.isArray(i.excluded) ||
-      !Array.isArray(i.toppings) ||
-      !i.excluded.every((v: unknown) => typeof v === "string") ||
-      !i.toppings.every((v: unknown) => typeof v === "string") ||
-      new Set(i.excluded).size !== i.excluded.length ||
-      new Set(i.toppings).size !== i.toppings.length
-    )
-      throw new Error("INVALID_ORDER");
-    if (
-      i.kind === "extra" &&
-      (i.excluded.length ||
-        i.toppings.length ||
-        typeof i.productId !== "string")
-    )
-      throw new Error("INVALID_ORDER");
-  }
+  validateOrderInput(body);
   let consentAt: string | null = null;
   const participating = !manual && body.surveySkipped !== true;
   if (participating) {
@@ -109,4 +82,35 @@ export async function submitOrder(
   const { data, error } = await db.rpc("create_order", { payload });
   if (error) throw new Error(error.message);
   return readOrder(data);
+}
+
+export function validateOrderInput(body: Record<string, unknown>) {
+  if (
+    body.language !== "ko" ||
+    !Array.isArray(body.items) ||
+    body.items.length < 1 ||
+    body.items.length > 30 ||
+    !Number.isSafeInteger(body.expectedTotal)
+  )
+    throw new Error("INVALID_ORDER");
+  for (const i of body.items) {
+    if (
+      !i ||
+      !["gimbap", "package", "extra"].includes(i.kind) ||
+      !Array.isArray(i.excluded) ||
+      !Array.isArray(i.toppings) ||
+      !i.excluded.every((v: unknown) => typeof v === "string") ||
+      !i.toppings.every((v: unknown) => typeof v === "string") ||
+      new Set(i.excluded).size !== i.excluded.length ||
+      new Set(i.toppings).size !== i.toppings.length
+    )
+      throw new Error("INVALID_ORDER");
+    if (
+      i.kind === "extra" &&
+      (i.excluded.length ||
+        i.toppings.length ||
+        typeof i.productId !== "string")
+    )
+      throw new Error("INVALID_ORDER");
+  }
 }

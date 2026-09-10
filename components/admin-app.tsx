@@ -25,6 +25,10 @@ export default function AdminApp() {
     [digits, setDigits] = useState(""),
     [help, setHelp] = useState(false),
     [manual, setManual] = useState(false),
+    [editing, setEditing] = useState<Order | undefined>(),
+    [groupIds, setGroupIds] = useState<string[]>([]),
+    [batchUndo, setBatchUndo] = useState<Order[]>([]),
+    [reasonPreset, setReasonPreset] = useState("고객 취소"),
     [cancel, setCancel] = useState(false),
     [reason, setReason] = useState(""),
     [undo, setUndo] = useState<Order | null>(null),
@@ -161,11 +165,11 @@ export default function AdminApp() {
     };
   }, [auth, refresh]);
   useEffect(() => {
-    if (!undo) return;
+    if (!undo && !batchUndo.length) return;
     const delay = Math.max(0, undoDeadline - Date.now());
-    const timer = setTimeout(() => setUndo(null), delay);
+    const timer = setTimeout(() => { setUndo(null); setBatchUndo([]); }, delay);
     return () => clearTimeout(timer);
-  }, [undo, undoDeadline]);
+  }, [undo, batchUndo, undoDeadline]);
   const sorted = orders.filter((order) =>
     statusFilter === "ALL" || (statusFilter === "CLOSED"
       ? order.status !== "PENDING" : order.status === statusFilter),
@@ -173,6 +177,19 @@ export default function AdminApp() {
     ? a.created_at.localeCompare(b.created_at) || a.number - b.number
     : b.created_at.localeCompare(a.created_at) || b.number - a.number);
   const current = orders.find((o) => o.id === selected);
+  const grouped = orders.filter(o => groupIds.includes(o.id)).sort((a,b) => a.number - b.number);
+  const changeBatch = useCallback(async (targets: Order[], status: "PENDING" | "COMPLETED") => {
+    if (busyRef.current || !targets.length) return;
+    busyRef.current = true; setBusy(true); setError("");
+    try {
+      const updated = await api<Order[]>("/api/admin/orders/batch", "POST", { orders: targets.map(o => ({ id: o.id, version: o.version })), status });
+      setOrders(prev => prev.map(o => ({ ...o, ...updated.find(v => v.id === o.id) })));
+      setUndo(null); setBatchUndo(status === "COMPLETED" ? updated : []);
+      setUndoDeadline(Date.now() + 5000);
+      await refresh();
+    } catch(e) { setError(errorText(e)); await refresh(); }
+    finally { busyRef.current = false; setBusy(false); }
+  }, [refresh]);
   const changeStatus = useCallback(
     async (o: Order, status: Order["status"], why?: string) => {
       if (busyRef.current) return;
@@ -191,6 +208,7 @@ export default function AdminApp() {
         );
         if (status === "COMPLETED") {
           setUndo(updated);
+          setBatchUndo([]);
           setUndoDeadline(Date.now() + 5000);
         } else setUndo(null);
         setCancel(false);
@@ -220,17 +238,19 @@ export default function AdminApp() {
         setHelp(false);
         if (!busy) {
           setManual(false);
+          setEditing(undefined);
           setCancel(false);
         }
         setDigits("");
         setSelected(null);
         return;
       }
-      if (help || manual || cancel || busy) return;
+      if (help || manual || editing || cancel || busy) return;
       if (e.ctrlKey || e.metaKey) {
         if (e.key.toLowerCase() === "z") {
           e.preventDefault();
-          if (undo) void changeStatus(undo, "PENDING");
+          if (batchUndo.length) void changeBatch(batchUndo, "PENDING");
+          else if (undo) void changeStatus(undo, "PENDING");
         }
         return;
       }
@@ -254,6 +274,8 @@ export default function AdminApp() {
             setError("");
           } else setError(t.numberNotFound);
           setDigits("");
+        } else if (grouped.length > 1) {
+          if (grouped.every(o => o.status === "PENDING")) void changeBatch(grouped, "COMPLETED");
         } else if (current?.status === "PENDING")
           void changeStatus(current, "COMPLETED");
         return;
@@ -291,7 +313,7 @@ export default function AdminApp() {
     sorted,
     selected,
     undo,
-    changeStatus,
+    changeStatus, editing, batchUndo, changeBatch, grouped,
   ]);
   if (checking)
     return (
@@ -388,6 +410,9 @@ export default function AdminApp() {
             setAuth(false);
             setOrders([]);
             setSelected(null);
+            setGroupIds([]);
+            setBatchUndo([]);
+            setEditing(undefined);
             setUndo(null);
           }}
         >
@@ -460,8 +485,14 @@ export default function AdminApp() {
                   </select>
                 </label>
               </div>
+              <div className="row between"><span className="muted">체크하여 주문 묶기 ({grouped.length}/30)</span>
+                {!!groupIds.length && <button onClick={() => setGroupIds([])}>묶음 해제</button>}</div>
               <div className="order-list" ref={listRef}>
                 {sorted.map((o) => (
+                  <div className="order-select-row" key={o.id}>
+                  <input type="checkbox" aria-label={`${orderNumber(o.number)}번 묶음 선택`} checked={groupIds.includes(o.id)}
+                    disabled={!groupIds.includes(o.id) && grouped.length >= 30}
+                    onChange={e => { setGroupIds(ids => e.target.checked ? [...ids, o.id] : ids.filter(id => id !== o.id)); setSelected(o.id); }} />
                   <button
                     className={`order-row ${o.id === selected ? "selected" : ""}`}
                     key={o.id}
@@ -489,13 +520,19 @@ export default function AdminApp() {
                       </span>
                       <b>{money(o.total)}</b>
                     </div>
-                  </button>
+                  </button></div>
                 ))}
                 {!sorted.length && <p className="empty">선택한 상태의 주문이 없습니다.</p>}
               </div>
             </section>
             <section className="order-detail stack" ref={detailRef}>
-              {current ? (
+              {grouped.length > 1 ? <>
+                <div className="row between"><h2>묶음 {grouped.length}건 · 메뉴 {grouped.reduce((n,o) => n + o.order_items.length, 0)}개</h2><strong>{money(grouped.reduce((n,o) => n + o.total, 0))}</strong></div>
+                <div className="row wrap">{grouped.map(o => <button key={o.id} disabled={busy || o.status !== "PENDING"} onClick={() => setEditing(o)}>{orderNumber(o.number)}번 · {o.status === "PENDING" ? "구성 수정" : o.status === "COMPLETED" ? "완료" : "취소"}</button>)}</div>
+                <KitchenReceipt order={grouped[0]} sourceOrders={grouped} />
+                <div className="order-actions"><button className="primary" disabled={busy || !grouped.every(o => o.status === "PENDING")} onClick={() => void changeBatch(grouped, "COMPLETED")}>묶음 결제·수령 완료 · {money(grouped.reduce((n,o) => n + o.total,0))}</button>
+                {!grouped.every(o => o.status === "PENDING") && <span className="muted">접수 상태의 주문끼리 묶으면 일괄 완료할 수 있습니다.</span>}</div>
+              </> : current ? (
                 <>
                   <div className="row between order-detail-heading">
                     <strong className="admin-number">
@@ -515,6 +552,7 @@ export default function AdminApp() {
                   {current.status === "CANCELLED" && <p className="error">취소 사유: {current.cancel_reason || "사유 없음"}</p>}
                   <KitchenReceipt order={current} />
                   <div className="order-actions">
+                  {current.status === "PENDING" && <button disabled={busy} onClick={() => setEditing(current)}>주문 구성 수정</button>}
                   {current.status === "PENDING" && (
                     <button
                       className="primary"
@@ -608,6 +646,7 @@ export default function AdminApp() {
           </p>
         </div>
       )}
+      {!!batchUndo.length && <div role="status" className="toast row"><span>{batchUndo.length}건 완료 · 5초 이내 되돌릴 수 있습니다.</span><button disabled={busy} onClick={() => void changeBatch(batchUndo, "PENDING")}>묶음 완료 되돌리기 (Ctrl+Z)</button></div>}
       {undo && (
         <div role="status" className="toast row">
           <span><strong>{orderNumber(undo.number)}번</strong> · {t.undoNotice}</span>
@@ -644,7 +683,7 @@ export default function AdminApp() {
             className="modal stack"
             onSubmit={(e) => {
               e.preventDefault();
-              void changeStatus(current, "CANCELLED", reason);
+              void changeStatus(current, "CANCELLED", [reasonPreset === "직접 입력" ? "" : reasonPreset, reason.trim()].filter(Boolean).join(" · "));
             }}
           >
             <h2>
@@ -652,15 +691,17 @@ export default function AdminApp() {
             </h2>
             <label>
               {t.cancelReason}
+              <select value={reasonPreset} onChange={e => setReasonPreset(e.target.value)}>{["고객 취소", "가게 취소", "재료 품절", "메뉴 추가", "직접 입력"].map(v => <option key={v}>{v}</option>)}</select>
+            </label>
+            <label>상세 사유 {reasonPreset === "직접 입력" ? "(필수)" : "(선택)"}
               <input
-                autoFocus
-                required
-                maxLength={300}
+                required={reasonPreset === "직접 입력"}
+                maxLength={270}
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
               />
             </label>
-            <button className="danger" disabled={busy || !reason.trim()}>
+            <button className="danger" disabled={busy || (reasonPreset === "직접 입력" && !reason.trim())}>
               {t.cancelConfirm}
             </button>
             <button
@@ -673,12 +714,14 @@ export default function AdminApp() {
           </form>
         </div>
       )}
-      {manual && catalog && (
+      {(manual || editing) && catalog && (
         <ManualOrder
           catalog={catalog}
-          onClose={() => setManual(false)}
+          order={editing}
+          onClose={() => { setManual(false); setEditing(undefined); }}
           onDone={(o) => {
             setManual(false);
+            setEditing(undefined);
             setSelected(o.id);
             void refresh();
           }}
