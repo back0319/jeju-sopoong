@@ -1,5 +1,22 @@
 import type { Order } from "@/lib/types";
 import { koreanIngredientName } from "@/lib/domain";
+import ingredients from "@/config/ingredients.json";
+
+function IngredientSlots({ items, kind }: { items: { id: string; name: string }[]; kind: "base" | "topping" }) {
+  const ids = ingredients.filter((ingredient) => ingredient.kind === kind).map((ingredient) => ingredient.id);
+  const slots = [...ids, ...items.filter((item) => !ids.includes(item.id)).map((item) => item.id)];
+  return (
+    <div className="kitchen-slots">
+      {slots.map((id) => {
+        const ingredient = items.find((item) => item.id === id);
+        return ingredient
+          ? <strong className="kitchen-ingredient" key={id}>{koreanIngredientName(ingredient.name)}</strong>
+          : <span className="kitchen-slot-empty" key={id} aria-hidden="true" />;
+      })}
+      {!items.length && <span className="kitchen-none muted">없음</span>}
+    </div>
+  );
+}
 
 export function KitchenReceipt({ order }: { order: Order }) {
   return (
@@ -13,25 +30,19 @@ export function KitchenReceipt({ order }: { order: Order }) {
             <>
               <div className={`kitchen-group omit ${snapshot.excluded.length ? "has-items" : ""}`}>
                 <h3>빼는 재료</h3>
-                <div className="kitchen-slots">
-                  {snapshot.excluded.length ? snapshot.excluded.map((ingredient) => (
-                    <strong className="kitchen-ingredient" key={ingredient.id}>{koreanIngredientName(ingredient.name)}</strong>
-                  )) : <span className="muted">없음</span>}
-                </div>
+                <IngredientSlots items={snapshot.excluded} kind="base" />
               </div>
               <div className={`kitchen-group topping ${snapshot.toppings.length ? "has-items" : ""}`}>
                 <h3>추가 토핑</h3>
-                <div className="kitchen-slots">
-                  {snapshot.toppings.length ? snapshot.toppings.map((ingredient) => (
-                    <strong className="kitchen-ingredient" key={ingredient.id}>{koreanIngredientName(ingredient.name)}</strong>
-                  )) : <span className="muted">없음</span>}
-                </div>
+                <IngredientSlots items={snapshot.toppings} kind="topping" />
               </div>
               <div className="kitchen-group base">
                 <h3>넣는 기본 재료</h3>
                 <p>{snapshot.included.map((ingredient) => koreanIngredientName(ingredient.name)).join(" · ")}</p>
               </div>
-              {snapshot.kind === "package" && <p className="kitchen-package">라면 + 음료 + 굿즈</p>}
+              <p className={`kitchen-package ${snapshot.kind === "package" ? "" : "no-package"}`} aria-hidden={snapshot.kind !== "package"}>
+                {snapshot.kind === "package" ? "라면 + 음료 + 굿즈" : null}
+              </p>
             </>
           )}
         </section>
