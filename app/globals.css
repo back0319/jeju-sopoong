@@ -330,15 +330,15 @@ textarea {
   height: 128px;
   object-fit: contain;
 }
-.ingredient-placeholder {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 128px;
-  background: var(--mint);
-  color: var(--green);
-  font-size: 30px;
-  font-weight: 750;
+/* 그림 없는 기성품 토핑. 품절 배지가 사진 자리를 대신하지 않도록 흐름에 맞춥니다. */
+.ingredient-card.plain {
+  justify-content: center;
+  min-height: 84px;
+}
+.ingredient-card.plain .soldout {
+  position: static;
+  align-self: flex-start;
+  margin: 10px 12px 0;
 }
 .ingredient-card .caption {
   padding: 10px 12px;

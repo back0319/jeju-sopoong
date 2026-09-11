@@ -113,19 +113,13 @@ export function ItemBuilder({
                     return (
                       <button
                         key={i.id}
-                        className={`ingredient-card ${selected ? "selected" : ""}`}
+                        // 기성품에는 그림이 없어 이름과 가격만 담은 낮은 카드로 둡니다.
+                        className={`ingredient-card ${i.image ? "" : "plain"} ${selected ? "selected" : ""}`}
                         aria-pressed={selected}
                         disabled={out && !selected}
                         onClick={() => toggle("toppings", i.id)}
                       >
-                        {/* 사진이 없는 재료는 이름만 담은 자리 표시로 대신합니다. */}
-                        {i.image ? (
-                          <img src={i.image} alt={i.name} />
-                        ) : (
-                          <span className="ingredient-placeholder" aria-hidden="true">
-                            {i.name.slice(0, 2)}
-                          </span>
-                        )}
+                        {i.image && <img src={i.image} alt={i.name} />}
                         {out && <span className="soldout">{t.soldOut}</span>}
                         <div className="caption">
                           <strong>{i.name}</strong>
