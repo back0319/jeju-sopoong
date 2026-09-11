@@ -1,7 +1,9 @@
 import type { Order } from "@/lib/types";
 import { money, koreanIngredientName } from "@/lib/domain";
 import { t } from "@/lib/client";
-export function OrderReceipt({ order }: { order: Order }) {
+import { ingredientName } from "@/lib/ingredient-detail";
+import type { Language } from "@/lib/types";
+export function OrderReceipt({ order, language = "ko", copy = t }: { order: Order; language?: Language; copy?: typeof t }) {
   return (
     <div className="stack receipt">
       {[...order.order_items]
@@ -16,11 +18,11 @@ export function OrderReceipt({ order }: { order: Order }) {
             </div>
             {s.included.length > 0 && (
               <div>
-                <p className="muted">{t.included}</p>
+                <p className="muted">{copy.included}</p>
                 <div className="row wrap">
                   {s.included.map((v) => (
                     <span className="chip" key={v.id}>
-                      {koreanIngredientName(v.name)}
+                      {ingredientName(v.id, koreanIngredientName(v.name), language)}
                     </span>
                   ))}
                 </div>
@@ -28,11 +30,11 @@ export function OrderReceipt({ order }: { order: Order }) {
             )}
             {s.excluded.length > 0 && (
               <div>
-                <p className="muted">{t.excluded}</p>
+                <p className="muted">{copy.excluded}</p>
                 <div className="row wrap">
                   {s.excluded.map((v) => (
                     <span className="chip excluded" key={v.id}>
-                      {koreanIngredientName(v.name)}
+                      {ingredientName(v.id, koreanIngredientName(v.name), language)}
                     </span>
                   ))}
                 </div>
@@ -42,8 +44,8 @@ export function OrderReceipt({ order }: { order: Order }) {
               <div className="row wrap">
                 {s.toppings.map((v) => (
                   <span className="chip" key={v.id}>
-                    + {koreanIngredientName(v.name)}
-                    {v.free && <b> {t.free}</b>}
+                    + {ingredientName(v.id, koreanIngredientName(v.name), language)}
+                    {v.free && <b> {copy.free}</b>}
                   </span>
                 ))}
               </div>
@@ -51,7 +53,7 @@ export function OrderReceipt({ order }: { order: Order }) {
           </section>
         ))}
       <div className="row between">
-        <strong>{t.total}</strong>
+        <strong>{copy.total}</strong>
         <strong>{money(order.total)}</strong>
       </div>
     </div>

@@ -1,0 +1,128 @@
+{
+  "seaweed": {
+    "en": "Seaweed",
+    "ja": "海苔",
+    "zh-Hans": "海苔",
+    "zh-Hant": "海苔",
+    "id": "Rumput laut",
+    "ar": "أعشاب بحرية",
+    "ms": "Rumpai laut"
+  },
+  "rice": {
+    "en": "Rice",
+    "ja": "ごはん",
+    "zh-Hans": "米饭",
+    "zh-Hant": "白飯",
+    "id": "Nasi",
+    "ar": "أرز",
+    "ms": "Nasi"
+  },
+  "egg": {
+    "en": "Egg",
+    "ja": "卵",
+    "zh-Hans": "鸡蛋",
+    "zh-Hant": "雞蛋",
+    "id": "Telur",
+    "ar": "بيض",
+    "ms": "Telur"
+  },
+  "ham": {
+    "en": "Ham",
+    "ja": "ハム",
+    "zh-Hans": "火腿",
+    "zh-Hant": "火腿",
+    "id": "Ham",
+    "ar": "لحم مقدّد",
+    "ms": "Ham"
+  },
+  "radish": {
+    "en": "Pickled radish",
+    "ja": "たくあん",
+    "zh-Hans": "腌萝卜",
+    "zh-Hant": "醃蘿蔔",
+    "id": "Lobak acar",
+    "ar": "فجل مخلّل",
+    "ms": "Lobak jeruk"
+  },
+  "crab": {
+    "en": "Crab stick",
+    "ja": "カニカマ",
+    "zh-Hans": "蟹柳",
+    "zh-Hant": "蟹肉棒",
+    "id": "Crab stick",
+    "ar": "أصابع السلطعون",
+    "ms": "Ketam tiruan"
+  },
+  "pork": {
+    "en": "Jeju pork",
+    "ja": "済州豚",
+    "zh-Hans": "济州猪肉",
+    "zh-Hant": "濟州豬肉",
+    "id": "Babi Jeju",
+    "ar": "لحم خنزير جيجو",
+    "ms": "Daging babi Jeju"
+  },
+  "turban-shell": {
+    "en": "Turban shell",
+    "ja": "サザエ",
+    "zh-Hans": "海螺",
+    "zh-Hant": "海螺",
+    "id": "Siput turban",
+    "ar": "حلزون البحر",
+    "ms": "Siput turban"
+  },
+  "fernbrake": {
+    "en": "Fernbrake",
+    "ja": "わらび",
+    "zh-Hans": "蕨菜",
+    "zh-Hant": "蕨菜",
+    "id": "Pakis",
+    "ar": "سرخس",
+    "ms": "Pucuk paku"
+  },
+  "carrot": {
+    "en": "Carrot",
+    "ja": "にんじん",
+    "zh-Hans": "胡萝卜",
+    "zh-Hant": "胡蘿蔔",
+    "id": "Wortel",
+    "ar": "جزر",
+    "ms": "Lobak merah"
+  },
+  "cheese": {
+    "en": "Cheese slice",
+    "ja": "チーズ1枚",
+    "zh-Hans": "芝士1片",
+    "zh-Hant": "起司1片",
+    "id": "Keju 1 lembar",
+    "ar": "شريحة جبن",
+    "ms": "Sekeping keju"
+  },
+  "gim": {
+    "en": "Pack of gim",
+    "ja": "海苔1袋",
+    "zh-Hans": "海苔1包",
+    "zh-Hant": "海苔1包",
+    "id": "Sebungkus gim",
+    "ar": "كيس أعشاب بحرية",
+    "ms": "Sebungkus gim"
+  },
+  "kimchi": {
+    "en": "Cabbage kimchi",
+    "ja": "白菜キムチ",
+    "zh-Hans": "辣白菜",
+    "zh-Hant": "辣白菜",
+    "id": "Kimchi sawi",
+    "ar": "كيمتشي الملفوف",
+    "ms": "Kimchi kubis"
+  },
+  "stir-fried-kimchi": {
+    "en": "Stir-fried kimchi",
+    "ja": "炒めキムチ",
+    "zh-Hans": "炒泡菜",
+    "zh-Hant": "炒泡菜",
+    "id": "Kimchi tumis",
+    "ar": "كيمتشي مقلي",
+    "ms": "Kimchi goreng"
+  }
+}

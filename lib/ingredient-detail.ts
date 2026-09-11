@@ -32,3 +32,15 @@ export function detailOf(
     ]),
   ) as IngredientDetail;
 }
+
+import names from "@/config/ingredient-name-i18n.json";
+const nameTable = names as Record<string, Partial<Record<string, string>>>;
+// 재료 이름은 DB에 한국어로만 있습니다. 주문에 저장되는 값은 그대로 두고 표시만 바꿉니다.
+export function ingredientName(
+  id: string,
+  korean: string,
+  language: Language = "ko",
+) {
+  if (language === "ko") return korean;
+  return nameTable[id]?.[language]?.trim() || korean;
+}

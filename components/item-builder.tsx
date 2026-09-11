@@ -3,10 +3,14 @@ import { useEffect, useRef, useState } from "react";
 import type { Catalog, CartItem } from "@/lib/types";
 import { itemPrice, money } from "@/lib/domain";
 import { t } from "@/lib/client";
+import { ingredientName } from "@/lib/ingredient-detail";
+import type { Language } from "@/lib/types";
 import { Check } from "./icons";
 export function ItemBuilder({
   catalog,
   item,
+  language,
+  copy,
   onChange,
   onSave,
   onBack,
@@ -14,6 +18,8 @@ export function ItemBuilder({
 }: {
   catalog: Catalog;
   item: CartItem;
+  language: Language;
+  copy: typeof t;
   onChange: (item: CartItem) => void;
   onSave: () => void;
   onBack: () => void;
@@ -42,7 +48,7 @@ export function ItemBuilder({
             className="quiet"
             onClick={() => (step ? setStep(step - 1) : onBack())}
           >
-            {t.back}
+            {copy.back}
           </button>
           <span className="muted">
             {step + 1} / {maxStep + 1}
@@ -50,17 +56,17 @@ export function ItemBuilder({
         </div>
         <h1>
           {step === 0
-            ? t.baseTitle
+            ? copy.baseTitle
             : step === 1
-              ? t.toppingTitle
-              : t.upgradeTitle}
+              ? copy.toppingTitle
+              : copy.upgradeTitle}
         </h1>
         <p className="muted">
           {step === 0
-            ? t.baseDescription
+            ? copy.baseDescription
             : step === 1
-              ? t.toppingDescription
-              : t.upgradeDescription}
+              ? copy.toppingDescription
+              : copy.upgradeDescription}
         </p>
         {step === 0 && (
           <>
@@ -70,7 +76,7 @@ export function ItemBuilder({
                 .map((i) => (
                   <span className="chip" key={i.id}>
                     <Check />
-                    {i.name}
+                    {ingredientName(i.id, i.name, language)}
                   </span>
                 ))}
             </div>
@@ -85,9 +91,9 @@ export function ItemBuilder({
                     onClick={() => toggle("excluded", i.id)}
                   >
                     <div className="row between">
-                      <span>{i.name}</span>
+                      <span>{ingredientName(i.id, i.name, language)}</span>
                       <span className="muted">
-                        {item.excluded.includes(i.id) ? t.excluded : t.included}
+                        {item.excluded.includes(i.id) ? copy.excluded : copy.included}
                       </span>
                     </div>
                   </button>
@@ -101,7 +107,7 @@ export function ItemBuilder({
             if (!options.length) return null;
             return (
               <section className="stack" key={kind}>
-                <h3>{kind === "topping" ? t.jejuToppings : t.readyToppings}</h3>
+                <h3>{kind === "topping" ? copy.jejuToppings : copy.readyToppings}</h3>
                 <div className="grid2">
                   {options.map((i) => {
                     const stock = catalog.inventory.find(
@@ -119,10 +125,10 @@ export function ItemBuilder({
                         disabled={out && !selected}
                         onClick={() => toggle("toppings", i.id)}
                       >
-                        {i.image && <img src={i.image} alt={i.name} />}
-                        {out && <span className="soldout">{t.soldOut}</span>}
+                        {i.image && <img src={i.image} alt={ingredientName(i.id, i.name, language)} />}
+                        {out && <span className="soldout">{copy.soldOut}</span>}
                         <div className="caption">
-                          <strong>{i.name}</strong>
+                          <strong>{ingredientName(i.id, i.name, language)}</strong>
                           <div className="row between">
                             <span>{money(i.price)}</span>
                             {selected ? <Check /> : <span>+</span>}
@@ -139,7 +145,7 @@ export function ItemBuilder({
           <div className="stack">
             <section className="panel stack set-summary">
               <div className="row between">
-                <h3>{t.setTitle}</h3>
+                <h3>{copy.setTitle}</h3>
                 <strong>
                   {money(
                     (catalog.products.find((p) => p.id === "gimbap")?.price ??
@@ -148,7 +154,7 @@ export function ItemBuilder({
                 </strong>
               </div>
               <p className="muted" style={{ whiteSpace: "pre-line" }}>
-                {t.setItems}
+                {copy.setItems}
               </p>
             </section>
             <button
@@ -156,8 +162,8 @@ export function ItemBuilder({
               aria-pressed={item.kind === "gimbap"}
               onClick={() => onChange({ ...item, kind: "gimbap" })}
             >
-              <span>{t.keepGimbap}</span>
-              <small className="muted">{t.keepGimbapHint}</small>
+              <span>{copy.keepGimbap}</span>
+              <small className="muted">{copy.keepGimbapHint}</small>
             </button>
             <button
               className={`choice ${item.kind === "package" ? "selected" : ""}`}
@@ -165,9 +171,9 @@ export function ItemBuilder({
               onClick={() => onChange({ ...item, kind: "package" })}
             >
               <span>
-                {upgrade?.name ?? t.package} + {money(upgrade?.price ?? 0)}
+                {language === "ko" ? (upgrade?.name ?? copy.package) : copy.package} + {money(upgrade?.price ?? 0)}
               </span>
-              <small className="muted">{t.packageHint}</small>
+              <small className="muted">{copy.packageHint}</small>
             </button>
           </div>
         )}
@@ -177,14 +183,14 @@ export function ItemBuilder({
         style={{ margin: "24px -22px -22px", marginTop: "auto" }}
       >
         <div className="row between" style={{ marginBottom: 12 }}>
-          <span>{t.total}</span>
+          <span>{copy.total}</span>
           <strong>{money(itemPrice(item, catalog))}</strong>
         </div>
         <button
           className="primary"
           onClick={() => (step < maxStep ? setStep(step + 1) : onSave())}
         >
-          {step < maxStep ? t.next : editing ? t.saveChanges : t.saveItem}
+          {step < maxStep ? copy.next : editing ? copy.saveChanges : copy.saveItem}
         </button>
       </div>
     </>

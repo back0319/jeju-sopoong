@@ -32,7 +32,7 @@ import { Arrow, Check } from "./icons";
 import { ItemBuilder } from "./item-builder";
 import { OrderReceipt } from "./order-receipt";
 import { liveRefresh } from "@/lib/live-refresh";
-import { detailOf } from "@/lib/ingredient-detail";
+import { detailOf, ingredientName } from "@/lib/ingredient-detail";
 import { optionLabel, questionTitle } from "@/lib/survey-i18n";
 type Step =
   | "language"
@@ -391,8 +391,7 @@ export default function CustomerFlow({
       )}
       {["build", "cart", "review"].includes(d.step) && shortages.length > 0 && (
         <div className="notice" role="alert" style={{ margin: "0 22px 12px" }}>
-          {shortages.map((ingredient) => ingredient.name).join(", ")} 재고가 부족합니다.
-          담은 주문을 수정해 해당 재료를 빼거나 다른 재료를 선택해 주세요.
+          {shortages.map((i) => ingredientName(i.id, i.name, d.language)).join(", ")} {copy.errors.OUT_OF_STOCK}
           {d.step === "review" && <button onClick={() => go("cart")}>주문 수정</button>}
         </div>
       )}
@@ -595,9 +594,9 @@ export default function CustomerFlow({
               <p className="muted">{copy.ingredientDescription}</p>
             </div>
             <article className="ingredient-feature">
-              <img src={origin.image!} alt={origin.name} />
+              <img src={origin.image!} alt={ingredientName(origin.id, origin.name, d.language)} />
               <div className="stack">
-                <h2>{origin.name}</h2>
+                <h2>{ingredientName(origin.id, origin.name, d.language)}</h2>
                 <IngredientDetail id={origin.id} language={d.language} copy={copy} />
                 <ContentBody value={content(origin.id)} copy={copy} />
               </div>
@@ -624,6 +623,8 @@ export default function CustomerFlow({
             key={d.editing ?? "new"}
             catalog={catalog}
             item={d.item}
+            language={d.language}
+            copy={copy}
             onChange={(item) => change({ item })}
             onBack={() => go(d.items.length ? "cart" : "consent")}
             editing={d.editing !== null}
@@ -660,7 +661,7 @@ export default function CustomerFlow({
                       ? catalog.products.find((p) => p.id === item.productId)
                           ?.name
                       : item.kind === "package"
-                        ? catalog.products.find((p) => p.id === "package")?.name ?? copy.package
+                        ? (d.language === "ko" ? catalog.products.find((p) => p.id === "package")?.name ?? copy.package : copy.package)
                         : copy.gimbap}
                   </h3>
                   <strong>{money(itemPrice(item, catalog))}</strong>
@@ -675,14 +676,14 @@ export default function CustomerFlow({
                             className={`chip ${item.excluded.includes(v.id) ? "excluded" : ""}`}
                             key={v.id}
                           >
-                            {v.name}
+                            {ingredientName(v.id, v.name, d.language)}
                           </span>
                         ))}
                     </div>
                     <div className="row wrap">
                       {item.toppings.map((id) => (
                         <span className="chip" key={id}>
-                          + {catalog.ingredients.find((v) => v.id === id)?.name}
+                          + {(() => { const v = catalog.ingredients.find((x) => x.id === id); return v ? ingredientName(v.id, v.name, d.language) : id; })()}
                         </span>
                       ))}
                     </div>
@@ -782,7 +783,7 @@ export default function CustomerFlow({
                 <div className="receipt">
                   <details>
                     <summary>{copy.orderDetails}</summary>
-                    <OrderReceipt order={order} />
+                    <OrderReceipt order={order} language={d.language} copy={copy} />
                   </details>
                 </div>
                 {content("experience")?.video_url && (
