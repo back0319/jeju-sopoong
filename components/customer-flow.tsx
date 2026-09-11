@@ -33,6 +33,7 @@ import { ItemBuilder } from "./item-builder";
 import { OrderReceipt } from "./order-receipt";
 import { liveRefresh } from "@/lib/live-refresh";
 import { detailOf } from "@/lib/ingredient-detail";
+import { optionLabel, questionTitle } from "@/lib/survey-i18n";
 type Step =
   | "language"
   | "usage"
@@ -178,7 +179,7 @@ export default function CustomerFlow({
           persist("localStorage", "juseyo-order", null);
         }
       } catch (e) {
-        if (alive) setError(errorText(e));
+        if (alive) setError(errorText(e, draft?.language ?? "ko"));
       }
     }
     const stop = liveRefresh({
@@ -187,7 +188,7 @@ export default function CustomerFlow({
       refresh: load,
     });
     return () => { alive = false; stop(); };
-  }, [draft?.step, saved, catalog, order?.id]);
+  }, [draft?.step, draft?.language, saved, catalog, order?.id]);
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex]);
@@ -302,7 +303,7 @@ export default function CustomerFlow({
       setOrder(result);
       change({ step: "complete" });
     } catch (e) {
-      setError(errorText(e));
+      setError(errorText(e, d.language));
       try {
         const latest = await api<Catalog>("/api/catalog");
         setCatalog(latest);
@@ -532,9 +533,9 @@ export default function CustomerFlow({
                 {q.required ? copy.required : copy.optional} ·{" "}
                 {q.type === "multiple" ? copy.multiple : copy.single}
               </span>
-              <h1>{q.title}</h1>
+              <h1>{questionTitle(q, d.language)}</h1>
             </div>
-            {q.id === "S1" && q.options.length > 30 ? <CountryQuestion options={q.options} selected={d.answers[q.id]?.[0]} onChange={id => change({ answers: { ...d.answers, [q.id]: [id] }, key: invalidate() })} /> : q.type === "text" ? (
+            {q.id === "S1" && q.options.length > 30 ? <CountryQuestion question={q} language={d.language} copy={copy} selected={d.answers[q.id]?.[0]} onChange={id => change({ answers: { ...d.answers, [q.id]: [id] }, key: invalidate() })} /> : q.type === "text" ? (
               <label>
                 {copy.textAnswer}
                 <input
@@ -578,7 +579,7 @@ export default function CustomerFlow({
                       })
                     }
                   >
-                    <span>{option.label}</span>
+                    <span>{optionLabel(q, option, d.language)}</span>
                     <span className="dot" />
                   </button>
                 ))}
@@ -597,7 +598,7 @@ export default function CustomerFlow({
               <img src={origin.image!} alt={origin.name} />
               <div className="stack">
                 <h2>{origin.name}</h2>
-                <IngredientDetail id={origin.id} copy={copy} />
+                <IngredientDetail id={origin.id} language={d.language} copy={copy} />
                 <ContentBody value={content(origin.id)} copy={copy} />
               </div>
             </article>
@@ -845,8 +846,8 @@ export default function CustomerFlow({
     </main>
   );
 }
-function IngredientDetail({ id, copy }: { id: string; copy: typeof t }) {
-  const detail = detailOf(id);
+function IngredientDetail({ id, language, copy }: { id: string; language: Language; copy: typeof t }) {
+  const detail = detailOf(id, language);
   if (!detail) return null;
   const rows = [
     [copy.detailTaste, detail.taste],

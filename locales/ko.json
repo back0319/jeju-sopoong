@@ -132,6 +132,13 @@
   "itemLimit": "한 주문에 최대 30개 항목을 담을 수 있어요",
   "changedSurvey": "설문 문항이 변경되어 답변을 다시 확인해 주세요.",
   "added": "추가됨",
+  "countrySearch": "국가·지역 검색",
+  "countrySearchHint": "국가명 검색",
+  "countrySelected": "선택",
+  "countryPrompt": "국가·지역을 선택해 주세요",
+  "countryQuick": "빠른 선택",
+  "countryAll": "전체 국가·지역",
+  "countryNoResult": "검색 결과가 없습니다. 다른 이름으로 검색해 주세요.",
   "errors": {
     "UNAUTHORIZED": "아이디와 비밀번호를 확인하거나 다시 로그인해 주세요.",
     "FORBIDDEN": "관리자 권한이 없습니다.",

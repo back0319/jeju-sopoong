@@ -58,11 +58,11 @@ export async function api<T>(
   if (!res.ok) throw new Error(data.error || "DATABASE_UNAVAILABLE");
   return data;
 }
-export function errorText(e: unknown) {
+export function errorText(e: unknown, language: Language = "ko") {
   const key = e instanceof Error ? e.message : "DATABASE_UNAVAILABLE";
-  return (
-    t.errors[key as keyof typeof t.errors] || t.errors.DATABASE_UNAVAILABLE
-  );
+  // 고객 화면은 선택한 언어로, 관리자 화면은 기본값인 한국어로 보여 줍니다.
+  const errors = dict(language).errors;
+  return errors[key as keyof typeof errors] || errors.DATABASE_UNAVAILABLE;
 }
 export function stored<T>(
   kind: "localStorage" | "sessionStorage",
