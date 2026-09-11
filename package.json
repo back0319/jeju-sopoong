@@ -15,6 +15,7 @@
     "test:db": "bash scripts/test-db.sh",
     "qr": "node scripts/qr.mjs",
     "seed:generate": "node scripts/seed.mjs",
+    "locales:sync": "node scripts/locales.mjs",
     "admin:create": "node --env-file=.env.local --env-file=.env.admin.local scripts/create-admin.mjs"
   },
   "dependencies": {

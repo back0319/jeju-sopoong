@@ -169,14 +169,14 @@ textarea {
   width: 100%;
 }
 .notice {
-  border-left: 3px solid var(--green);
+  border-inline-start: 3px solid var(--green);
   background: #f4f7f1;
   padding: 14px 16px;
   font-size: 15px;
 }
 .error {
   background: #fff3ef;
-  border-left: 3px solid #ab4936;
+  border-inline-start: 3px solid #ab4936;
   padding: 14px 16px;
   color: #8b3528;
   overflow-wrap: anywhere;
@@ -295,7 +295,7 @@ textarea {
   color: var(--muted);
 }
 .question-options button {
-  text-align: left;
+  text-align: start;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -311,7 +311,7 @@ textarea {
   height: 18px;
   flex-shrink: 0;
   border-radius: 50%;
-  margin-left: 5px;
+  margin-inline-start: 5px;
 }
 .selected .dot {
   border: 5px solid var(--green);
@@ -319,7 +319,7 @@ textarea {
 .ingredient-card {
   padding: 0 !important;
   overflow: hidden;
-  text-align: left;
+  text-align: start;
   border-radius: 16px;
   display: flex;
   flex-direction: column;
@@ -329,6 +329,16 @@ textarea {
   width: 100%;
   height: 128px;
   object-fit: contain;
+}
+.ingredient-placeholder {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 128px;
+  background: var(--mint);
+  color: var(--green);
+  font-size: 30px;
+  font-weight: 750;
 }
 .ingredient-card .caption {
   padding: 10px 12px;
@@ -340,7 +350,7 @@ textarea {
 .ingredient-card .soldout {
   position: absolute;
   top: 12px;
-  left: 10px;
+  inset-inline-start: 10px;
   background: #fff;
   padding: 4px 8px;
   border-radius: 4px;
@@ -388,7 +398,7 @@ textarea {
   font-weight: 700;
 }
 .receipt {
-  text-align: left;
+  text-align: start;
 }
 .receipt details > summary {
   cursor: pointer;
@@ -880,7 +890,7 @@ button.undo-action {
 }
 .order-filters label { min-width: 0; font-size: 13px; color: var(--muted); }
 .order-filters select { min-height: 44px; padding: 8px; margin-top: 4px; font-size: 14px; }
-/* 최대 제외 4개와 토핑 4개를 각각 2열로 배치합니다. */
+/* 최대 제외 4개와 토핑 8개를 각각 2열로 배치합니다. */
 .kitchen-receipt {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr));
@@ -923,6 +933,9 @@ button.undo-action {
 .kitchen-slot-empty { min-height: 30px; }
 .kitchen-none { position: absolute; top: 2px; left: 0; }
 .kitchen-group.base { min-height: 81px; }
+/* 기성품 토핑이 더해져 토핑 칸은 4줄입니다. 주문마다 카드 높이가 같도록 고정합니다. */
+.kitchen-group.omit .kitchen-slots { min-height: 64px; }
+.kitchen-group.topping .kitchen-slots { min-height: 132px; }
 .kitchen-package { min-height: 32px; padding: 4px 10px; line-height: 24px; }
 .kitchen-package.no-package { background: transparent; }
 @media (min-width: 1600px) {
@@ -937,7 +950,8 @@ button.undo-action {
 .admin-order-editor { width: min(1500px, 96vw); max-width: none; max-height: 92dvh; display: flex; flex-direction: column; gap: 16px; }
 .admin-order-editor h2, .admin-order-editor p { margin: 0; }
 .admin-order-editor header, .admin-order-editor footer { flex-shrink: 0; }
-.editor-body { border: 0; padding: 0; margin: 0; min-height: 0; overflow-y: auto; }
+.editor-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+.editor-fieldset { border: 0; padding: 0; margin: 0; min-inline-size: 0; }
 .editor-items { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; }
 .editor-item { border: 1px solid var(--line, #d7d7ce); border-radius: 12px; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
 .editor-item h3 { font-size: 14px; margin: 0 0 5px; }
@@ -958,3 +972,87 @@ button.undo-action {
 .country-results button { padding: 10px; }
 .order-select-row { flex: none; }
 .admin-order-editor { overflow: hidden; }
+
+/* 진행 방향 화살표. 아랍어처럼 오른쪽에서 왼쪽으로 읽는 언어에서는 좌우를 뒤집습니다. */
+.arrow-back {
+  transform: rotate(180deg);
+}
+[dir="rtl"] .arrow {
+  transform: scaleX(-1);
+}
+[dir="rtl"] .arrow-back {
+  transform: scaleX(-1) rotate(180deg);
+}
+
+/* 화면 머리에 붙는 영문 소제목과 브랜드 문장 */
+.eyebrow {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--green);
+}
+.brand-line {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border-radius: 16px;
+  background: var(--mint);
+  text-align: center;
+}
+.brand-line strong {
+  font-size: 20px;
+  line-height: 1.35;
+}
+.taste-cta {
+  white-space: pre-line;
+  text-align: center;
+  font-weight: 650;
+}
+.test-done {
+  justify-content: center;
+  flex: 1;
+  text-align: center;
+}
+.test-done p {
+  white-space: pre-line;
+}
+
+/* 원물 상세 스펙 */
+.ingredient-detail dl {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.ingredient-detail dt {
+  min-width: 68px;
+  font-size: 14px;
+}
+.ingredient-detail dd {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.ingredient-detail .indent dt {
+  padding-inline-start: 12px;
+}
+.ingredient-detail .footnote {
+  font-size: 12px;
+}
+
+/* 세트 안내와 패키지 선택 */
+.set-summary {
+  gap: 8px;
+}
+button.choice {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  text-align: start;
+  min-height: 68px;
+}
+button.choice small {
+  font-weight: 500;
+}

@@ -1,5 +1,5 @@
 {
-  "id": "draft-v3",
+  "id": "draft-v4",
   "questions": [
     {
       "id": "S1",
@@ -1067,21 +1067,21 @@
     },
     {
       "id": "S4",
-      "title": "새로운 음식에 얼마나 열려 있나요?",
+      "title": "처음 보는 음식도 먹어볼래요?",
       "type": "single",
       "required": true,
       "options": [
         {
           "id": "familiar",
-          "label": "익숙한 맛이 좋아요"
+          "label": "아는 맛이 좋아요"
         },
         {
           "id": "open",
-          "label": "적당히 열려 있어요"
+          "label": "한번 먹어볼래요"
         },
         {
           "id": "adventurous",
-          "label": "새로운 맛에 적극적이에요"
+          "label": "새로운 맛이 좋아요!"
         }
       ]
     },
@@ -1149,11 +1149,11 @@
         },
         {
           "id": "jeju",
-          "label": "제주다움"
+          "label": "현지 느낌"
         },
         {
           "id": "story",
-          "label": "이야기"
+          "label": "음식에 담긴 이야기"
         }
       ]
     },

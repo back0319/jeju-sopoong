@@ -2,6 +2,7 @@ import "server-only";
 import { serviceClient } from "./supabase/server";
 import { getCatalog } from "./catalog";
 import { validQuestion } from "./domain";
+import { isLanguage } from "./types";
 import type { Answers, Order } from "./types";
 export async function readOrder(id: string): Promise<Order> {
   const { data, error } = await serviceClient()
@@ -86,7 +87,7 @@ export async function submitOrder(
 
 export function validateOrderInput(body: Record<string, unknown>) {
   if (
-    body.language !== "ko" ||
+    !isLanguage(body.language) ||
     !Array.isArray(body.items) ||
     body.items.length < 1 ||
     body.items.length > 30 ||

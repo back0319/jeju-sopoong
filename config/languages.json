@@ -1,0 +1,10 @@
+[
+  { "code": "ko", "label": "한국어", "dir": "ltr" },
+  { "code": "en", "label": "English", "dir": "ltr" },
+  { "code": "zh-Hans", "label": "简体中文", "dir": "ltr" },
+  { "code": "zh-Hant", "label": "繁體中文", "dir": "ltr" },
+  { "code": "ja", "label": "日本語", "dir": "ltr" },
+  { "code": "id", "label": "Bahasa Indonesia", "dir": "ltr" },
+  { "code": "ar", "label": "العربية", "dir": "rtl" },
+  { "code": "ms", "label": "Bahasa Melayu", "dir": "ltr" }
+]

@@ -2,8 +2,8 @@ import type { Order } from "@/lib/types";
 import { koreanIngredientName, orderNumber } from "@/lib/domain";
 import ingredients from "@/config/ingredients.json";
 
-function IngredientSlots({ items, kind }: { items: { id: string; name: string }[]; kind: "base" | "topping" }) {
-  const ids = ingredients.filter((ingredient) => ingredient.kind === kind).map((ingredient) => ingredient.id);
+function IngredientSlots({ items, kinds }: { items: { id: string; name: string }[]; kinds: string[] }) {
+  const ids = ingredients.filter((ingredient) => kinds.includes(ingredient.kind)).map((ingredient) => ingredient.id);
   const slots = [...ids, ...items.filter((item) => !ids.includes(item.id)).map((item) => item.id)];
   return (
     <div className="kitchen-slots">
@@ -31,11 +31,11 @@ export function KitchenReceipt({ order, sourceOrders }: { order: Order; sourceOr
             <>
               <div className={`kitchen-group omit ${snapshot.excluded.length ? "has-items" : ""}`}>
                 <h3>빼는 재료</h3>
-                <IngredientSlots items={snapshot.excluded} kind="base" />
+                <IngredientSlots items={snapshot.excluded} kinds={["base"]} />
               </div>
               <div className={`kitchen-group topping ${snapshot.toppings.length ? "has-items" : ""}`}>
                 <h3>추가 토핑</h3>
-                <IngredientSlots items={snapshot.toppings} kind="topping" />
+                <IngredientSlots items={snapshot.toppings} kinds={["topping", "ready"]} />
               </div>
               <div className="kitchen-group base">
                 <h3>넣는 기본 재료</h3>

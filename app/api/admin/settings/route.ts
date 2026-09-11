@@ -1,5 +1,6 @@
 import { requireAdmin, serviceClient } from "@/lib/supabase/server";
 import { json, failure, readBody, sameOrigin } from "@/lib/http";
+import { isLanguage } from "@/lib/types";
 const integer = (x: unknown) =>
   typeof x === "number" && Number.isSafeInteger(x) && x >= 0 && x <= 100000000;
 const text = (x: unknown, n = 10000) => typeof x === "string" && x.length <= n;
@@ -76,10 +77,18 @@ export async function POST(req: Request) {
         .from("ingredients")
         .update({ price: b.price })
         .eq("kind", "topping"));
+    } else if (b.type === "ingredient-price") {
+      // 기성품 토핑은 품목마다 가격이 달라 공통가와 따로 관리합니다.
+      if (!text(b.id, 80) || !integer(b.price)) throw new Error("INVALID_INPUT");
+      ({ error } = await client
+        .from("ingredients")
+        .update({ price: b.price })
+        .eq("id", b.id)
+        .eq("kind", "ready"));
     } else if (b.type === "content") {
       if (
         !text(b.id, 80) ||
-        !["ko", "en", "ja", "zh"].includes(String(b.language)) ||
+        !isLanguage(b.language) ||
         !text(b.title, 200) ||
         !text(b.body) ||
         !validUrl(b.image_url) ||

@@ -1,5 +1,48 @@
 import ko from "@/locales/ko.json";
+import en from "@/locales/en.json";
+import zhHans from "@/locales/zh-Hans.json";
+import zhHant from "@/locales/zh-Hant.json";
+import ja from "@/locales/ja.json";
+import id from "@/locales/id.json";
+import ar from "@/locales/ar.json";
+import ms from "@/locales/ms.json";
+import languageConfig from "@/config/languages.json";
+import type { Language } from "./types";
 export const t = ko;
+export const languages = languageConfig as {
+  code: Language;
+  label: string;
+  dir: "ltr" | "rtl";
+}[];
+export const direction = (language: Language) =>
+  languages.find((l) => l.code === language)?.dir ?? "ltr";
+type Dictionary = typeof ko;
+const dictionaries: Record<Language, Partial<Dictionary>> = {
+  ko,
+  en,
+  "zh-Hans": zhHans,
+  "zh-Hant": zhHant,
+  ja,
+  id,
+  ar,
+  ms,
+};
+// 번역이 비어 있는 항목은 한국어로 대체합니다. 언어 파일이 채워지는 대로 그대로 동작합니다.
+export function dict(language: Language): Dictionary {
+  if (language === "ko") return ko;
+  const source = dictionaries[language] ?? {};
+  const fill = (base: unknown, current: unknown): unknown => {
+    if (base && typeof base === "object" && !Array.isArray(base))
+      return Object.fromEntries(
+        Object.entries(base).map(([key, value]) => [
+          key,
+          fill(value, (current as Record<string, unknown>)?.[key]),
+        ]),
+      );
+    return typeof current === "string" && current.trim() ? current : base;
+  };
+  return fill(ko, source) as Dictionary;
+}
 export async function api<T>(
   url: string,
   method = "GET",

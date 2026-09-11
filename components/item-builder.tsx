@@ -95,52 +95,85 @@ export function ItemBuilder({
             </div>
           </>
         )}
-        {step === 1 && (
-          <div className="grid2">
-            {catalog.ingredients
-              .filter((i) => i.kind === "topping")
-              .map((i) => {
-                const stock = catalog.inventory.find(
-                  (s) => s.ingredient_id === i.id,
-                );
-                const out =
-                  !stock || stock.remaining === 0 || stock.forced_sold_out;
-                const selected = item.toppings.includes(i.id);
-                return (
-                  <button
-                    key={i.id}
-                    className={`ingredient-card ${selected ? "selected" : ""}`}
-                    aria-pressed={selected}
-                    disabled={out && !selected}
-                    onClick={() => toggle("toppings", i.id)}
-                  >
-                    <img src={i.image!} alt={i.name} />
-                    {out && <span className="soldout">{t.soldOut}</span>}
-                    <div className="caption">
-                      <strong>{i.name}</strong>
-                      <div className="row between">
-                        <span>{money(i.price)}</span>
-                        {selected ? <Check /> : <span>+</span>}
-                      </div>
-                    </div>
-                  </button>
-                );
-              })}
-          </div>
-        )}
+        {step === 1 &&
+          (["topping", "ready"] as const).map((kind) => {
+            const options = catalog.ingredients.filter((i) => i.kind === kind);
+            if (!options.length) return null;
+            return (
+              <section className="stack" key={kind}>
+                <h3>{kind === "topping" ? t.jejuToppings : t.readyToppings}</h3>
+                <div className="grid2">
+                  {options.map((i) => {
+                    const stock = catalog.inventory.find(
+                      (s) => s.ingredient_id === i.id,
+                    );
+                    const out =
+                      !stock || stock.remaining === 0 || stock.forced_sold_out;
+                    const selected = item.toppings.includes(i.id);
+                    return (
+                      <button
+                        key={i.id}
+                        className={`ingredient-card ${selected ? "selected" : ""}`}
+                        aria-pressed={selected}
+                        disabled={out && !selected}
+                        onClick={() => toggle("toppings", i.id)}
+                      >
+                        {/* 사진이 없는 재료는 이름만 담은 자리 표시로 대신합니다. */}
+                        {i.image ? (
+                          <img src={i.image} alt={i.name} />
+                        ) : (
+                          <span className="ingredient-placeholder" aria-hidden="true">
+                            {i.name.slice(0, 2)}
+                          </span>
+                        )}
+                        {out && <span className="soldout">{t.soldOut}</span>}
+                        <div className="caption">
+                          <strong>{i.name}</strong>
+                          <div className="row between">
+                            <span>{money(i.price)}</span>
+                            {selected ? <Check /> : <span>+</span>}
+                          </div>
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            );
+          })}
         {step === 2 && (
           <div className="stack">
+            <section className="panel stack set-summary">
+              <div className="row between">
+                <h3>{t.setTitle}</h3>
+                <strong>
+                  {money(
+                    (catalog.products.find((p) => p.id === "gimbap")?.price ??
+                      0) + (upgrade?.price ?? 0),
+                  )}
+                </strong>
+              </div>
+              <p className="muted" style={{ whiteSpace: "pre-line" }}>
+                {t.setItems}
+              </p>
+            </section>
             <button
-              className={item.kind === "gimbap" ? "selected" : ""}
+              className={`choice ${item.kind === "gimbap" ? "selected" : ""}`}
+              aria-pressed={item.kind === "gimbap"}
               onClick={() => onChange({ ...item, kind: "gimbap" })}
             >
-              {t.keepGimbap}
+              <span>{t.keepGimbap}</span>
+              <small className="muted">{t.keepGimbapHint}</small>
             </button>
             <button
-              className={item.kind === "package" ? "selected" : ""}
+              className={`choice ${item.kind === "package" ? "selected" : ""}`}
+              aria-pressed={item.kind === "package"}
               onClick={() => onChange({ ...item, kind: "package" })}
             >
-              <span>{upgrade?.name ?? t.package}</span> + {money(upgrade?.price ?? 0)}
+              <span>
+                {upgrade?.name ?? t.package} + {money(upgrade?.price ?? 0)}
+              </span>
+              <small className="muted">{t.packageHint}</small>
             </button>
           </div>
         )}

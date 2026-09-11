@@ -617,7 +617,7 @@ export default function AdminApp() {
         <footer className="stockbar">
           <span className="muted">{t.stock}</span>
           {catalog.ingredients
-            .filter((i) => i.kind === "topping")
+            .filter((i) => i.kind === "topping" || i.kind === "ready")
             .map((i) => {
               const s = catalog.inventory.find((v) => v.ingredient_id === i.id);
               return (
