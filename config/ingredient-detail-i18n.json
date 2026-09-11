@@ -1,5 +1,14 @@
 {
   "carrot": {
+    "menu": {
+      "en": "🥕 Jeju Carrot Rapée",
+      "ja": "🥕 済州にんじんのラペ",
+      "zh-Hans": "🥕 济州胡萝卜沙拉",
+      "zh-Hant": "🥕 濟州胡蘿蔔沙拉",
+      "id": "🥕 Rapée Wortel Jeju",
+      "ar": "🥕 سلطة جزر جيجو",
+      "ms": "🥕 Rapée Lobak Merah Jeju"
+    },
     "tagline": {
       "en": "A crisp topping that makes Jeju carrot sweet and tangy.",
       "ja": "済州にんじんを甘酸っぱく楽しむシャキシャキのトッピング。",
@@ -56,6 +65,15 @@
     }
   },
   "turban-shell": {
+    "menu": {
+      "en": "🐚 Jeju Turban Shell in Soy Sauce",
+      "ja": "🐚 済州サザエの醤油煮",
+      "zh-Hans": "🐚 济州海螺酱煮",
+      "zh-Hant": "🐚 濟州海螺醬煮",
+      "id": "🐚 Siput Turban Jeju Kecap",
+      "ar": "🐚 حلزون جيجو بصلصة الصويا",
+      "ms": "🐚 Siput Turban Jeju Kicap"
+    },
     "tagline": {
       "en": "Turban shell gathered by Jeju haenyeo, simmered for a savoury bite of the sea.",
       "ja": "済州の海女が採ったサザエに旨みを足した海のトッピング。",
@@ -112,6 +130,15 @@
     }
   },
   "fernbrake": {
+    "menu": {
+      "en": "🌿 Jeju Pickled Fernbrake",
+      "ja": "🌿 済州わらびの漬物",
+      "zh-Hans": "🌿 济州蕨菜酱菜",
+      "zh-Hant": "🌿 濟州蕨菜醬菜",
+      "id": "🌿 Acar Pakis Jeju",
+      "ar": "🌿 سرخس جيجو المخلّل",
+      "ms": "🌿 Jeruk Pucuk Paku Jeju"
+    },
     "tagline": {
       "en": "Jeju spring fernbrake, pickled tangy as a Jeju namul topping.",
       "ja": "済州の春わらびを甘酸っぱく漬けた済州ナムルのトッピング。",
@@ -168,6 +195,15 @@
     }
   },
   "pork": {
+    "menu": {
+      "en": "🐷 Jeju Pork BBQ",
+      "ja": "🐷 済州豚のBBQ",
+      "zh-Hans": "🐷 济州猪肉BBQ",
+      "zh-Hant": "🐷 濟州豬肉BBQ",
+      "id": "🐷 BBQ Babi Jeju",
+      "ar": "🐷 لحم خنزير جيجو مشوي",
+      "ms": "🐷 BBQ Daging Babi Jeju"
+    },
     "tagline": {
       "en": "Finely chopped Jeju pork with a sweet and salty BBQ glaze.",
       "ja": "細かく刻んだ済州豚に甘じょっぱいBBQ味を重ねたトッピング。",

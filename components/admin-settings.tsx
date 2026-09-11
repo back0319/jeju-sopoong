@@ -80,38 +80,58 @@ export function AdminSettings({
             <button disabled={busy}>{t.save}</button>
           </form>
           <h3>{t.readyToppings}</h3>
-          <p className="muted">기성품 토핑은 품목마다 가격을 따로 정합니다.</p>
+          <p className="muted">
+            기성품은 품목마다 가격을 정하고, 판매를 내리면 고객 화면에서
+            사라집니다. 오늘만 다 나간 경우에는 위의 강제 품절을 쓰세요.
+          </p>
           {catalog.ingredients
             .filter((i) => i.kind === "ready")
             .map((i) => (
-              <form
-                key={`${i.id}:${i.price}`}
-                className="row"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const f = new FormData(e.currentTarget);
-                  void save({
-                    type: "ingredient-price",
-                    id: i.id,
-                    price: Number(f.get("price")),
-                  });
-                }}
-              >
-                <label className="grow">
-                  {i.name}
+              <div key={`${i.id}:${i.price}:${i.active}`} className="stack">
+                <form
+                  className="row"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const f = new FormData(e.currentTarget);
+                    void save({
+                      type: "ingredient-price",
+                      id: i.id,
+                      price: Number(f.get("price")),
+                    });
+                  }}
+                >
+                  <label className="grow">
+                    {i.name}
+                    <input
+                      name="price"
+                      type="number"
+                      min="0"
+                      step="1"
+                      required
+                      defaultValue={i.price}
+                    />
+                  </label>
+                  <button disabled={busy} style={{ alignSelf: "end" }}>
+                    {t.save}
+                  </button>
+                </form>
+                <label className="row">
                   <input
-                    name="price"
-                    type="number"
-                    min="0"
-                    step="1"
-                    required
-                    defaultValue={i.price}
+                    type="checkbox"
+                    checked={i.active !== false}
+                    disabled={busy}
+                    onChange={(e) =>
+                      void save({
+                        type: "ingredient-active",
+                        id: i.id,
+                        active: e.target.checked,
+                      })
+                    }
                   />
+                  {t.active}
                 </label>
-                <button disabled={busy} style={{ alignSelf: "end" }}>
-                  {t.save}
-                </button>
-              </form>
+                <div className="divider" />
+              </div>
             ))}
         </section>
         <section className="panel stack">

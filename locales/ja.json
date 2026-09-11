@@ -36,6 +36,8 @@
   "excluded": "抜く",
   "toppingTitle": "済州の素材を足してみる？",
   "toppingDescription": "それぞれ一つずつ追加できます。",
+  "readyToppingTitle": "おなじみのトッピングも足す？",
+  "readyToppingDescription": "済州の素材のほかに足したいものがあれば選んでね。",
   "jejuToppings": "済州の素材",
   "readyToppings": "追加トッピング",
   "soldOut": "売切れ",

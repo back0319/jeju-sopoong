@@ -1056,3 +1056,67 @@ button.choice {
 button.choice small {
   font-weight: 500;
 }
+
+/* 화면마다 스크롤을 줄입니다. 사진과 여백을 먼저 줄이고 글자 크기는 유지합니다. */
+.ingredient-feature img {
+  height: 150px;
+}
+.ingredient-feature .stack {
+  padding: 14px;
+  gap: 10px;
+}
+.ingredient-detail dl {
+  gap: 3px;
+}
+.ingredient-detail dt,
+.ingredient-detail dd {
+  font-size: 13px;
+}
+.ingredient-detail .footnote {
+  font-size: 11px;
+}
+/* 본문이 비어 있으면 자리만 차지하므로 접습니다. */
+.ingredient-feature .stack > .stack:empty,
+.ingredient-feature p.muted:empty {
+  display: none;
+}
+.usage-steps {
+  gap: 12px;
+}
+.usage-steps p {
+  white-space: pre-line;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.brand-line {
+  padding: 14px;
+}
+.brand-line strong {
+  font-size: 18px;
+}
+/* 영상을 본 뒤 다음 장으로 넘기는 말. 인사와 구분되게 가운데로 모읍니다. */
+.producer-outro {
+  gap: 6px;
+  text-align: center;
+  white-space: pre-line;
+}
+.producer-outro p {
+  font-weight: 650;
+}
+/* 원물 소개는 네 장을 넘기므로 한 화면에 담기도록 더 좁힙니다. */
+.customer-main.tight {
+  gap: 14px;
+}
+.customer-main.tight .ingredient-feature img {
+  height: 112px;
+}
+.customer-main.tight .ingredient-feature .stack {
+  padding: 12px;
+  gap: 8px;
+}
+.customer-main.tight h1 {
+  font-size: 26px;
+}
+.customer-main.tight .taste-cta {
+  font-size: 15px;
+}

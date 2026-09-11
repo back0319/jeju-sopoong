@@ -110,7 +110,9 @@ export default function CustomerFlow({
     [order, setOrder] = useState<Order | null>(null),
     [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
-    [originIndex, setOriginIndex] = useState(0);
+    [originIndex, setOriginIndex] = useState(0),
+    // 이용 안내는 단락이 여섯이라 한 화면에 담기지 않아 두 장으로 넘깁니다.
+    [usagePage, setUsagePage] = useState(0);
   useEffect(() => {
     const fallback = fresh(initialCatalog);
     const previous = stored<Draft>("sessionStorage", "juseyo-draft");
@@ -191,7 +193,7 @@ export default function CustomerFlow({
   }, [draft?.step, draft?.language, saved, catalog, order?.id]);
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
-  }, [draft?.step, draft?.question, originIndex]);
+  }, [draft?.step, draft?.question, originIndex, usagePage]);
   // 아랍어는 문서 전체를 오른쪽 정렬로 전환해야 화면 구성이 뒤집힙니다.
   useEffect(() => {
     const language = draft?.language ?? "ko";
@@ -254,8 +256,15 @@ export default function CustomerFlow({
       ? translated
       : koContent(id);
   };
+  const usageBlocks = (content("usage")?.body ?? "")
+    .split(/\n\s*\n/)
+    .map((block) => block.trim())
+    .filter(Boolean);
+  const usagePageSize = 3;
+  const usagePages = Math.max(1, Math.ceil(usageBlocks.length / usagePageSize));
   const back = () => {
-    if (d.step === "survey" && d.question > 0)
+    if (d.step === "usage" && usagePage > 0) setUsagePage(usagePage - 1);
+    else if (d.step === "survey" && d.question > 0)
       change({ question: d.question - 1 });
     else if (d.step === "ingredients" && originIndex > 0)
       setOriginIndex(originIndex - 1);
@@ -397,7 +406,7 @@ export default function CustomerFlow({
       )}
       <div
         ref={mainRef}
-        className={`customer-main ${d.step === "language" ? "welcome" : ""}`}
+        className={`customer-main ${d.step === "language" ? "welcome" : ""} ${d.step === "ingredients" ? "tight" : ""}`}
       >
         {d.step === "language" && (
           <>
@@ -437,11 +446,27 @@ export default function CustomerFlow({
           <>
             <h1>{copy.usageTitle}</h1>
             <p className="muted">{copy.usageDescription}</p>
-            <ContentBody value={content("usage")} copy={copy} />
-            <div className="brand-line">
-              <strong>{copy.brandLine}</strong>
-              <span className="muted">{copy.brandLineEn}</span>
+            {/* 단락을 절반씩 나눠 한 화면에 담습니다. */}
+            <div className="stack usage-steps">
+              {usageBlocks
+                .slice(usagePage * usagePageSize, (usagePage + 1) * usagePageSize)
+                .map((block, index) => (
+                  <p key={index} className="muted">
+                    {block}
+                  </p>
+                ))}
             </div>
+            {usagePages > 1 && (
+              <span className="muted question-count">
+                {usagePage + 1} / {usagePages}
+              </span>
+            )}
+            {usagePage === usagePages - 1 && (
+              <div className="brand-line">
+                <strong>{copy.brandLine}</strong>
+                <span className="muted">{copy.brandLineEn}</span>
+              </div>
+            )}
           </>
         )}
         {d.step === "intro" && (
@@ -450,15 +475,38 @@ export default function CustomerFlow({
               <span className="eyebrow">{copy.introEyebrow}</span>
               <h1>{copy.introTitle}</h1>
             </div>
-            {/* 영상은 바로 아래에 심어 두므로 본문만 보여 줍니다. */}
-            <p className="muted" style={{ whiteSpace: "pre-wrap" }}>
-              {content("producer")?.body || ""}
-            </p>
-            <ProducerVideo
-              url={
-                content("producer")?.video_url || "https://youtu.be/dQw4w9WgXcQ"
-              }
-            />
+            {/* 첫 단락은 인사, 나머지는 영상을 본 뒤 다음 장으로 넘기는 말입니다. */}
+            {(() => {
+              const blocks = (content("producer")?.body ?? "")
+                .split(/\n\s*\n/)
+                .map((block) => block.trim())
+                .filter(Boolean);
+              const [greeting, ...outro] = blocks;
+              return (
+                <>
+                  {greeting && (
+                    <p className="muted" style={{ whiteSpace: "pre-line" }}>
+                      {greeting}
+                    </p>
+                  )}
+                  <ProducerVideo
+                    url={
+                      content("producer")?.video_url ||
+                      "https://youtu.be/dQw4w9WgXcQ"
+                    }
+                  />
+                  {outro.length > 0 && (
+                    <div className="stack producer-outro">
+                      {outro.map((block, index) => (
+                        <p key={index} style={{ whiteSpace: "pre-line" }}>
+                          {block}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </>
+              );
+            })()}
             <button
               className="quiet"
               onClick={() => {
@@ -478,7 +526,6 @@ export default function CustomerFlow({
               <p className="muted">{copy.aboutYouDescription}</p>
               <span className="question-count">{copy.duration}</span>
             </div>
-            {catalog.internalTest && <p className="notice">{copy.internalTest}</p>}
             <h2>{copy.testNotice}</h2>
             <div
               className="panel"
@@ -591,14 +638,26 @@ export default function CustomerFlow({
             <div className="stack">
               <span className="eyebrow">{copy.ingredientEyebrow}</span>
               <h1>{copy.ingredientTitle}</h1>
-              <p className="muted">{copy.ingredientDescription}</p>
+              {/* 부제는 첫 장에서만. 네 장 내내 되풀이하면 스크롤만 늘어납니다. */}
+              {originIndex === 0 && (
+                <p className="muted">{copy.ingredientDescription}</p>
+              )}
             </div>
             <article className="ingredient-feature">
               <img src={origin.image!} alt={ingredientName(origin.id, origin.name, d.language)} />
               <div className="stack">
-                <h2>{ingredientName(origin.id, origin.name, d.language)}</h2>
+                <h2>{detailOf(origin.id, d.language)?.menu || ingredientName(origin.id, origin.name, d.language)}</h2>
                 <IngredientDetail id={origin.id} language={d.language} copy={copy} />
-                <ContentBody value={content(origin.id)} copy={copy} />
+                {(() => {
+                  const value = content(origin.id);
+                  const has =
+                    value &&
+                    (value.body.trim() ||
+                      value.title.trim() ||
+                      value.image_url ||
+                      value.video_url);
+                  return has ? <ContentBody value={value} copy={copy} /> : null;
+                })()}
               </div>
             </article>
             {originIndex === 3 && (
@@ -661,7 +720,7 @@ export default function CustomerFlow({
                       ? catalog.products.find((p) => p.id === item.productId)
                           ?.name
                       : item.kind === "package"
-                        ? (d.language === "ko" ? catalog.products.find((p) => p.id === "package")?.name ?? copy.package : copy.package)
+                        ? copy.setTitle
                         : copy.gimbap}
                   </h3>
                   <strong>{money(itemPrice(item, catalog))}</strong>
@@ -808,7 +867,12 @@ export default function CustomerFlow({
           </div>
         )}
       </div>
-      {d.step === "usage" && footer(copy.next, () => go("intro"))}
+      {d.step === "usage" &&
+        footer(copy.next, () =>
+          usagePage < usagePages - 1
+            ? setUsagePage(usagePage + 1)
+            : go("intro"),
+        )}
       {d.step === "intro" &&
         footer(copy.next, () => {
           setOriginIndex(0);

@@ -36,6 +36,8 @@
   "excluded": "Tanpa",
   "toppingTitle": "Mau tambah bahan khas Jeju?",
   "toppingDescription": "Tiap bahan bisa ditambah satu.",
+  "readyToppingTitle": "Mau tambah topping yang familier?",
+  "readyToppingDescription": "Pilih apa pun yang ingin kamu tambahkan selain bahan khas Jeju.",
   "jejuToppings": "Bahan khas Jeju",
   "readyToppings": "Topping tambahan",
   "soldOut": "Habis",

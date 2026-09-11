@@ -36,6 +36,8 @@
   "excluded": "Out",
   "toppingTitle": "Add some Jeju ingredients?",
   "toppingDescription": "You can add one of each.",
+  "readyToppingTitle": "Add a familiar topping too?",
+  "readyToppingDescription": "Pick anything else you would like alongside the Jeju ingredients.",
   "jejuToppings": "Jeju ingredients",
   "readyToppings": "Extra toppings",
   "soldOut": "Sold out",

@@ -81,6 +81,7 @@ writeFileSync(
 // 02 페이지와 토핑 카드에 쓰는 소개 문구입니다. DB가 아니라 앱에만 둡니다.
 const details = {
   carrot: {
+    menu: "🥕 제주 당근 라페",
     tagline: "제주 당근을 새콤달콤하게 즐기는 아삭한 토핑.",
     taste: "새콤 · 달콤",
     texture: "아삭함",
@@ -89,6 +90,7 @@ const details = {
     allergySauce: "✓ 주요 알레르기 없음",
   },
   "turban-shell": {
+    menu: "🐚 제주 뿔소라 간장조림",
     tagline: "제주 해녀가 채취한 뿔소라에 감칠맛을 더한 바다 토핑.",
     taste: "짭짤 · 감칠맛",
     texture: "쫄깃함",
@@ -97,6 +99,7 @@ const details = {
     allergySauce: "⚠️ 대두 · 밀",
   },
   fernbrake: {
+    menu: "🌿 제주 고사리 장아찌",
     tagline: "제주의 봄 고사리를 새콤하게 즐기는 제주 나물 토핑.",
     taste: "새콤 · 담백",
     texture: "부드럽고 쫄깃함",
@@ -105,6 +108,7 @@ const details = {
     allergySauce: "✓ 주요 알레르기 없음",
   },
   pork: {
+    menu: "🐷 제주 돼지 BBQ",
     tagline: "잘게 다진 제주 돼지고기에 달콤짭짤한 BBQ 맛을 더한 토핑.",
     taste: "달콤 · 짭짤 · 고소",
     texture: "부드러움",

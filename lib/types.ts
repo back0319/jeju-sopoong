@@ -20,6 +20,8 @@ export type Ingredient = {
   position: number;
   image: string | null;
   price: number;
+  // 판매하지 않는 재료는 고객 화면에서 빠집니다. 강제 품절과 달리 목록에도 나오지 않습니다.
+  active?: boolean;
 };
 export type Stock = {
   business_date?: string;

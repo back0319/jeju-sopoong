@@ -36,7 +36,7 @@ export function ManualOrder({ catalog, order, onDone, onClose }: {
         {item.kind !== "extra" && <>
           <div><h3>빼는 재료</h3><div className="editor-choices">{catalog.ingredients.filter(i => i.kind === "base").map(i =>
             <button key={i.id} aria-pressed={item.excluded.includes(i.id)} className={item.excluded.includes(i.id) ? "selected exclude-choice" : ""} onClick={() => toggle(n, "excluded", i.id)}>{i.name}</button>)}</div></div>
-          <div><h3>추가 토핑</h3><div className="editor-choices">{catalog.ingredients.filter(i => i.kind === "topping" || i.kind === "ready").map(i => {
+          <div><h3>추가 토핑</h3><div className="editor-choices">{catalog.ingredients.filter(i => (i.kind === "topping" || i.kind === "ready") && i.active !== false).map(i => {
             const stock = catalog.inventory.find(s => s.ingredient_id === i.id);
             const reserved = order?.order_items.filter(v => v.snapshot.toppings.some(t => t.id === i.id)).length ?? 0;
             const count = items.filter(v => v.toppings.includes(i.id)).length;

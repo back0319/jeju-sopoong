@@ -3,6 +3,7 @@ import translations from "@/config/ingredient-detail-i18n.json";
 import type { Language } from "./types";
 // 원물 소개 문구는 DB에 열이 없어 앱 설정 파일에만 둡니다.
 export type IngredientDetail = {
+  menu?: string;
   tagline?: string;
   taste?: string;
   texture?: string;

@@ -36,6 +36,8 @@
   "excluded": "محذوف",
   "toppingTitle": "أتحبّ إضافة مكوّنات من جيجو؟",
   "toppingDescription": "يمكن إضافة واحدة من كل صنف.",
+  "readyToppingTitle": "أتضيف إضافة مألوفة أيضًا؟",
+  "readyToppingDescription": "اختر ما تودّ إضافته إلى جانب مكوّنات جيجو.",
   "jejuToppings": "مكوّنات جيجو",
   "readyToppings": "إضافات أخرى",
   "soldOut": "نفد",

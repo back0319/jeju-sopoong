@@ -36,6 +36,8 @@
   "excluded": "拿掉",
   "toppingTitle": "要加點濟州食材嗎？",
   "toppingDescription": "每種可以加一份。",
+  "readyToppingTitle": "再加點熟悉的配料？",
+  "readyToppingDescription": "除了濟州食材，還想加點什麼就選吧。",
   "jejuToppings": "濟州食材",
   "readyToppings": "額外配料",
   "soldOut": "售完",
