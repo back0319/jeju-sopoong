@@ -196,6 +196,12 @@ export default function CustomerFlow({
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex, usagePage, rolling]);
+  // 담은 재료 없이 만들기 화면에 서면 아무것도 그리지 못해 빠져나갈 수 없습니다.
+  useEffect(() => {
+    if (draft?.step === "build" && !draft.item)
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setDraft((prev) => (prev ? { ...prev, step: "cart" } : prev));
+  }, [draft?.step, draft?.item]);
   // 아랍어는 문서 전체를 오른쪽 정렬로 전환해야 화면 구성이 뒤집힙니다.
   useEffect(() => {
     const language = draft?.language ?? "ko";
@@ -274,7 +280,7 @@ export default function CustomerFlow({
       change({ question: d.question - 1 });
     else if (d.step === "ingredients" && originIndex > 0)
       setOriginIndex(originIndex - 1);
-    else if (d.step === "build") go(d.items.length ? "cart" : "consent");
+    else if (d.step === "build") go(d.items.length ? "cart" : "testDone");
     else go(sequence[Math.max(0, sequence.indexOf(d.step) - 1)]);
   };
   const total = d.items.reduce(
@@ -361,8 +367,9 @@ export default function CustomerFlow({
     <main className="customer">
       <header className="customer-header">
         <div className="row between">
-          {!["language", "complete", "build"].includes(d.step) ||
-          (d.step === "complete" && rolling) ? (
+          {!["language", "complete", "build", "cart", "testDone"].includes(
+            d.step,
+          ) || (d.step === "complete" && rolling) ? (
             <button className="back" aria-label={copy.back} onClick={back}>
               <Arrow back />
             </button>
@@ -687,7 +694,7 @@ export default function CustomerFlow({
             language={d.language}
             copy={copy}
             onChange={(item) => change({ item })}
-            onBack={() => go(d.items.length ? "cart" : "consent")}
+            onBack={() => go(d.items.length ? "cart" : "testDone")}
             editing={d.editing !== null}
             onSave={() => {
               const items = [...d.items];
