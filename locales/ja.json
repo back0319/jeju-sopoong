@@ -68,6 +68,7 @@
   "orderNumber": "注文番号",
   "cancelled": "キャンセルされた注文です",
   "experience": "キンパの作り方",
+  "rollCta": "キンパを巻く",
   "surveyEdit": "回答を修正",
   "items": "件",
   "emptyCart": "まだ何も追加されていません",

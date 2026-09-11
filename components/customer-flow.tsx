@@ -112,7 +112,9 @@ export default function CustomerFlow({
     [busy, setBusy] = useState(false),
     [originIndex, setOriginIndex] = useState(0),
     // 이용 안내는 단락이 여섯이라 한 화면에 담기지 않아 두 장으로 넘깁니다.
-    [usagePage, setUsagePage] = useState(0);
+    [usagePage, setUsagePage] = useState(0),
+    // 김밥 마는 법은 주문 번호 화면을 밀어내지 않도록 한 장 넘겨서 봅니다.
+    [rolling, setRolling] = useState(false);
   useEffect(() => {
     const fallback = fresh(initialCatalog);
     const previous = stored<Draft>("sessionStorage", "juseyo-draft");
@@ -193,7 +195,7 @@ export default function CustomerFlow({
   }, [draft?.step, draft?.language, saved, catalog, order?.id]);
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
-  }, [draft?.step, draft?.question, originIndex, usagePage]);
+  }, [draft?.step, draft?.question, originIndex, usagePage, rolling]);
   // 아랍어는 문서 전체를 오른쪽 정렬로 전환해야 화면 구성이 뒤집힙니다.
   useEffect(() => {
     const language = draft?.language ?? "ko";
@@ -266,7 +268,8 @@ export default function CustomerFlow({
   const usagePageSize = 3;
   const usagePages = Math.max(1, Math.ceil(usageBlocks.length / usagePageSize));
   const back = () => {
-    if (d.step === "usage" && usagePage > 0) setUsagePage(usagePage - 1);
+    if (d.step === "complete" && rolling) setRolling(false);
+    else if (d.step === "usage" && usagePage > 0) setUsagePage(usagePage - 1);
     else if (d.step === "survey" && d.question > 0)
       change({ question: d.question - 1 });
     else if (d.step === "ingredients" && originIndex > 0)
@@ -358,7 +361,8 @@ export default function CustomerFlow({
     <main className="customer">
       <header className="customer-header">
         <div className="row between">
-          {!["language", "complete", "build"].includes(d.step) ? (
+          {!["language", "complete", "build"].includes(d.step) ||
+          (d.step === "complete" && rolling) ? (
             <button className="back" aria-label={copy.back} onClick={back}>
               <Arrow back />
             </button>
@@ -818,7 +822,27 @@ export default function CustomerFlow({
             </div>
           </>
         )}
-        {d.step === "complete" && (
+        {d.step === "complete" && rolling && (
+          <section className="stack rolling">
+            <h1>{copy.experience}</h1>
+            {content("experience")?.body?.trim() && (
+              <p className="muted" style={{ whiteSpace: "pre-line" }}>
+                {content("experience")!.body}
+              </p>
+            )}
+            <ProducerVideo url={content("experience")!.video_url} />
+            <a
+              className="video-link"
+              href={content("experience")!.video_url}
+              target="_blank"
+              rel="noreferrer"
+            >
+              {copy.watch}
+              <Arrow />
+            </a>
+          </section>
+        )}
+        {d.step === "complete" && !rolling && (
           <div className="stack complete">
             {order ? (
               <>
@@ -848,30 +872,7 @@ export default function CustomerFlow({
                     <OrderReceipt order={order} language={d.language} copy={copy} />
                   </details>
                 </div>
-                {/* 카운터에서 재료를 받은 뒤 직접 말 때 보는 영상입니다. */}
-                {content("experience")?.video_url && (
-                  <section className="stack experience">
-                    {content("experience")?.body?.trim() && (
-                      <p className="muted" style={{ whiteSpace: "pre-line" }}>
-                        {content("experience")!.body}
-                      </p>
-                    )}
-                    {/* 이 화면의 주인공은 주문 번호라 영상은 접어 둡니다. */}
-                    <details>
-                      <summary>{copy.experience}</summary>
-                      <ProducerVideo url={content("experience")!.video_url} />
-                      <a
-                        className="video-link"
-                        href={content("experience")!.video_url}
-                        target="_blank"
-                        rel="noreferrer"
-                      >
-                        {copy.watch}
-                        <Arrow />
-                      </a>
-                    </details>
-                  </section>
-                )}
+
               </>
             ) : (
               <p>{copy.loading}</p>
@@ -884,6 +885,7 @@ export default function CustomerFlow({
                 setOrder(null);
                 setDraft(fresh(catalog));
                 setError("");
+                setRolling(false);
               }}
             >
               {copy.newOrder}
@@ -891,6 +893,13 @@ export default function CustomerFlow({
           </div>
         )}
       </div>
+      {d.step === "complete" &&
+        !rolling &&
+        Boolean(content("experience")?.video_url) &&
+        footer(copy.rollCta, () => setRolling(true))}
+      {d.step === "complete" &&
+        rolling &&
+        footer(copy.orderNumber, () => setRolling(false))}
       {d.step === "usage" &&
         footer(copy.next, () =>
           usagePage < usagePages - 1

@@ -1120,36 +1120,10 @@ button.choice small {
 .customer-main.tight .taste-cta {
   font-size: 15px;
 }
-/* 주문 번호 화면의 김밥 마는 법 영상 */
-.experience {
-  width: 100%;
-  text-align: start;
-  gap: 10px;
-  padding-top: 4px;
-  border-top: 1px solid var(--line);
+/* 김밥 마는 법은 주문 번호 다음 장에서 크게 봅니다. */
+.rolling {
+  gap: 14px;
 }
-.experience .video-link {
+.rolling .video-link {
   align-self: center;
-}
-.experience details > summary {
-  cursor: pointer;
-  min-height: 56px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  list-style: none;
-  font-weight: 600;
-}
-.experience details > summary::-webkit-details-marker {
-  display: none;
-}
-.experience details[open] > summary {
-  margin-bottom: 10px;
-}
-.experience details {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
 }

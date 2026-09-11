@@ -68,6 +68,7 @@
   "orderNumber": "Order number",
   "cancelled": "This order was cancelled",
   "experience": "How to roll your gimbap",
+  "rollCta": "Roll your gimbap",
   "surveyEdit": "Edit answers",
   "items": "items",
   "emptyCart": "Nothing added yet",
