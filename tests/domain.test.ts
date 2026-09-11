@@ -6,6 +6,7 @@ import {
   koreanIngredientName,
   expiredOrder,
   itemPrice,
+  freeToppingPrice,
   newItem,
   validQuestion,
   toggleAnswer,
@@ -44,14 +45,47 @@ const catalog = {
   ],
   survey,
 } as Catalog;
-test("가격: 기본 재료를 빼도 5,000원, 패키지와 토핑은 18,000원", () => {
+test("가격: 기본 재료를 빼도 5,000원, 토핑은 값이 더해진다", () => {
   assert.equal(
     itemPrice({ kind: "gimbap", excluded: ["egg"], toppings: [] }, catalog),
     5000,
   );
   assert.equal(
-    itemPrice({ kind: "package", excluded: [], toppings: ["pork"] }, catalog),
-    18000,
+    itemPrice({ kind: "gimbap", excluded: [], toppings: ["pork"] }, catalog),
+    8000,
+  );
+  // 기성품 토핑은 품목마다 가격이 다릅니다. 치즈 1,000 + 볶음김치 3,000
+  assert.equal(
+    itemPrice(
+      { kind: "gimbap", excluded: [], toppings: ["cheese", "stir-fried-kimchi"] },
+      catalog,
+    ),
+    9000,
+  );
+});
+test("패키지는 가장 비싼 토핑 하나를 무료로 준다", () => {
+  const price = (toppings: string[]) =>
+    itemPrice({ kind: "package", excluded: [], toppings }, catalog);
+  // 토핑이 없으면 할인할 대상도 없습니다. 5,000 + 10,000
+  assert.equal(price([]), 15000);
+  // 토핑 하나는 통째로 무료입니다.
+  assert.equal(price(["pork"]), 15000);
+  assert.equal(price(["cheese"]), 15000);
+  // 여러 개면 가장 비싼 하나만 무료입니다. 15,000 + 치즈 1,000
+  assert.equal(price(["pork", "cheese"]), 16000);
+  // 제주 원물 3,000이 기성품보다 비싸므로 그쪽이 무료가 됩니다.
+  assert.equal(price(["cheese", "kimchi", "carrot"]), 18000);
+  assert.equal(
+    freeToppingPrice(
+      { kind: "package", excluded: [], toppings: ["cheese", "kimchi", "carrot"] },
+      catalog,
+    ),
+    3000,
+  );
+  // 일반 김밥에는 무료 토핑이 없습니다.
+  assert.equal(
+    freeToppingPrice({ kind: "gimbap", excluded: [], toppings: ["pork"] }, catalog),
+    0,
   );
 });
 test("S8: 배타 선택과 자동 제외, 기존 구성 불변", () => {

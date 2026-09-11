@@ -1,9 +1,22 @@
-export type Language = "ko" | "en" | "ja" | "zh";
+// config/languages.json과 DB의 language check 제약과 반드시 같은 목록을 유지합니다.
+export const LANGUAGES = [
+  "ko",
+  "en",
+  "zh-Hans",
+  "zh-Hant",
+  "ja",
+  "id",
+  "ar",
+  "ms",
+] as const;
+export type Language = (typeof LANGUAGES)[number];
+export const isLanguage = (value: unknown): value is Language =>
+  typeof value === "string" && (LANGUAGES as readonly string[]).includes(value);
 export type Ingredient = {
   id: string;
   name: string;
   label: string;
-  kind: "fixed" | "base" | "topping";
+  kind: "fixed" | "base" | "topping" | "ready";
   position: number;
   image: string | null;
   price: number;
@@ -65,7 +78,7 @@ export type ItemSnapshot = {
   name: string;
   included: { id: string; name: string }[];
   excluded: { id: string; name: string }[];
-  toppings: { id: string; name: string; price: number }[];
+  toppings: { id: string; name: string; price: number; free?: boolean }[];
   amount: number;
 };
 export type Order = {

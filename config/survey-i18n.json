@@ -1,0 +1,403 @@
+{
+  "S1": {
+    "title": {
+      "en": "Where are you from?",
+      "ja": "どちらからお越しですか？",
+      "zh-Hans": "你来自哪里？",
+      "zh-Hant": "你來自哪裡？",
+      "id": "Anda dari mana?",
+      "ar": "من أين أنت؟",
+      "ms": "Anda dari mana?"
+    },
+    "options": {
+      "kr-jeju": {
+        "en": "Jeju resident",
+        "ja": "済州島民",
+        "zh-Hans": "济州岛民",
+        "zh-Hant": "濟州島民",
+        "id": "Penduduk Jeju",
+        "ar": "من سكان جيجو",
+        "ms": "Penduduk Jeju"
+      }
+    }
+  },
+  "S2": {
+    "title": {
+      "en": "How old are you?",
+      "ja": "年齢層を教えてください",
+      "zh-Hans": "请问你的年龄段？",
+      "zh-Hant": "請問你的年齡層？",
+      "id": "Berapa usia Anda?",
+      "ar": "ما فئتك العمرية؟",
+      "ms": "Berapa umur anda?"
+    },
+    "options": {
+      "10": {
+        "en": "Under 20",
+        "ja": "10代以下",
+        "zh-Hans": "20岁以下",
+        "zh-Hant": "20歲以下",
+        "id": "Di bawah 20",
+        "ar": "أقل من ٢٠",
+        "ms": "Bawah 20"
+      },
+      "20": {
+        "en": "20s",
+        "ja": "20代",
+        "zh-Hans": "20多岁",
+        "zh-Hant": "20多歲",
+        "id": "20-an",
+        "ar": "العشرينات",
+        "ms": "20-an"
+      },
+      "30": {
+        "en": "30s",
+        "ja": "30代",
+        "zh-Hans": "30多岁",
+        "zh-Hant": "30多歲",
+        "id": "30-an",
+        "ar": "الثلاثينات",
+        "ms": "30-an"
+      },
+      "40": {
+        "en": "40s",
+        "ja": "40代",
+        "zh-Hans": "40多岁",
+        "zh-Hant": "40多歲",
+        "id": "40-an",
+        "ar": "الأربعينات",
+        "ms": "40-an"
+      },
+      "50": {
+        "en": "50s",
+        "ja": "50代",
+        "zh-Hans": "50多岁",
+        "zh-Hant": "50多歲",
+        "id": "50-an",
+        "ar": "الخمسينات",
+        "ms": "50-an"
+      },
+      "60": {
+        "en": "60 and over",
+        "ja": "60代以上",
+        "zh-Hans": "60岁以上",
+        "zh-Hant": "60歲以上",
+        "id": "60 ke atas",
+        "ar": "٦٠ فأكثر",
+        "ms": "60 ke atas"
+      }
+    }
+  },
+  "S3": {
+    "title": {
+      "en": "What is your gender?",
+      "ja": "性別を教えてください",
+      "zh-Hans": "请问你的性别？",
+      "zh-Hant": "請問你的性別？",
+      "id": "Apa jenis kelamin Anda?",
+      "ar": "ما جنسك؟",
+      "ms": "Apakah jantina anda?"
+    },
+    "options": {
+      "female": {
+        "en": "Female",
+        "ja": "女性",
+        "zh-Hans": "女性",
+        "zh-Hant": "女性",
+        "id": "Perempuan",
+        "ar": "أنثى",
+        "ms": "Perempuan"
+      },
+      "male": {
+        "en": "Male",
+        "ja": "男性",
+        "zh-Hans": "男性",
+        "zh-Hant": "男性",
+        "id": "Laki-laki",
+        "ar": "ذكر",
+        "ms": "Lelaki"
+      },
+      "none": {
+        "en": "Prefer not to say",
+        "ja": "回答しない",
+        "zh-Hans": "不想回答",
+        "zh-Hant": "不想回答",
+        "id": "Memilih tidak menjawab",
+        "ar": "أفضّل عدم الإفصاح",
+        "ms": "Tidak mahu menyatakan"
+      }
+    }
+  },
+  "S4": {
+    "title": {
+      "en": "Would you try a food you have never seen?",
+      "ja": "はじめて見る食べ物も食べてみる？",
+      "zh-Hans": "没见过的食物你也会尝吗？",
+      "zh-Hant": "沒見過的食物你也會嘗嗎？",
+      "id": "Mau coba makanan yang belum pernah kamu lihat?",
+      "ar": "هل تجرّب طعامًا لم ترَه من قبل؟",
+      "ms": "Mahu cuba makanan yang belum pernah kamu lihat?"
+    },
+    "options": {
+      "familiar": {
+        "en": "I prefer flavours I know",
+        "ja": "知っている味がいい",
+        "zh-Hans": "我喜欢熟悉的味道",
+        "zh-Hant": "我喜歡熟悉的味道",
+        "id": "Saya suka rasa yang sudah dikenal",
+        "ar": "أفضّل النكهات التي أعرفها",
+        "ms": "Saya suka rasa yang saya kenal"
+      },
+      "open": {
+        "en": "I will give it a try",
+        "ja": "一度試してみる",
+        "zh-Hans": "可以试一次",
+        "zh-Hant": "可以試一次",
+        "id": "Saya mau coba sekali",
+        "ar": "سأجرّبه مرة",
+        "ms": "Saya nak cuba sekali"
+      },
+      "adventurous": {
+        "en": "I love new flavours!",
+        "ja": "新しい味が好き！",
+        "zh-Hans": "我喜欢新味道！",
+        "zh-Hant": "我喜歡新味道！",
+        "id": "Saya suka rasa baru!",
+        "ar": "أحبّ النكهات الجديدة!",
+        "ms": "Saya suka rasa baharu!"
+      }
+    }
+  },
+  "S5": {
+    "title": {
+      "en": "Which Jeju ingredient draws you most?",
+      "ja": "いちばん惹かれる済州の素材は？",
+      "zh-Hans": "最吸引你的济州食材是什么？",
+      "zh-Hant": "最吸引你的濟州食材是什麼？",
+      "id": "Bahan khas Jeju mana yang paling menarik?",
+      "ar": "أيّ مكوّن من جيجو يجذبك أكثر؟",
+      "ms": "Bahan Jeju mana paling menarik?"
+    },
+    "options": {
+      "vegetable": {
+        "en": "Vegetables",
+        "ja": "野菜",
+        "zh-Hans": "蔬菜",
+        "zh-Hant": "蔬菜",
+        "id": "Sayuran",
+        "ar": "الخضروات",
+        "ms": "Sayur"
+      },
+      "seafood": {
+        "en": "Seafood",
+        "ja": "海の幸",
+        "zh-Hans": "海鲜",
+        "zh-Hant": "海鮮",
+        "id": "Makanan laut",
+        "ar": "المأكولات البحرية",
+        "ms": "Makanan laut"
+      },
+      "meat": {
+        "en": "Meat",
+        "ja": "お肉",
+        "zh-Hans": "肉类",
+        "zh-Hant": "肉類",
+        "id": "Daging",
+        "ar": "اللحوم",
+        "ms": "Daging"
+      },
+      "all": {
+        "en": "A bit of everything",
+        "ja": "どれも",
+        "zh-Hans": "都喜欢",
+        "zh-Hant": "都喜歡",
+        "id": "Semuanya sedikit",
+        "ar": "قليل من كل شيء",
+        "ms": "Semuanya sedikit"
+      }
+    }
+  },
+  "S6": {
+    "title": {
+      "en": "What texture do you like?",
+      "ja": "好きな食感は？",
+      "zh-Hans": "你喜欢什么口感？",
+      "zh-Hant": "你喜歡什麼口感？",
+      "id": "Tekstur apa yang kamu suka?",
+      "ar": "ما القوام الذي تحبّه؟",
+      "ms": "Tekstur apa yang kamu suka?"
+    },
+    "options": {
+      "crunchy": {
+        "en": "Crunchy",
+        "ja": "シャキシャキ",
+        "zh-Hans": "爽脆",
+        "zh-Hant": "爽脆",
+        "id": "Renyah",
+        "ar": "مقرمش",
+        "ms": "Rangup"
+      },
+      "soft": {
+        "en": "Soft",
+        "ja": "やわらかい",
+        "zh-Hans": "柔软",
+        "zh-Hant": "柔軟",
+        "id": "Lembut",
+        "ar": "طري",
+        "ms": "Lembut"
+      },
+      "chewy": {
+        "en": "Chewy",
+        "ja": "もちもち",
+        "zh-Hans": "有嚼劲",
+        "zh-Hant": "有嚼勁",
+        "id": "Kenyal",
+        "ar": "مطاطي",
+        "ms": "Kenyal"
+      },
+      "all": {
+        "en": "A bit of everything",
+        "ja": "どれも",
+        "zh-Hans": "都喜欢",
+        "zh-Hant": "都喜歡",
+        "id": "Semuanya sedikit",
+        "ar": "قليل من كل شيء",
+        "ms": "Semuanya sedikit"
+      }
+    }
+  },
+  "S7": {
+    "title": {
+      "en": "What matters most when you choose food?",
+      "ja": "食べ物を選ぶとき、いちばん大切なのは？",
+      "zh-Hans": "选食物时你最看重什么？",
+      "zh-Hant": "選食物時你最看重什麼？",
+      "id": "Apa yang paling penting saat memilih makanan?",
+      "ar": "ما الأهم لديك عند اختيار الطعام؟",
+      "ms": "Apa paling penting ketika memilih makanan?"
+    },
+    "options": {
+      "taste": {
+        "en": "Taste",
+        "ja": "味",
+        "zh-Hans": "味道",
+        "zh-Hant": "味道",
+        "id": "Rasa",
+        "ar": "المذاق",
+        "ms": "Rasa"
+      },
+      "health": {
+        "en": "Health",
+        "ja": "健康",
+        "zh-Hans": "健康",
+        "zh-Hant": "健康",
+        "id": "Kesehatan",
+        "ar": "الصحة",
+        "ms": "Kesihatan"
+      },
+      "jeju": {
+        "en": "A local feel",
+        "ja": "土地らしさ",
+        "zh-Hans": "当地的感觉",
+        "zh-Hant": "當地的感覺",
+        "id": "Nuansa lokal",
+        "ar": "الطابع المحلي",
+        "ms": "Suasana tempatan"
+      },
+      "story": {
+        "en": "The story behind it",
+        "ja": "料理にまつわる物語",
+        "zh-Hans": "食物背后的故事",
+        "zh-Hant": "食物背後的故事",
+        "id": "Cerita di balik makanannya",
+        "ar": "الحكاية وراءه",
+        "ms": "Kisah di sebaliknya"
+      }
+    }
+  },
+  "S8": {
+    "title": {
+      "en": "Anything you cannot or would rather not eat?",
+      "ja": "食べられない・避けたい食材はありますか？",
+      "zh-Hans": "有不能吃或想避开的食材吗？",
+      "zh-Hant": "有不能吃或想避開的食材嗎？",
+      "id": "Ada bahan yang tidak bisa atau ingin kamu hindari?",
+      "ar": "هل من مكوّن لا تستطيع تناوله أو تفضّل تجنّبه؟",
+      "ms": "Ada bahan yang anda tidak boleh atau mahu elak?"
+    },
+    "options": {
+      "egg": {
+        "en": "Egg",
+        "ja": "卵",
+        "zh-Hans": "鸡蛋",
+        "zh-Hant": "雞蛋",
+        "id": "Telur",
+        "ar": "البيض",
+        "ms": "Telur"
+      },
+      "ham": {
+        "en": "Ham",
+        "ja": "ハム",
+        "zh-Hans": "火腿",
+        "zh-Hant": "火腿",
+        "id": "Ham",
+        "ar": "لحم مقدّد",
+        "ms": "Ham"
+      },
+      "crab": {
+        "en": "Crab stick",
+        "ja": "カニカマ",
+        "zh-Hans": "蟹柳",
+        "zh-Hant": "蟹肉棒",
+        "id": "Crab stick",
+        "ar": "أصابع السلطعون",
+        "ms": "Ketam tiruan"
+      },
+      "pork": {
+        "en": "Jeju pork",
+        "ja": "済州豚",
+        "zh-Hans": "济州猪肉",
+        "zh-Hant": "濟州豬肉",
+        "id": "Babi Jeju",
+        "ar": "لحم خنزير جيجو",
+        "ms": "Daging babi Jeju"
+      },
+      "turban-shell": {
+        "en": "Turban shell",
+        "ja": "サザエ",
+        "zh-Hans": "海螺",
+        "zh-Hant": "海螺",
+        "id": "Siput turban",
+        "ar": "حلزون البحر",
+        "ms": "Siput turban"
+      },
+      "fernbrake": {
+        "en": "Fernbrake",
+        "ja": "ワラビ",
+        "zh-Hans": "蕨菜",
+        "zh-Hant": "蕨菜",
+        "id": "Pakis",
+        "ar": "السرخس",
+        "ms": "Pucuk paku"
+      },
+      "carrot": {
+        "en": "Carrot",
+        "ja": "にんじん",
+        "zh-Hans": "胡萝卜",
+        "zh-Hant": "胡蘿蔔",
+        "id": "Wortel",
+        "ar": "الجزر",
+        "ms": "Lobak merah"
+      },
+      "none": {
+        "en": "None of these",
+        "ja": "該当なし",
+        "zh-Hans": "都没有",
+        "zh-Hant": "都沒有",
+        "id": "Tidak ada",
+        "ar": "لا شيء منها",
+        "ms": "Tiada"
+      }
+    }
+  }
+}

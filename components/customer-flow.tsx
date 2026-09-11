@@ -1,7 +1,14 @@
 "use client";
 import { CountryQuestion } from "./country-question";
 import { useEffect, useRef, useState } from "react";
-import type { Answers, CartItem, Catalog, Order } from "@/lib/types";
+import { isLanguage } from "@/lib/types";
+import type {
+  Answers,
+  CartItem,
+  Catalog,
+  Language,
+  Order,
+} from "@/lib/types";
 import {
   expiredOrder,
   itemPrice,
@@ -11,25 +18,38 @@ import {
   toggleAnswer,
   validQuestion,
 } from "@/lib/domain";
-import { api, errorText, persist, stored, t } from "@/lib/client";
+import {
+  api,
+  dict,
+  direction,
+  errorText,
+  languages,
+  persist,
+  stored,
+  t,
+} from "@/lib/client";
 import { Arrow, Check } from "./icons";
 import { ItemBuilder } from "./item-builder";
 import { OrderReceipt } from "./order-receipt";
 import { liveRefresh } from "@/lib/live-refresh";
+import { detailOf } from "@/lib/ingredient-detail";
+import { optionLabel, questionTitle } from "@/lib/survey-i18n";
 type Step =
   | "language"
+  | "usage"
   | "intro"
   | "consent"
   | "survey"
+  | "testDone"
   | "ingredients"
   | "build"
   | "cart"
   | "review"
   | "complete";
 type Draft = {
-  surveyReturn?: boolean;
   surveySkipped?: boolean;
   originIndex?: number;
+  language: Language;
   step: Step;
   question: number;
   answers: Answers;
@@ -45,6 +65,7 @@ type Draft = {
 };
 type Saved = { date: string; number: number; savedAt: number };
 const fresh = (c: Catalog): Draft => ({
+  language: "ko",
   step: "language",
   question: 0,
   answers: {},
@@ -63,12 +84,15 @@ const fresh = (c: Catalog): Draft => ({
       ),
   sessionId: crypto.randomUUID(),
 });
+// 가격은 build 단계에서 처음 드러납니다. 테스트(consent~survey)는 그 앞에서 testDone으로 끝나야 합니다.
 const sequence: Step[] = [
   "language",
+  "usage",
   "intro",
   "ingredients",
   "consent",
   "survey",
+  "testDone",
   "build",
   "cart",
   "review",
@@ -97,6 +121,8 @@ export default function CustomerFlow({
       previous.answers &&
       typeof previous.key === "string";
     const state = valid ? previous : fallback;
+    // 지원 목록에서 빠진 언어 코드가 저장되어 있으면 한국어로 되돌립니다.
+    if (!isLanguage(state.language)) state.language = "ko";
     // 시작 화면에 남아 있던 이전 버전 초안은 최신 설문으로 시작합니다.
     if (state.step === "language" || state.surveySkipped) state.surveyVersion = initialCatalog.survey.id;
     if (
@@ -153,7 +179,7 @@ export default function CustomerFlow({
           persist("localStorage", "juseyo-order", null);
         }
       } catch (e) {
-        if (alive) setError(errorText(e));
+        if (alive) setError(errorText(e, draft?.language ?? "ko"));
       }
     }
     const stop = liveRefresh({
@@ -162,10 +188,21 @@ export default function CustomerFlow({
       refresh: load,
     });
     return () => { alive = false; stop(); };
-  }, [draft?.step, saved, catalog, order?.id]);
+  }, [draft?.step, draft?.language, saved, catalog, order?.id]);
   useEffect(() => {
     mainRef.current?.scrollTo(0, 0);
   }, [draft?.step, draft?.question, originIndex]);
+  // 아랍어는 문서 전체를 오른쪽 정렬로 전환해야 화면 구성이 뒤집힙니다.
+  useEffect(() => {
+    const language = draft?.language ?? "ko";
+    const root = document.documentElement;
+    root.lang = language;
+    root.dir = direction(language);
+    return () => {
+      root.lang = "ko";
+      root.dir = "ltr";
+    };
+  }, [draft?.language]);
   useEffect(() => {
     if (!draft?.step || draft.step === "complete") return;
     let alive = true;
@@ -191,6 +228,7 @@ export default function CustomerFlow({
       </main>
     );
   const d = draft;
+  const copy = dict(d.language);
   const checkedItems = d.step === "build" && d.item
     ? [...d.items.filter((_, index) => index !== d.editing), d.item]
     : d.items;
@@ -205,8 +243,17 @@ export default function CustomerFlow({
     setError("");
     change({ step });
   };
-  const content = (id: string) =>
+  const koContent = (id: string) =>
     catalog.contents.find((c) => c.id === id && c.language === "ko");
+  // 번역이 아직 비어 있는 콘텐츠는 한국어 원문을 보여줍니다.
+  const content = (id: string) => {
+    const translated = catalog.contents.find(
+      (c) => c.id === id && c.language === d.language,
+    );
+    return translated?.body.trim() || translated?.title.trim()
+      ? translated
+      : koContent(id);
+  };
   const back = () => {
     if (d.step === "survey" && d.question > 0)
       change({ question: d.question - 1 });
@@ -221,7 +268,7 @@ export default function CustomerFlow({
   );
   const startItem = () => {
     if (d.items.length >= 30) {
-      setError(t.itemLimit);
+      setError(copy.itemLimit);
       return;
     }
     change({ item: newItem(catalog, d.answers), editing: null, step: "build" });
@@ -234,7 +281,7 @@ export default function CustomerFlow({
     try {
       const result = await api<Order>("/api/orders", "POST", {
         idempotencyKey: d.key,
-        language: "ko",
+        language: d.language,
         items: d.items,
         expectedTotal: total,
         answers: d.answers,
@@ -256,17 +303,22 @@ export default function CustomerFlow({
       setOrder(result);
       change({ step: "complete" });
     } catch (e) {
-      setError(errorText(e));
+      setError(errorText(e, d.language));
       try {
         const latest = await api<Catalog>("/api/catalog");
         setCatalog(latest);
         if (e instanceof Error && e.message === "INVALID_SURVEY") {
+          // 가격을 본 뒤에 다시 받은 답은 연구 자료로 쓸 수 없습니다.
+          // 테스트 문항이 도중에 바뀌었다면 이 응답을 버리고 주문만 이어갑니다.
+          setError(copy.testDiscarded);
           change({
-            step: "survey",
-            question: 0,
             answers: {},
+            question: 0,
+            surveySkipped: true,
+            consent: false,
+            consentAt: null,
             surveyVersion: latest.survey.id,
-            surveyReturn: true,
+            key: invalidate(),
           });
         }
         if (e instanceof Error && e.message === "CONSENT_REQUIRED") {
@@ -282,7 +334,7 @@ export default function CustomerFlow({
   const footer = (label: string, action: () => void, disabled = false) => (
     <div className="customer-footer">
       <button className="primary" disabled={disabled || busy} onClick={action}>
-        {busy ? t.submitting : label}
+        {busy ? copy.submitting : label}
       </button>
     </div>
   );
@@ -295,7 +347,7 @@ export default function CustomerFlow({
       <header className="customer-header">
         <div className="row between">
           {!["language", "complete", "build"].includes(d.step) ? (
-            <button className="back" aria-label={t.back} onClick={back}>
+            <button className="back" aria-label={copy.back} onClick={back}>
               <Arrow back />
             </button>
           ) : (
@@ -304,7 +356,7 @@ export default function CustomerFlow({
           <img
             className="brand-logo"
             src="/brand/logo-wordmark.svg"
-            alt={t.brand}
+            alt={copy.brand}
           />
           <span
             className="question-count"
@@ -319,13 +371,15 @@ export default function CustomerFlow({
           <div
             className="progress"
             role="progressbar"
-            aria-label={t.next}
+            aria-label={copy.next}
             aria-valuemin={0}
-            aria-valuemax={8}
+            aria-valuemax={sequence.length - 1}
             aria-valuenow={sequence.indexOf(d.step)}
           >
             <span
-              style={{ width: `${(sequence.indexOf(d.step) / 8) * 100}%` }}
+              style={{
+                width: `${(sequence.indexOf(d.step) / (sequence.length - 1)) * 100}%`,
+              }}
             />
           </div>
         )}
@@ -352,36 +406,55 @@ export default function CustomerFlow({
               <img src="/brand/juseyo-badge.svg" alt="주세요" />
             </div>
             <div className="stack">
-              <h1>{t.languageTitle}</h1>
-              <p className="muted">{t.languageDescription}</p>
+              <h1>{copy.languageTitle}</h1>
+              <p className="muted">{copy.languageDescription}</p>
             </div>
             <div className="stack">
-              <button className="primary" onClick={() => go("intro")}>
-                {t.start}
+              <button className="primary" onClick={() => go("usage")}>
+                {copy.start}
               </button>
               <div className="grid2 language-grid">
-                {["한국어", "English", "日本語", "中文"].map((l, i) => (
+                {languages.map((l) => (
                   <button
-                    key={l}
-                    className={i === 0 ? "selected" : ""}
-                    aria-pressed={i === 0}
-                    disabled={i !== 0}
+                    key={l.code}
+                    lang={l.code}
+                    className={l.code === d.language ? "selected" : ""}
+                    aria-pressed={l.code === d.language}
+                    onClick={() => change({ language: l.code })}
                   >
-                    {l}
+                    {l.label}
                   </button>
                 ))}
               </div>
               {saved && (
                 <button onClick={() => go("complete")}>
-                  {t.resume} · {orderNumber(saved.number)}
+                  {copy.resume} · {orderNumber(saved.number)}
                 </button>
               )}
             </div>
           </>
         )}
+        {d.step === "usage" && (
+          <>
+            <h1>{copy.usageTitle}</h1>
+            <p className="muted">{copy.usageDescription}</p>
+            <ContentBody value={content("usage")} copy={copy} />
+            <div className="brand-line">
+              <strong>{copy.brandLine}</strong>
+              <span className="muted">{copy.brandLineEn}</span>
+            </div>
+          </>
+        )}
         {d.step === "intro" && (
           <>
-            <h1>제주의 생산자</h1>
+            <div className="stack">
+              <span className="eyebrow">{copy.introEyebrow}</span>
+              <h1>{copy.introTitle}</h1>
+            </div>
+            {/* 영상은 바로 아래에 심어 두므로 본문만 보여 줍니다. */}
+            <p className="muted" style={{ whiteSpace: "pre-wrap" }}>
+              {content("producer")?.body || ""}
+            </p>
             <ProducerVideo
               url={
                 content("producer")?.video_url || "https://youtu.be/dQw4w9WgXcQ"
@@ -394,20 +467,26 @@ export default function CustomerFlow({
                 go("ingredients");
               }}
             >
-              {t.skip}
+              {copy.skip}
             </button>
           </>
         )}
         {d.step === "consent" && (
           <>
-            <h1>{t.consentTitle}</h1>
-            {catalog.internalTest && <p className="notice">{t.internalTest}</p>}
+            <div className="stack">
+              <span className="eyebrow">{copy.aboutYouEyebrow}</span>
+              <h1>{copy.aboutYouTitle}</h1>
+              <p className="muted">{copy.aboutYouDescription}</p>
+              <span className="question-count">{copy.duration}</span>
+            </div>
+            {catalog.internalTest && <p className="notice">{copy.internalTest}</p>}
+            <h2>{copy.testNotice}</h2>
             <div
               className="panel"
               style={{ minHeight: 150, whiteSpace: "pre-wrap" }}
             >
               {content("consent")?.body ||
-                (!catalog.internalTest ? t.consentMissing : "")}
+                (!catalog.internalTest ? copy.consentMissing : "")}
             </div>
             <label className="row">
               <input
@@ -422,12 +501,12 @@ export default function CustomerFlow({
                       : null,
                     consentVersion: catalog.internalTest
                       ? "internal-test-v1"
-                      : String(content("consent")?.version ?? ""),
+                      : String(koContent("consent")?.version ?? ""),
                     key: invalidate(),
                   })
                 }
               />
-              <span>{t.consent}</span>
+              <span>{copy.consent}</span>
             </label>
             <button
               onClick={() =>
@@ -443,7 +522,7 @@ export default function CustomerFlow({
                 })
               }
             >
-              설문 하지 않기
+              {copy.skipTest}
             </button>
           </>
         )}
@@ -451,14 +530,14 @@ export default function CustomerFlow({
           <>
             <div className="stack">
               <span className="question-count">
-                {q.required ? t.required : t.optional} ·{" "}
-                {q.type === "multiple" ? t.multiple : t.single}
+                {q.required ? copy.required : copy.optional} ·{" "}
+                {q.type === "multiple" ? copy.multiple : copy.single}
               </span>
-              <h1>{q.title}</h1>
+              <h1>{questionTitle(q, d.language)}</h1>
             </div>
-            {q.id === "S1" && q.options.length > 30 ? <CountryQuestion options={q.options} selected={d.answers[q.id]?.[0]} onChange={id => change({ answers: { ...d.answers, [q.id]: [id] }, key: invalidate() })} /> : q.type === "text" ? (
+            {q.id === "S1" && q.options.length > 30 ? <CountryQuestion question={q} language={d.language} copy={copy} selected={d.answers[q.id]?.[0]} onChange={id => change({ answers: { ...d.answers, [q.id]: [id] }, key: invalidate() })} /> : q.type === "text" ? (
               <label>
-                {t.textAnswer}
+                {copy.textAnswer}
                 <input
                   maxLength={200}
                   value={d.answers[q.id]?.[0] || ""}
@@ -500,7 +579,7 @@ export default function CustomerFlow({
                       })
                     }
                   >
-                    <span>{option.label}</span>
+                    <span>{optionLabel(q, option, d.language)}</span>
                     <span className="dot" />
                   </button>
                 ))}
@@ -510,22 +589,35 @@ export default function CustomerFlow({
         )}
         {d.step === "ingredients" && origin && (
           <>
-            <h1>{t.ingredientTitle}</h1>
-            <p className="muted">{t.ingredientDescription}</p>
+            <div className="stack">
+              <span className="eyebrow">{copy.ingredientEyebrow}</span>
+              <h1>{copy.ingredientTitle}</h1>
+              <p className="muted">{copy.ingredientDescription}</p>
+            </div>
             <article className="ingredient-feature">
               <img src={origin.image!} alt={origin.name} />
               <div className="stack">
                 <h2>{origin.name}</h2>
-                <ContentBody value={content(origin.id)} />
+                <IngredientDetail id={origin.id} language={d.language} copy={copy} />
+                <ContentBody value={content(origin.id)} copy={copy} />
               </div>
             </article>
+            {originIndex === 3 && (
+              <p className="taste-cta">{copy.tasteCta}</p>
+            )}
             <div className="row between">
               <span className="muted">{originIndex + 1} / 4</span>
               <button className="quiet" onClick={() => go("consent")}>
-                {t.skip}
+                {copy.skip}
               </button>
             </div>
           </>
+        )}
+        {d.step === "testDone" && (
+          <div className="stack test-done">
+            <h1>{copy.testDoneTitle}</h1>
+            <p className="muted">{copy.testDoneDescription}</p>
+          </div>
         )}
         {d.step === "build" && d.item && (
           <ItemBuilder
@@ -556,9 +648,9 @@ export default function CustomerFlow({
         )}
         {(d.step === "cart" || d.step === "review") && (
           <>
-            <h1>{d.step === "cart" ? t.cartTitle : t.reviewTitle}</h1>
-            {d.step === "cart" && <p className="muted">{t.cartDescription}</p>}
-            {!d.items.length && <p>{t.emptyCart}</p>}
+            <h1>{d.step === "cart" ? copy.cartTitle : copy.reviewTitle}</h1>
+            {d.step === "cart" && <p className="muted">{copy.cartDescription}</p>}
+            {!d.items.length && <p>{copy.emptyCart}</p>}
             {d.items.map((item, i) => (
               <section key={i} className="item-card stack">
                 <div className="row between">
@@ -568,8 +660,8 @@ export default function CustomerFlow({
                       ? catalog.products.find((p) => p.id === item.productId)
                           ?.name
                       : item.kind === "package"
-                        ? catalog.products.find((p) => p.id === "package")?.name ?? t.package
-                        : t.gimbap}
+                        ? catalog.products.find((p) => p.id === "package")?.name ?? copy.package
+                        : copy.gimbap}
                   </h3>
                   <strong>{money(itemPrice(item, catalog))}</strong>
                 </div>
@@ -577,7 +669,7 @@ export default function CustomerFlow({
                   <>
                     <div className="row wrap">
                       {catalog.ingredients
-                        .filter((v) => v.kind !== "topping")
+                        .filter((v) => v.kind === "fixed" || v.kind === "base")
                         .map((v) => (
                           <span
                             className={`chip ${item.excluded.includes(v.id) ? "excluded" : ""}`}
@@ -611,7 +703,7 @@ export default function CustomerFlow({
                         })
                       }
                     >
-                      {t.edit}
+                      {copy.edit}
                     </button>
                   )}
                   <button
@@ -623,14 +715,14 @@ export default function CustomerFlow({
                       })
                     }
                   >
-                    {t.delete}
+                    {copy.delete}
                   </button>
                 </div>
               </section>
             ))}
             {d.step === "cart" && (
               <>
-                <button onClick={startItem}>{t.addItem}</button>
+                <button onClick={startItem}>{copy.addItem}</button>
                 {catalog.products
                   .filter((p) => p.kind === "extra" && p.active)
                   .map((p) => (
@@ -658,7 +750,7 @@ export default function CustomerFlow({
               </>
             )}
             <div className="row between">
-              <strong>{t.total}</strong>
+              <strong>{copy.total}</strong>
               <h2>{money(total)}</h2>
             </div>
           </>
@@ -676,7 +768,7 @@ export default function CustomerFlow({
                       ? "취소된 주문이에요"
                       : order.status === "COMPLETED"
                         ? "완료된 주문이에요"
-                        : t.completeTitle}
+                        : copy.completeTitle}
                   </h2>
                   {order.status === "COMPLETED" && <p>결제와 수령이 완료됐어요.</p>}
                   {order.status === "CANCELLED" && (
@@ -684,21 +776,21 @@ export default function CustomerFlow({
                   )}
                 </div>
                 <div className="order-number">{orderNumber(order.number)}</div>
-                {order.status === "PENDING" && <h3>{t.counter}</h3>}
+                {order.status === "PENDING" && <h3>{copy.counter}</h3>}
                 <p className="price">{money(order.total)}</p>
-                {order.status === "PENDING" && <p className="muted">{t.offlinePayment}</p>}
+                {order.status === "PENDING" && <p className="muted">{copy.offlinePayment}</p>}
                 <div className="receipt">
                   <details>
-                    <summary>{t.orderDetails}</summary>
+                    <summary>{copy.orderDetails}</summary>
                     <OrderReceipt order={order} />
                   </details>
                 </div>
                 {content("experience")?.video_url && (
-                  <ContentBody value={content("experience")} />
+                  <ContentBody value={content("experience")} copy={copy} />
                 )}
               </>
             ) : (
-              <p>{t.loading}</p>
+              <p>{copy.loading}</p>
             )}
             <button
               className="quiet"
@@ -710,54 +802,101 @@ export default function CustomerFlow({
                 setError("");
               }}
             >
-              {t.newOrder}
+              {copy.newOrder}
             </button>
           </div>
         )}
       </div>
+      {d.step === "usage" && footer(copy.next, () => go("intro"))}
       {d.step === "intro" &&
-        footer(t.next, () => {
+        footer(copy.next, () => {
           setOriginIndex(0);
           go("ingredients");
         })}
       {d.step === "consent" &&
         footer(
-          t.next,
+          copy.next,
           () => change({ step: "survey", surveySkipped: false }),
           !d.consent ||
-            (!catalog.internalTest && !content("consent")?.body.trim()),
+            (!catalog.internalTest && !koContent("consent")?.body.trim()),
         )}
       {d.step === "survey" &&
         q &&
         footer(
-          t.next,
+          copy.next,
           () =>
             d.question < catalog.survey.questions.length - 1
               ? change({ question: d.question + 1 })
-              : d.surveyReturn
-                ? change({ step: "cart", surveyReturn: false })
-                : startItem(),
+              : go("testDone"),
           !validQuestion(q, d.answers[q.id]),
         )}
       {d.step === "ingredients" &&
-        footer(originIndex < 3 ? t.next : t.next, () =>
+        footer(originIndex < 3 ? copy.next : copy.findMyJeju, () =>
           originIndex < 3 ? setOriginIndex(originIndex + 1) : go("consent"),
         )}
+      {d.step === "testDone" && footer(copy.startBuilding, startItem)}
       {d.step === "cart" &&
-        footer(t.review, () => go("review"), !d.items.length)}
+        footer(copy.review, () => go("review"), !d.items.length)}
       {d.step === "review" &&
         footer(
-          t.confirm,
+          copy.confirm,
           () => void submit(),
           !d.items.length || !catalog.configured || shortages.length > 0,
         )}
     </main>
   );
 }
+function IngredientDetail({ id, language, copy }: { id: string; language: Language; copy: typeof t }) {
+  const detail = detailOf(id, language);
+  if (!detail) return null;
+  const rows = [
+    [copy.detailTaste, detail.taste],
+    [copy.detailTexture, detail.texture],
+    [copy.detailDiet, detail.diet],
+  ].filter(([, value]) => value);
+  return (
+    <div className="stack ingredient-detail">
+      {detail.tagline && <p>{detail.tagline}</p>}
+      <dl>
+        {rows.map(([label, value]) => (
+          <div className="row" key={label}>
+            <dt className="muted">{label}</dt>
+            <dd>{value}</dd>
+          </div>
+        ))}
+        {(detail.allergyRaw || detail.allergySauce) && (
+          <>
+            <div className="row">
+              <dt className="muted">{copy.detailAllergy}</dt>
+              <dd />
+            </div>
+            {detail.allergyRaw && (
+              <div className="row indent">
+                <dt className="muted">{copy.detailAllergyRaw}</dt>
+                <dd>{detail.allergyRaw}</dd>
+              </div>
+            )}
+            {detail.allergySauce && (
+              <div className="row indent">
+                <dt className="muted">{copy.detailAllergySauce}</dt>
+                <dd>{detail.allergySauce}*</dd>
+              </div>
+            )}
+          </>
+        )}
+      </dl>
+      {detail.allergySauce && (
+        <p className="footnote muted">{copy.detailFootnote}</p>
+      )}
+    </div>
+  );
+}
 export function ContentBody({
   value,
+  copy = t,
 }: {
   value?: Catalog["contents"][number];
+  copy?: typeof t;
 }) {
   return (
     <div className="stack">
@@ -779,7 +918,7 @@ export function ContentBody({
           target="_blank"
           rel="noreferrer"
         >
-          {t.watch}
+          {copy.watch}
           <Arrow />
         </a>
       )}

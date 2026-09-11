@@ -1,0 +1,306 @@
+{
+  "carrot": {
+    "tagline": {
+      "en": "A crisp topping that makes Jeju carrot sweet and tangy.",
+      "ja": "済州にんじんを甘酸っぱく楽しむシャキシャキのトッピング。",
+      "zh-Hans": "把济州胡萝卜做得酸酸甜甜的爽脆配料。",
+      "zh-Hant": "把濟州胡蘿蔔做得酸酸甜甜的爽脆配料。",
+      "id": "Topping renyah yang membuat wortel Jeju terasa asam manis.",
+      "ar": "إضافة مقرمشة تمنح جزر جيجو مذاقًا حلوًا حامضًا.",
+      "ms": "Topping rangup yang menjadikan lobak merah Jeju masam manis."
+    },
+    "taste": {
+      "en": "Tangy · Sweet",
+      "ja": "甘酸っぱい",
+      "zh-Hans": "酸甜",
+      "zh-Hant": "酸甜",
+      "id": "Asam · Manis",
+      "ar": "حامض · حلو",
+      "ms": "Masam · Manis"
+    },
+    "texture": {
+      "en": "Crisp",
+      "ja": "シャキシャキ",
+      "zh-Hans": "爽脆",
+      "zh-Hant": "爽脆",
+      "id": "Renyah",
+      "ar": "مقرمش",
+      "ms": "Rangup"
+    },
+    "diet": {
+      "en": "🌱 Plant-based",
+      "ja": "🌱 植物性",
+      "zh-Hans": "🌱 植物性",
+      "zh-Hant": "🌱 植物性",
+      "id": "🌱 Nabati",
+      "ar": "🌱 نباتي",
+      "ms": "🌱 Berasaskan tumbuhan"
+    },
+    "allergyRaw": {
+      "en": "✓ No major allergens",
+      "ja": "✓ 主要アレルゲンなし",
+      "zh-Hans": "✓ 无主要过敏原",
+      "zh-Hant": "✓ 無主要過敏原",
+      "id": "✓ Tanpa alergen utama",
+      "ar": "✓ لا مسبّبات حساسية رئيسية",
+      "ms": "✓ Tiada alergen utama"
+    },
+    "allergySauce": {
+      "en": "✓ No major allergens",
+      "ja": "✓ 主要アレルゲンなし",
+      "zh-Hans": "✓ 无主要过敏原",
+      "zh-Hant": "✓ 無主要過敏原",
+      "id": "✓ Tanpa alergen utama",
+      "ar": "✓ لا مسبّبات حساسية رئيسية",
+      "ms": "✓ Tiada alergen utama"
+    }
+  },
+  "turban-shell": {
+    "tagline": {
+      "en": "Turban shell gathered by Jeju haenyeo, simmered for a savoury bite of the sea.",
+      "ja": "済州の海女が採ったサザエに旨みを足した海のトッピング。",
+      "zh-Hans": "济州海女采来的海螺，加上鲜味的海洋配料。",
+      "zh-Hant": "濟州海女採來的海螺，加上鮮味的海洋配料。",
+      "id": "Siput turban hasil tangkapan haenyeo Jeju dengan rasa gurih laut.",
+      "ar": "حلزون بحري يجمعه غوّاصات جيجو مع نكهة بحرية غنية.",
+      "ms": "Siput turban yang dikutip haenyeo Jeju dengan rasa laut yang gurih."
+    },
+    "taste": {
+      "en": "Salty · Savoury",
+      "ja": "塩気・旨み",
+      "zh-Hans": "咸鲜",
+      "zh-Hant": "鹹鮮",
+      "id": "Asin · Gurih",
+      "ar": "مالح · غني",
+      "ms": "Masin · Gurih"
+    },
+    "texture": {
+      "en": "Chewy",
+      "ja": "こりこり",
+      "zh-Hans": "有嚼劲",
+      "zh-Hant": "有嚼勁",
+      "id": "Kenyal",
+      "ar": "مطاطي",
+      "ms": "Kenyal"
+    },
+    "diet": {
+      "en": "🐚 Seafood",
+      "ja": "🐚 魚介類",
+      "zh-Hans": "🐚 海鲜",
+      "zh-Hant": "🐚 海鮮",
+      "id": "🐚 Makanan laut",
+      "ar": "🐚 مأكولات بحرية",
+      "ms": "🐚 Makanan laut"
+    },
+    "allergyRaw": {
+      "en": "⚠️ Molluscs",
+      "ja": "⚠️ 軟体動物",
+      "zh-Hans": "⚠️ 软体动物",
+      "zh-Hant": "⚠️ 軟體動物",
+      "id": "⚠️ Moluska",
+      "ar": "⚠️ رخويات",
+      "ms": "⚠️ Moluska"
+    },
+    "allergySauce": {
+      "en": "⚠️ Soy · Wheat",
+      "ja": "⚠️ 大豆・小麦",
+      "zh-Hans": "⚠️ 大豆 · 小麦",
+      "zh-Hant": "⚠️ 大豆 · 小麥",
+      "id": "⚠️ Kedelai · Gandum",
+      "ar": "⚠️ الصويا · القمح",
+      "ms": "⚠️ Soya · Gandum"
+    }
+  },
+  "fernbrake": {
+    "tagline": {
+      "en": "Jeju spring fernbrake, pickled tangy as a Jeju namul topping.",
+      "ja": "済州の春わらびを甘酸っぱく漬けた済州ナムルのトッピング。",
+      "zh-Hans": "用济州春天的蕨菜腌出的酸爽野菜配料。",
+      "zh-Hant": "用濟州春天的蕨菜醃出的酸爽野菜配料。",
+      "id": "Pakis musim semi Jeju yang diasamkan sebagai topping namul khas Jeju.",
+      "ar": "سرخس ربيع جيجو مخلّل بنكهة حامضة كطبق نامول.",
+      "ms": "Pucuk paku musim bunga Jeju yang dijeruk masam sebagai topping namul Jeju."
+    },
+    "taste": {
+      "en": "Tangy · Mild",
+      "ja": "甘酸っぱい・淡白",
+      "zh-Hans": "酸香 · 清淡",
+      "zh-Hant": "酸香 · 清淡",
+      "id": "Asam · Ringan",
+      "ar": "حامض · خفيف",
+      "ms": "Masam · Ringan"
+    },
+    "texture": {
+      "en": "Tender and chewy",
+      "ja": "やわらかくもちもち",
+      "zh-Hans": "柔软有嚼劲",
+      "zh-Hant": "柔軟有嚼勁",
+      "id": "Lembut dan kenyal",
+      "ar": "طري ومطاطي",
+      "ms": "Lembut dan kenyal"
+    },
+    "diet": {
+      "en": "🌱 Plant-based",
+      "ja": "🌱 植物性",
+      "zh-Hans": "🌱 植物性",
+      "zh-Hant": "🌱 植物性",
+      "id": "🌱 Nabati",
+      "ar": "🌱 نباتي",
+      "ms": "🌱 Berasaskan tumbuhan"
+    },
+    "allergyRaw": {
+      "en": "✓ No major allergens",
+      "ja": "✓ 主要アレルゲンなし",
+      "zh-Hans": "✓ 无主要过敏原",
+      "zh-Hant": "✓ 無主要過敏原",
+      "id": "✓ Tanpa alergen utama",
+      "ar": "✓ لا مسبّبات حساسية رئيسية",
+      "ms": "✓ Tiada alergen utama"
+    },
+    "allergySauce": {
+      "en": "✓ No major allergens",
+      "ja": "✓ 主要アレルゲンなし",
+      "zh-Hans": "✓ 无主要过敏原",
+      "zh-Hant": "✓ 無主要過敏原",
+      "id": "✓ Tanpa alergen utama",
+      "ar": "✓ لا مسبّبات حساسية رئيسية",
+      "ms": "✓ Tiada alergen utama"
+    }
+  },
+  "pork": {
+    "tagline": {
+      "en": "Finely chopped Jeju pork with a sweet and salty BBQ glaze.",
+      "ja": "細かく刻んだ済州豚に甘じょっぱいBBQ味を重ねたトッピング。",
+      "zh-Hans": "切碎的济州猪肉，裹上甜咸烧烤味的配料。",
+      "zh-Hant": "切碎的濟州豬肉，裹上甜鹹燒烤味的配料。",
+      "id": "Daging babi Jeju cincang dengan saus BBQ manis gurih.",
+      "ar": "لحم خنزير جيجو مفروم بصلصة شواء حلوة ومالحة.",
+      "ms": "Daging babi Jeju cincang dengan sos BBQ manis masin."
+    },
+    "taste": {
+      "en": "Sweet · Salty · Nutty",
+      "ja": "甘い・塩気・香ばしい",
+      "zh-Hans": "甜 · 咸 · 香",
+      "zh-Hant": "甜 · 鹹 · 香",
+      "id": "Manis · Asin · Gurih",
+      "ar": "حلو · مالح · مُحمّص",
+      "ms": "Manis · Masin · Lemak"
+    },
+    "texture": {
+      "en": "Tender",
+      "ja": "やわらかい",
+      "zh-Hans": "柔软",
+      "zh-Hant": "柔軟",
+      "id": "Lembut",
+      "ar": "طري",
+      "ms": "Lembut"
+    },
+    "diet": {
+      "en": "🐷 Contains pork · not halal",
+      "ja": "🐷 豚肉入り・ハラールではありません",
+      "zh-Hans": "🐷 含猪肉 · 非清真",
+      "zh-Hant": "🐷 含豬肉 · 非清真",
+      "id": "🐷 Mengandung babi · tidak halal",
+      "ar": "🐷 يحتوي لحم خنزير · غير حلال",
+      "ms": "🐷 Mengandungi daging babi · bukan halal"
+    },
+    "allergyRaw": {
+      "en": "⚠️ Pork",
+      "ja": "⚠️ 豚肉",
+      "zh-Hans": "⚠️ 猪肉",
+      "zh-Hant": "⚠️ 豬肉",
+      "id": "⚠️ Daging babi",
+      "ar": "⚠️ لحم خنزير",
+      "ms": "⚠️ Daging babi"
+    },
+    "allergySauce": {
+      "en": "⚠️ Soy · Wheat",
+      "ja": "⚠️ 大豆・小麦",
+      "zh-Hans": "⚠️ 大豆 · 小麦",
+      "zh-Hant": "⚠️ 大豆 · 小麥",
+      "id": "⚠️ Kedelai · Gandum",
+      "ar": "⚠️ الصويا · القمح",
+      "ms": "⚠️ Soya · Gandum"
+    }
+  },
+  "cheese": {
+    "diet": {
+      "en": "🥛 Contains milk",
+      "ja": "🥛 乳成分を含みます",
+      "zh-Hans": "🥛 含牛奶",
+      "zh-Hant": "🥛 含牛奶",
+      "id": "🥛 Mengandung susu",
+      "ar": "🥛 يحتوي حليبًا",
+      "ms": "🥛 Mengandungi susu"
+    },
+    "allergyRaw": {
+      "en": "⚠️ Milk",
+      "ja": "⚠️ 乳",
+      "zh-Hans": "⚠️ 牛奶",
+      "zh-Hant": "⚠️ 牛奶",
+      "id": "⚠️ Susu",
+      "ar": "⚠️ حليب",
+      "ms": "⚠️ Susu"
+    }
+  },
+  "gim": {
+    "diet": {
+      "en": "🌱 Plant-based",
+      "ja": "🌱 植物性",
+      "zh-Hans": "🌱 植物性",
+      "zh-Hant": "🌱 植物性",
+      "id": "🌱 Nabati",
+      "ar": "🌱 نباتي",
+      "ms": "🌱 Berasaskan tumbuhan"
+    },
+    "allergyRaw": {
+      "en": "✓ No major allergens",
+      "ja": "✓ 主要アレルゲンなし",
+      "zh-Hans": "✓ 无主要过敏原",
+      "zh-Hant": "✓ 無主要過敏原",
+      "id": "✓ Tanpa alergen utama",
+      "ar": "✓ لا مسبّبات حساسية رئيسية",
+      "ms": "✓ Tiada alergen utama"
+    }
+  },
+  "kimchi": {
+    "diet": {
+      "en": "🌊 Contains salted seafood",
+      "ja": "🌊 塩辛を含みます",
+      "zh-Hans": "🌊 含鱼露虾酱",
+      "zh-Hant": "🌊 含魚露蝦醬",
+      "id": "🌊 Mengandung terasi/udang",
+      "ar": "🌊 يحتوي مخلّلات بحرية",
+      "ms": "🌊 Mengandungi belacan/udang"
+    },
+    "allergyRaw": {
+      "en": "⚠️ Shrimp · Fish",
+      "ja": "⚠️ えび・魚",
+      "zh-Hans": "⚠️ 虾 · 鱼",
+      "zh-Hant": "⚠️ 蝦 · 魚",
+      "id": "⚠️ Udang · Ikan",
+      "ar": "⚠️ روبيان · سمك",
+      "ms": "⚠️ Udang · Ikan"
+    }
+  },
+  "stir-fried-kimchi": {
+    "diet": {
+      "en": "🌊 Contains salted seafood",
+      "ja": "🌊 塩辛を含みます",
+      "zh-Hans": "🌊 含鱼露虾酱",
+      "zh-Hant": "🌊 含魚露蝦醬",
+      "id": "🌊 Mengandung terasi/udang",
+      "ar": "🌊 يحتوي مخلّلات بحرية",
+      "ms": "🌊 Mengandungi belacan/udang"
+    },
+    "allergyRaw": {
+      "en": "⚠️ Shrimp · Fish",
+      "ja": "⚠️ えび・魚",
+      "zh-Hans": "⚠️ 虾 · 鱼",
+      "zh-Hant": "⚠️ 蝦 · 魚",
+      "id": "⚠️ Udang · Ikan",
+      "ar": "⚠️ روبيان · سمك",
+      "ms": "⚠️ Udang · Ikan"
+    }
+  }
+}

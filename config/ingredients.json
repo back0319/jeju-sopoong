@@ -60,7 +60,15 @@
     "kind": "topping",
     "position": 6,
     "image": "/brand/ingredients/pork.svg",
-    "price": 3000
+    "price": 3000,
+    "detail": {
+      "tagline": "잘게 다진 제주 돼지고기에 달콤짭짤한 BBQ 맛을 더한 토핑.",
+      "taste": "달콤 · 짭짤 · 고소",
+      "texture": "부드러움",
+      "diet": "🐷 돼지고기 포함 · 할랄 아님",
+      "allergyRaw": "⚠️ 돼지고기",
+      "allergySauce": "⚠️ 대두 · 밀"
+    }
   },
   {
     "id": "turban-shell",
@@ -69,7 +77,15 @@
     "kind": "topping",
     "position": 7,
     "image": "/brand/ingredients/turban-shell.svg",
-    "price": 3000
+    "price": 3000,
+    "detail": {
+      "tagline": "제주 해녀가 채취한 뿔소라에 감칠맛을 더한 바다 토핑.",
+      "taste": "짭짤 · 감칠맛",
+      "texture": "쫄깃함",
+      "diet": "🐚 해산물",
+      "allergyRaw": "⚠️ 연체류",
+      "allergySauce": "⚠️ 대두 · 밀"
+    }
   },
   {
     "id": "fernbrake",
@@ -78,7 +94,15 @@
     "kind": "topping",
     "position": 8,
     "image": "/brand/ingredients/fernbrake.svg",
-    "price": 3000
+    "price": 3000,
+    "detail": {
+      "tagline": "제주의 봄 고사리를 새콤하게 즐기는 제주 나물 토핑.",
+      "taste": "새콤 · 담백",
+      "texture": "부드럽고 쫄깃함",
+      "diet": "🌱 식물성",
+      "allergyRaw": "✓ 주요 알레르기 없음",
+      "allergySauce": "✓ 주요 알레르기 없음"
+    }
   },
   {
     "id": "carrot",
@@ -87,6 +111,70 @@
     "kind": "topping",
     "position": 9,
     "image": "/brand/ingredients/carrot.svg",
-    "price": 3000
+    "price": 3000,
+    "detail": {
+      "tagline": "제주 당근을 새콤달콤하게 즐기는 아삭한 토핑.",
+      "taste": "새콤 · 달콤",
+      "texture": "아삭함",
+      "diet": "🌱 식물성",
+      "allergyRaw": "✓ 주요 알레르기 없음",
+      "allergySauce": "✓ 주요 알레르기 없음"
+    }
+  },
+  {
+    "id": "cheese",
+    "name": "치즈 1장",
+    "label": "치즈 1장",
+    "kind": "ready",
+    "position": 10,
+    "image": null,
+    "price": 1000,
+    "detail": {
+      "diet": "🥛 우유 포함",
+      "allergyRaw": "⚠️ 우유",
+      "allergySauce": ""
+    }
+  },
+  {
+    "id": "gim",
+    "name": "김 1봉지",
+    "label": "김 1봉지",
+    "kind": "ready",
+    "position": 11,
+    "image": null,
+    "price": 1000,
+    "detail": {
+      "diet": "🌱 식물성",
+      "allergyRaw": "✓ 주요 알레르기 없음",
+      "allergySauce": ""
+    }
+  },
+  {
+    "id": "kimchi",
+    "name": "배추김치",
+    "label": "배추김치",
+    "kind": "ready",
+    "position": 12,
+    "image": null,
+    "price": 2000,
+    "detail": {
+      "diet": "🌊 젓갈 포함",
+      "allergyRaw": "⚠️ 새우 · 생선",
+      "allergySauce": ""
+    }
+  },
+  {
+    "id": "stir-fried-kimchi",
+    "name": "볶음김치",
+    "label": "볶음김치",
+    "kind": "ready",
+    "position": 13,
+    "image": null,
+    "price": 3000,
+    "detail": {
+      "diet": "🌊 젓갈 포함",
+      "allergyRaw": "⚠️ 새우 · 생선",
+      "allergySauce": ""
+    }
   }
 ]

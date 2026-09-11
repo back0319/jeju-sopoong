@@ -43,6 +43,7 @@ export function OrderReceipt({ order }: { order: Order }) {
                 {s.toppings.map((v) => (
                   <span className="chip" key={v.id}>
                     + {koreanIngredientName(v.name)}
+                    {v.free && <b> {t.free}</b>}
                   </span>
                 ))}
               </div>

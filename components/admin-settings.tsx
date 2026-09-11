@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import type { Catalog, Content, Product, Stock } from "@/lib/types";
-import { api, errorText, t } from "@/lib/client";
+import { api, errorText, languages, t } from "@/lib/client";
 export function AdminSettings({
   catalog,
   onRefresh,
@@ -79,6 +79,40 @@ export function AdminSettings({
             </label>
             <button disabled={busy}>{t.save}</button>
           </form>
+          <h3>{t.readyToppings}</h3>
+          <p className="muted">기성품 토핑은 품목마다 가격을 따로 정합니다.</p>
+          {catalog.ingredients
+            .filter((i) => i.kind === "ready")
+            .map((i) => (
+              <form
+                key={`${i.id}:${i.price}`}
+                className="row"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  const f = new FormData(e.currentTarget);
+                  void save({
+                    type: "ingredient-price",
+                    id: i.id,
+                    price: Number(f.get("price")),
+                  });
+                }}
+              >
+                <label className="grow">
+                  {i.name}
+                  <input
+                    name="price"
+                    type="number"
+                    min="0"
+                    step="1"
+                    required
+                    defaultValue={i.price}
+                  />
+                </label>
+                <button disabled={busy} style={{ alignSelf: "end" }}>
+                  {t.save}
+                </button>
+              </form>
+            ))}
         </section>
         <section className="panel stack">
           <h2>{t.settings}</h2>
@@ -271,8 +305,10 @@ export function ContentSettings({
           value={language}
           onChange={(e) => setLanguage(e.target.value)}
         >
-          {["ko", "en", "ja", "zh"].map((l) => (
-            <option key={l}>{l}</option>
+          {languages.map((l) => (
+            <option key={l.code} value={l.code}>
+              {l.label} ({l.code})
+            </option>
           ))}
         </select>
       </div>

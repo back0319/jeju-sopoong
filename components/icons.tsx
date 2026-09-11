@@ -6,7 +6,7 @@ export function Arrow({ back = false }: { back?: boolean }) {
       height="22"
       viewBox="0 0 24 24"
       fill="none"
-      style={{ transform: back ? "rotate(180deg)" : undefined }}
+      className={`arrow ${back ? "arrow-back" : ""}`}
     >
       <path
         d="m9 5 7 7-7 7"

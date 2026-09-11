@@ -59,6 +59,16 @@ export function newItem(catalog: Catalog, answers: Answers): CartItem {
     toppings: [],
   };
 }
+// 패키지를 고르면 가장 비싼 토핑 하나가 무료입니다.
+// private.order_snapshots(supabase/migrations)와 반드시 같은 규칙이어야 합니다.
+export function freeToppingPrice(item: CartItem, catalog: Catalog) {
+  if (item.kind !== "package" || !item.toppings.length) return 0;
+  return Math.max(
+    ...item.toppings.map(
+      (id) => catalog.ingredients.find((i) => i.id === id)?.price ?? 0,
+    ),
+  );
+}
 export function itemPrice(item: CartItem, catalog: Catalog) {
   if (item.kind === "extra")
     return catalog.products.find((p) => p.id === item.productId)?.price ?? 0;
@@ -71,7 +81,8 @@ export function itemPrice(item: CartItem, catalog: Catalog) {
       (sum, id) =>
         sum + (catalog.ingredients.find((i) => i.id === id)?.price ?? 0),
       0,
-    )
+    ) -
+    freeToppingPrice(item, catalog)
   );
 }
 export function expiredOrder(
