@@ -105,6 +105,7 @@
   "stock": "配料库存",
   "remaining": "剩余数量",
   "forcedSoldOut": "强制售罄",
+  "trackStock": "管理库存",
   "save": "保存",
   "saved": "已保存",
   "price": "价格",

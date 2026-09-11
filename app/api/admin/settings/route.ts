@@ -85,13 +85,13 @@ export async function POST(req: Request) {
         .update({ price: b.price })
         .eq("id", b.id)
         .eq("kind", "ready"));
-    } else if (b.type === "ingredient-active") {
-      // 기성품만 내릴 수 있습니다. 제주 원물과 기본 재료는 구성이 고정입니다.
-      if (!text(b.id, 80) || typeof b.active !== "boolean")
+    } else if (b.type === "ingredient-tracked") {
+      // 기성품만 수량 관리를 끌 수 있습니다. 제주 원물은 매일 준비량을 셉니다.
+      if (!text(b.id, 80) || typeof b.tracked !== "boolean")
         throw new Error("INVALID_INPUT");
       ({ error } = await client
         .from("ingredients")
-        .update({ active: b.active })
+        .update({ tracked: b.tracked })
         .eq("id", b.id)
         .eq("kind", "ready"));
     } else if (b.type === "content") {

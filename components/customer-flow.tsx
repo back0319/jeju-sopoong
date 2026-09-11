@@ -237,7 +237,10 @@ export default function CustomerFlow({
   const shortages = catalog.ingredients.filter((ingredient) => {
     const needed = checkedItems.filter((item) => item.toppings.includes(ingredient.id)).length;
     const stock = catalog.inventory.find((entry) => entry.ingredient_id === ingredient.id);
-    return needed > 0 && (!stock || stock.forced_sold_out || stock.remaining < needed);
+    if (needed === 0) return false;
+    // 수량을 세지 않는 재료는 강제 품절만 부족으로 봅니다.
+    if (ingredient.tracked === false) return Boolean(stock?.forced_sold_out);
+    return !stock || stock.forced_sold_out || stock.remaining < needed;
   });
   const change = (values: Partial<Draft>) =>
     setDraft((prev) => (prev ? { ...prev, ...values } : prev));
@@ -845,8 +848,29 @@ export default function CustomerFlow({
                     <OrderReceipt order={order} language={d.language} copy={copy} />
                   </details>
                 </div>
+                {/* 카운터에서 재료를 받은 뒤 직접 말 때 보는 영상입니다. */}
                 {content("experience")?.video_url && (
-                  <ContentBody value={content("experience")} copy={copy} />
+                  <section className="stack experience">
+                    {content("experience")?.body?.trim() && (
+                      <p className="muted" style={{ whiteSpace: "pre-line" }}>
+                        {content("experience")!.body}
+                      </p>
+                    )}
+                    {/* 이 화면의 주인공은 주문 번호라 영상은 접어 둡니다. */}
+                    <details>
+                      <summary>{copy.experience}</summary>
+                      <ProducerVideo url={content("experience")!.video_url} />
+                      <a
+                        className="video-link"
+                        href={content("experience")!.video_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {copy.watch}
+                        <Arrow />
+                      </a>
+                    </details>
+                  </section>
                 )}
               </>
             ) : (

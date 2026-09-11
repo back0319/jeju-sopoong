@@ -42,17 +42,22 @@ export function AdminSettings({
         <section className="panel stack">
           <h2>{t.stock}</h2>
           <p className="muted">잔여 수량은 매일 자정(한국 시간)에 0으로 초기화됩니다. 영업 시작 전에 오늘 수량을 입력하세요.</p>
-          {catalog.inventory.map((s) => (
-            <StockForm
-              key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}`}
-              stock={s}
-              name={
-                catalog.ingredients.find((i) => i.id === s.ingredient_id)!.name
-              }
-              busy={busy}
-              save={save}
-            />
-          ))}
+          {catalog.inventory.map((s) => {
+            const ingredient = catalog.ingredients.find(
+              (i) => i.id === s.ingredient_id,
+            )!;
+            return (
+              <StockForm
+                key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}:${ingredient.tracked}`}
+                stock={s}
+                name={ingredient.name}
+                // 수량을 세지 않는 품목도 강제 품절은 써야 해서 목록에는 남깁니다.
+                tracked={ingredient.tracked !== false}
+                busy={busy}
+                save={save}
+              />
+            );
+          })}
           <form
             className="stack"
             onSubmit={(e) => {
@@ -81,13 +86,13 @@ export function AdminSettings({
           </form>
           <h3>{t.readyToppings}</h3>
           <p className="muted">
-            기성품은 품목마다 가격을 정하고, 판매를 내리면 고객 화면에서
-            사라집니다. 오늘만 다 나간 경우에는 위의 강제 품절을 쓰세요.
+            기성품은 품목마다 가격을 정합니다. 재고 관리를 끄면 기본 재료처럼
+            수량을 세지 않고 늘 주문할 수 있습니다.
           </p>
           {catalog.ingredients
             .filter((i) => i.kind === "ready")
             .map((i) => (
-              <div key={`${i.id}:${i.price}:${i.active}`} className="stack">
+              <div key={`${i.id}:${i.price}:${i.tracked}`} className="stack">
                 <form
                   className="row"
                   onSubmit={(e) => {
@@ -118,17 +123,17 @@ export function AdminSettings({
                 <label className="row">
                   <input
                     type="checkbox"
-                    checked={i.active !== false}
+                    checked={i.tracked !== false}
                     disabled={busy}
                     onChange={(e) =>
                       void save({
-                        type: "ingredient-active",
+                        type: "ingredient-tracked",
                         id: i.id,
-                        active: e.target.checked,
+                        tracked: e.target.checked,
                       })
                     }
                   />
-                  {t.active}
+                  {t.trackStock}
                 </label>
                 <div className="divider" />
               </div>
@@ -154,11 +159,13 @@ export function AdminSettings({
 function StockForm({
   stock,
   name,
+  tracked = true,
   busy,
   save,
 }: {
   stock: Stock;
   name: string;
+  tracked?: boolean;
   busy: boolean;
   save: (b: unknown) => Promise<void>;
 }) {
@@ -171,7 +178,8 @@ function StockForm({
         void save({
           type: "inventory",
           id: stock.ingredient_id,
-          remaining: Number(f.get("remaining")),
+          // 수량을 세지 않는 품목은 입력 칸이 없어 기존 값을 그대로 보냅니다.
+          remaining: tracked ? Number(f.get("remaining")) : stock.remaining,
           previousRemaining: stock.remaining,
           previousForced: stock.forced_sold_out,
           previousDate: stock.business_date,
@@ -180,8 +188,8 @@ function StockForm({
       }}
     >
       <h3>{name}</h3>
-      <div className="row">
-        <label className="grow">
+      {tracked ? (
+        <label>
           {t.remaining}
           <input
             name="remaining"
@@ -192,18 +200,20 @@ function StockForm({
             defaultValue={stock.remaining}
           />
         </label>
-        <button disabled={busy} style={{ alignSelf: "end" }}>
-          {t.save}
-        </button>
+      ) : (
+        <p className="muted">수량을 세지 않는 품목입니다. 늘 주문할 수 있어요.</p>
+      )}
+      <div className="row between">
+        <label className="row">
+          <input
+            name="forced"
+            type="checkbox"
+            defaultChecked={stock.forced_sold_out}
+          />
+          {t.forcedSoldOut}
+        </label>
+        <button disabled={busy}>{t.save}</button>
       </div>
-      <label className="row">
-        <input
-          name="forced"
-          type="checkbox"
-          defaultChecked={stock.forced_sold_out}
-        />
-        {t.forcedSoldOut}
-      </label>
       <div className="divider" />
     </form>
   );

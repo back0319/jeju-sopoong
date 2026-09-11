@@ -32,7 +32,7 @@ export function ItemBuilder({
   }, [step]);
   const upgrade = catalog.products.find((p) => p.id === "package" && p.active);
   const sellable = (kind: string) =>
-    catalog.ingredients.filter((i) => i.kind === kind && i.active !== false);
+    catalog.ingredients.filter((i) => i.kind === kind);
   // 기성품은 기본 재료와 함께 고르고, 제주 원물은 사진이 커서 따로 봅니다.
   const steps = [
     "base" as const,
@@ -43,7 +43,11 @@ export function ItemBuilder({
   const maxStep = steps.length - 1;
   function toppingCard(i: Catalog["ingredients"][number]) {
     const stock = catalog.inventory.find((s) => s.ingredient_id === i.id);
-    const out = !stock || stock.remaining === 0 || stock.forced_sold_out;
+    // 수량을 세지 않는 재료는 강제 품절일 때만 막습니다.
+    const out =
+      i.tracked === false
+        ? Boolean(stock?.forced_sold_out)
+        : !stock || stock.remaining === 0 || stock.forced_sold_out;
     const selected = item.toppings.includes(i.id);
     // 고객에게는 메뉴 이름으로 보여 주고, 없는 재료는 재료명을 씁니다.
     const name =

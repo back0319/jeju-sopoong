@@ -36,14 +36,14 @@ export function ManualOrder({ catalog, order, onDone, onClose }: {
         {item.kind !== "extra" && <>
           <div><h3>빼는 재료</h3><div className="editor-choices">{catalog.ingredients.filter(i => i.kind === "base").map(i =>
             <button key={i.id} aria-pressed={item.excluded.includes(i.id)} className={item.excluded.includes(i.id) ? "selected exclude-choice" : ""} onClick={() => toggle(n, "excluded", i.id)}>{i.name}</button>)}</div></div>
-          <div><h3>추가 토핑</h3><div className="editor-choices">{catalog.ingredients.filter(i => (i.kind === "topping" || i.kind === "ready") && i.active !== false).map(i => {
+          <div><h3>추가 토핑</h3><div className="editor-choices">{catalog.ingredients.filter(i => i.kind === "topping" || i.kind === "ready").map(i => {
             const stock = catalog.inventory.find(s => s.ingredient_id === i.id);
             const reserved = order?.order_items.filter(v => v.snapshot.toppings.some(t => t.id === i.id)).length ?? 0;
             const count = items.filter(v => v.toppings.includes(i.id)).length;
             const selected = item.toppings.includes(i.id);
-            const unavailable = !stock || stock.forced_sold_out || stock.remaining + reserved <= count;
+            const unavailable = i.tracked === false ? Boolean(stock?.forced_sold_out) : (!stock || stock.forced_sold_out || stock.remaining + reserved <= count);
             return <button key={i.id} aria-pressed={selected} className={selected ? "selected" : ""} disabled={!selected && unavailable}
-              onClick={() => toggle(n, "toppings", i.id)}>{i.name}<small>{money(i.price)} · {stock?.forced_sold_out ? "품절" : `잔여 ${stock?.remaining ?? 0}`}</small></button>;
+              onClick={() => toggle(n, "toppings", i.id)}>{i.name}<small>{money(i.price)} · {stock?.forced_sold_out ? "품절" : i.tracked === false ? "재고 관리 안 함" : `잔여 ${stock?.remaining ?? 0}`}</small></button>;
           })}</div></div>
           {upgrade && <label className="editor-package"><input type="checkbox" checked={item.kind === "package"} disabled={!upgrade.active && item.kind !== "package"}
             onChange={e => replace(n, { ...item, kind: e.target.checked ? "package" : "gimbap" })} />{upgrade.name} <b>+{money(upgrade.price ?? 0)}</b></label>}
