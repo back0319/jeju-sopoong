@@ -187,6 +187,11 @@ export function AdminData({ catalog }: { catalog: Catalog }) {
               className="chip"
               key={format}
               href={`/api/admin/export?${query}&format=${format}`}
+              // download가 없으면 사파리가 파일을 화면에 열려다 실패해
+              // "디코딩할 수 없음" 대화상자를 먼저 띄웁니다.
+              download={`juseyo-${format}-${from}-${to}.${
+                format === "json" ? "json" : "csv"
+              }`}
             >
               {label}
             </a>

@@ -199,47 +199,73 @@ function StockForm({
   busy: boolean;
   save: (b: unknown) => Promise<void>;
 }) {
+  const [remaining, setRemaining] = useState(String(stock.remaining));
+  const [forced, setForced] = useState(stock.forced_sold_out);
+  const count = Number(remaining);
+  // 빈 칸은 0이 아니라 "아직 안 적음"으로 봅니다. 실수로 0을 저장하지 않게 합니다.
+  const valid = remaining !== "" && Number.isSafeInteger(count) && count >= 0;
+  // 바꾼 게 있을 때만 저장을 열어 두면 눌러야 하는지 한눈에 보입니다.
+  const changed = (valid && count !== stock.remaining) || forced !== stock.forced_sold_out;
+  const step = (by: number) =>
+    setRemaining(String(Math.max(0, (valid ? count : stock.remaining) + by)));
   return (
     <form
-      className="stack"
+      className="stock-row"
       onSubmit={(e) => {
         e.preventDefault();
-        const f = new FormData(e.currentTarget);
+        if (!valid) return;
         void save({
           type: "inventory",
           id: stock.ingredient_id,
-          remaining: Number(f.get("remaining")),
+          remaining: count,
           previousRemaining: stock.remaining,
           previousForced: stock.forced_sold_out,
           previousDate: stock.business_date,
-          forced_sold_out: f.get("forced") === "on",
+          forced_sold_out: forced,
         });
       }}
     >
-      <h3>{name}</h3>
-      <label>
-        {t.remaining}
-        <input
-          name="remaining"
-          type="number"
-          min="0"
-          step="1"
-          required
-          defaultValue={stock.remaining}
-        />
-      </label>
-      <div className="row between">
+      <div className="stock-name">
+        <strong>{name}</strong>
         <label className="row">
           <input
-            name="forced"
             type="checkbox"
-            defaultChecked={stock.forced_sold_out}
+            checked={forced}
+            disabled={busy}
+            onChange={(e) => setForced(e.target.checked)}
           />
           {t.forcedSoldOut}
         </label>
-        <button disabled={busy}>{t.save}</button>
       </div>
-      <div className="divider" />
+      <div className="stepper" role="group" aria-label={`${name} ${t.remaining}`}>
+        <button
+          type="button"
+          aria-label="1 줄이기"
+          disabled={busy || (valid && count === 0)}
+          onClick={() => step(-1)}
+        >
+          −
+        </button>
+        <input
+          name="remaining"
+          inputMode="numeric"
+          aria-label={t.remaining}
+          value={remaining}
+          disabled={busy}
+          onChange={(e) => setRemaining(e.target.value.replace(/[^0-9]/g, ""))}
+        />
+        <button
+          type="button"
+          aria-label="1 늘리기"
+          disabled={busy}
+          onClick={() => step(1)}
+        >
+          +
+        </button>
+      </div>
+      <button className={changed ? "primary" : ""} disabled={busy || !changed || !valid}>
+        {t.save}
+      </button>
     </form>
   );
 }
