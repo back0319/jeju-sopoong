@@ -1127,3 +1127,8 @@ button.choice small {
 .rolling .video-link {
   align-self: center;
 }
+/* 다음 장으로 넘기는 말은 본문 끝이 아니라 버튼 바로 위에 붙입니다. */
+.producer-outro,
+.taste-cta {
+  margin-block-start: auto;
+}

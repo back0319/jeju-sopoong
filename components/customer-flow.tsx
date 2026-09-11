@@ -514,15 +514,6 @@ export default function CustomerFlow({
                 </>
               );
             })()}
-            <button
-              className="quiet"
-              onClick={() => {
-                setOriginIndex(0);
-                go("ingredients");
-              }}
-            >
-              {copy.skip}
-            </button>
           </>
         )}
         {d.step === "consent" && (
@@ -667,15 +658,19 @@ export default function CustomerFlow({
                 })()}
               </div>
             </article>
+            <div className="row between">
+              <span className="muted">{originIndex + 1} / 4</span>
+              {/* 마지막 장에서는 아래 버튼과 가는 곳이 같아 건너뛰기를 두지 않습니다. */}
+              {originIndex < 3 && (
+                <button className="quiet" onClick={() => go("consent")}>
+                  {copy.skip}
+                </button>
+              )}
+            </div>
+            {/* 다음 장으로 넘기는 말이라 버튼 바로 위에 둡니다. */}
             {originIndex === 3 && (
               <p className="taste-cta">{copy.tasteCta}</p>
             )}
-            <div className="row between">
-              <span className="muted">{originIndex + 1} / 4</span>
-              <button className="quiet" onClick={() => go("consent")}>
-                {copy.skip}
-              </button>
-            </div>
           </>
         )}
         {d.step === "testDone" && (
