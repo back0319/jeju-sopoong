@@ -61,32 +61,15 @@ export function AdminSettings({
                 save={save}
               />
             ))}
-          <form
-            className="stack"
-            onSubmit={(e) => {
-              e.preventDefault();
-              const f = new FormData(e.currentTarget);
-              void save({
-                type: "topping-price",
-                price: Number(f.get("price")),
-              });
-            }}
-          >
-            <label>
-              {t.toppingPrice}
-              <input
-                name="price"
-                type="number"
-                min="0"
-                step="1"
-                required
-                defaultValue={
-                  catalog.ingredients.find((i) => i.kind === "topping")?.price
-                }
-              />
-            </label>
-            <button disabled={busy}>{t.save}</button>
-          </form>
+          <PriceRow
+            key={`topping:${catalog.ingredients.find((i) => i.kind === "topping")?.price}`}
+            label={t.toppingPrice}
+            price={
+              catalog.ingredients.find((i) => i.kind === "topping")?.price ?? 0
+            }
+            busy={busy}
+            onSave={(price) => save({ type: "topping-price", price })}
+          />
           <h3>{t.readyToppings}</h3>
           <p className="muted">
             기성품은 품목마다 가격을 정합니다. 재고 관리를 끄면 기본 재료처럼
@@ -95,34 +78,15 @@ export function AdminSettings({
           {catalog.ingredients
             .filter((i) => i.kind === "ready")
             .map((i) => (
-              <div key={`${i.id}:${i.price}:${i.tracked}`} className="stack">
-                <form
-                  className="row"
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const f = new FormData(e.currentTarget);
-                    void save({
-                      type: "ingredient-price",
-                      id: i.id,
-                      price: Number(f.get("price")),
-                    });
-                  }}
-                >
-                  <label className="grow">
-                    {i.name}
-                    <input
-                      name="price"
-                      type="number"
-                      min="0"
-                      step="1"
-                      required
-                      defaultValue={i.price}
-                    />
-                  </label>
-                  <button disabled={busy} style={{ alignSelf: "end" }}>
-                    {t.save}
-                  </button>
-                </form>
+              <div key={`${i.id}:${i.price}:${i.tracked}`} className="ready-row">
+                <PriceRow
+                  label={i.name}
+                  price={i.price}
+                  busy={busy}
+                  onSave={(price) =>
+                    save({ type: "ingredient-price", id: i.id, price })
+                  }
+                />
                 <label className="row">
                   <input
                     type="checkbox"
@@ -167,7 +131,6 @@ export function AdminSettings({
                     {t.forcedSoldOut}
                   </label>
                 )}
-                <div className="divider" />
               </div>
             ))}
         </section>
@@ -186,6 +149,47 @@ export function AdminSettings({
         </section>
       </div>
     </div>
+  );
+}
+// 이름과 가격 한 칸, 그리고 바꿨을 때만 켜지는 저장. 재고 줄과 같은 모양입니다.
+function PriceRow({
+  label,
+  price,
+  busy,
+  onSave,
+}: {
+  label: string;
+  price: number;
+  busy: boolean;
+  onSave: (price: number) => Promise<void> | void;
+}) {
+  const [value, setValue] = useState(String(price));
+  const next = Number(value);
+  const valid = value !== "" && Number.isSafeInteger(next) && next >= 0;
+  const changed = valid && next !== price;
+  return (
+    <form
+      className="price-row"
+      onSubmit={(e) => {
+        e.preventDefault();
+        if (changed) void onSave(next);
+      }}
+    >
+      <strong>{label}</strong>
+      <label className="price-input">
+        <span className="won">₩</span>
+        <input
+          inputMode="numeric"
+          aria-label={`${label} ${t.price}`}
+          value={value}
+          disabled={busy}
+          onChange={(e) => setValue(e.target.value.replace(/[^0-9]/g, ""))}
+        />
+      </label>
+      <button className={changed ? "primary" : ""} disabled={busy || !changed}>
+        {t.save}
+      </button>
+    </form>
   );
 }
 function StockForm({
@@ -278,56 +282,93 @@ function ProductForm({
   busy: boolean;
   save: (b: unknown) => Promise<void>;
 }) {
+  const [id, setId] = useState("");
+  const [name, setName] = useState(product?.name ?? "");
+  const [price, setPrice] = useState(
+    product?.price === null || product?.price === undefined
+      ? ""
+      : String(product.price),
+  );
+  const [active, setActive] = useState(product?.active ?? false);
+  const amount = price === "" ? null : Number(price);
+  const validPrice =
+    amount === null || (Number.isSafeInteger(amount) && amount >= 0);
+  // 판매하려면 가격이 있어야 합니다. 서버도 같은 조건으로 막습니다.
+  const ready =
+    name.trim().length > 0 &&
+    validPrice &&
+    !(active && amount === null) &&
+    (product ? true : /^[a-z][a-z0-9-]{1,60}$/.test(id));
+  const changed = product
+    ? name !== product.name ||
+      amount !== (product.price ?? null) ||
+      active !== product.active
+    : Boolean(id || name || price || active);
   return (
     <form
-      className="stack"
+      className="product-row"
       onSubmit={(e) => {
         e.preventDefault();
-        const f = new FormData(e.currentTarget);
+        if (!ready || !changed) return;
         void save({
           type: "product",
           create: !product,
-          id: product?.id || f.get("id"),
-          name: f.get("name"),
-          price: f.get("price") === "" ? null : Number(f.get("price")),
-          active: f.get("active") === "on",
+          id: product?.id ?? id,
+          name: name.trim(),
+          price: amount,
+          active,
         });
       }}
     >
       {!product && (
-        <label>
+        <label className="product-id">
           {t.productId}
-          <input name="id" required pattern="[a-z][a-z0-9-]{1,60}" />
+          <input
+            value={id}
+            disabled={busy}
+            placeholder="side-dish"
+            onChange={(e) => setId(e.target.value)}
+          />
         </label>
       )}
-      <div className="form-grid">
-        <label>
+      <div className="product-fields">
+        <label className="grow">
           {t.name}
-          <input name="name" required defaultValue={product?.name} />
-        </label>
-        <label>
-          {t.price}
           <input
-            name="price"
-            type="number"
-            min="0"
-            step="1"
-            defaultValue={product?.price ?? ""}
+            value={name}
+            disabled={busy}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </label>
+        <label className="price-input standalone">
+          <span className="won">₩</span>
+          <input
+            inputMode="numeric"
+            aria-label={t.price}
+            value={price}
+            disabled={busy}
+            placeholder="미정"
+            onChange={(e) => setPrice(e.target.value.replace(/[^0-9]/g, ""))}
           />
         </label>
       </div>
       <div className="row between">
         <label className="row">
           <input
-            name="active"
             type="checkbox"
-            defaultChecked={product?.active ?? false}
+            checked={active}
+            disabled={busy}
+            onChange={(e) => setActive(e.target.checked)}
           />
           {t.active}
         </label>
-        <button disabled={busy}>{t.save}</button>
+        <button
+          className={changed && ready ? "primary" : ""}
+          disabled={busy || !changed || !ready}
+        >
+          {product ? t.save : t.createProduct}
+        </button>
       </div>
-      <div className="divider" />
     </form>
   );
 }

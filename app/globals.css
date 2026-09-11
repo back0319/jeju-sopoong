@@ -1194,3 +1194,97 @@ button.choice small {
     grid-column: 2;
   }
 }
+
+/* 가격 한 줄. 재고 줄과 같은 리듬으로 둡니다. */
+.price-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.price-row > strong {
+  font-size: 16px;
+  overflow-wrap: anywhere;
+}
+.price-input {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 0 10px;
+  background: #fff;
+}
+.price-input .won {
+  color: var(--muted);
+  font-size: 14px;
+}
+.price-input input {
+  width: 88px;
+  min-height: 46px;
+  border: 0;
+  padding: 8px 0;
+  text-align: end;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.price-input input:focus-visible {
+  outline: 0;
+}
+.price-input:focus-within {
+  outline: 3px solid var(--green);
+  outline-offset: 2px;
+}
+.price-row > button:last-child,
+.product-row button[type="submit"],
+.product-row > .row > button {
+  min-height: 48px;
+  padding: 0 16px;
+}
+/* 기성품 한 묶음: 가격 줄 아래에 토글을 답니다. */
+.ready-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line);
+}
+.ready-row .price-row {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.ready-row > label.row {
+  font-size: 14px;
+  color: var(--muted);
+  gap: 8px;
+}
+.ready-row > label.row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+/* 메뉴 한 묶음 */
+.product-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+}
+.product-fields {
+  display: flex;
+  align-items: end;
+  gap: 10px;
+}
+.product-fields label.grow {
+  font-size: 13px;
+  color: var(--muted);
+}
+.price-input.standalone {
+  align-self: end;
+}
+.product-id {
+  font-size: 13px;
+  color: var(--muted);
+}
