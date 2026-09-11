@@ -42,22 +42,25 @@ export function AdminSettings({
         <section className="panel stack">
           <h2>{t.stock}</h2>
           <p className="muted">잔여 수량은 매일 자정(한국 시간)에 0으로 초기화됩니다. 영업 시작 전에 오늘 수량을 입력하세요.</p>
-          {catalog.inventory.map((s) => {
-            const ingredient = catalog.ingredients.find(
-              (i) => i.id === s.ingredient_id,
-            )!;
-            return (
+          {catalog.inventory
+            // 수량을 세지 않는 품목은 입력할 값이 없어 아래 기성품 칸에서 다룹니다.
+            .filter(
+              (s) =>
+                catalog.ingredients.find((i) => i.id === s.ingredient_id)
+                  ?.tracked !== false,
+            )
+            .map((s) => (
               <StockForm
-                key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}:${ingredient.tracked}`}
+                key={`${s.ingredient_id}:${s.remaining}:${s.forced_sold_out}`}
                 stock={s}
-                name={ingredient.name}
-                // 수량을 세지 않는 품목도 강제 품절은 써야 해서 목록에는 남깁니다.
-                tracked={ingredient.tracked !== false}
+                name={
+                  catalog.ingredients.find((i) => i.id === s.ingredient_id)!
+                    .name
+                }
                 busy={busy}
                 save={save}
               />
-            );
-          })}
+            ))}
           <form
             className="stack"
             onSubmit={(e) => {
@@ -135,6 +138,35 @@ export function AdminSettings({
                   />
                   {t.trackStock}
                 </label>
+                {/* 수량을 세지 않아도 오늘만 품절인 경우는 여기서 막습니다. */}
+                {i.tracked === false && (
+                  <label className="row">
+                    <input
+                      type="checkbox"
+                      checked={
+                        catalog.inventory.find((v) => v.ingredient_id === i.id)
+                          ?.forced_sold_out ?? false
+                      }
+                      disabled={busy}
+                      onChange={(e) => {
+                        const stock = catalog.inventory.find(
+                          (v) => v.ingredient_id === i.id,
+                        );
+                        if (!stock) return;
+                        void save({
+                          type: "inventory",
+                          id: i.id,
+                          remaining: stock.remaining,
+                          previousRemaining: stock.remaining,
+                          previousForced: stock.forced_sold_out,
+                          previousDate: stock.business_date,
+                          forced_sold_out: e.target.checked,
+                        });
+                      }}
+                    />
+                    {t.forcedSoldOut}
+                  </label>
+                )}
                 <div className="divider" />
               </div>
             ))}
@@ -159,13 +191,11 @@ export function AdminSettings({
 function StockForm({
   stock,
   name,
-  tracked = true,
   busy,
   save,
 }: {
   stock: Stock;
   name: string;
-  tracked?: boolean;
   busy: boolean;
   save: (b: unknown) => Promise<void>;
 }) {
@@ -178,8 +208,7 @@ function StockForm({
         void save({
           type: "inventory",
           id: stock.ingredient_id,
-          // 수량을 세지 않는 품목은 입력 칸이 없어 기존 값을 그대로 보냅니다.
-          remaining: tracked ? Number(f.get("remaining")) : stock.remaining,
+          remaining: Number(f.get("remaining")),
           previousRemaining: stock.remaining,
           previousForced: stock.forced_sold_out,
           previousDate: stock.business_date,
@@ -188,21 +217,17 @@ function StockForm({
       }}
     >
       <h3>{name}</h3>
-      {tracked ? (
-        <label>
-          {t.remaining}
-          <input
-            name="remaining"
-            type="number"
-            min="0"
-            step="1"
-            required
-            defaultValue={stock.remaining}
-          />
-        </label>
-      ) : (
-        <p className="muted">수량을 세지 않는 품목입니다. 늘 주문할 수 있어요.</p>
-      )}
+      <label>
+        {t.remaining}
+        <input
+          name="remaining"
+          type="number"
+          min="0"
+          step="1"
+          required
+          defaultValue={stock.remaining}
+        />
+      </label>
       <div className="row between">
         <label className="row">
           <input

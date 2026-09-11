@@ -852,14 +852,14 @@ export default function CustomerFlow({
                   </div>
                   <h2>
                     {order.status === "CANCELLED"
-                      ? "취소된 주문이에요"
+                      ? copy.orderCancelled
                       : order.status === "COMPLETED"
-                        ? "완료된 주문이에요"
+                        ? copy.orderCompleted
                         : copy.completeTitle}
                   </h2>
-                  {order.status === "COMPLETED" && <p>결제와 수령이 완료됐어요.</p>}
+                  {order.status === "COMPLETED" && <p>{copy.orderCompletedNote}</p>}
                   {order.status === "CANCELLED" && (
-                    <p className="cancel-reason">취소 사유: {order.cancel_reason || "자세한 내용은 카운터에 문의해 주세요."}</p>
+                    <p className="cancel-reason">{copy.cancelReasonLabel}: {order.cancel_reason || copy.cancelReasonUnknown}</p>
                   )}
                 </div>
                 <div className="order-number">{orderNumber(order.number)}</div>
